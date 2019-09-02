@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/TiddlyWiki.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-.min.css?v=1.0.2">
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="学习百度Apollo无人驾驶课程之定位教程。本周学习定位模块的知识，了解车辆如何以个位数厘米级别的精度进行自定位。定位是让无人车自己知道自身确切的位置，定位对无人驾驶尤其重要，对于无人车来讲不仅仅要找出自身的大概位置，而是要以10厘米级别，将车感信息与高精地图信息相比对来精确地位置寻找。">
+<meta name="keywords" content="无人驾驶,Apllo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Apollo基础课程之定位">
+<meta property="og:url" content="http://yoursite.com/2019/03/15/Apollo基础课程第三课之定位/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="学习百度Apollo无人驾驶课程之定位教程。本周学习定位模块的知识，了解车辆如何以个位数厘米级别的精度进行自定位。定位是让无人车自己知道自身确切的位置，定位对无人驾驶尤其重要，对于无人车来讲不仅仅要找出自身的大概位置，而是要以10厘米级别，将车感信息与高精地图信息相比对来精确地位置寻找。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/picture/">
+<meta property="og:image" content="http://yoursite.com/pictur/">
+<meta property="og:image" content="http://yoursite.com/picture/">
+<meta property="og:image" content="http://yoursite.com/picture/">
+<meta property="og:image" content="http://yoursite.com/picture/">
+<meta property="og:image" content="http://yoursite.com/pictur/">
+<meta property="og:image" content="http://yoursite.com/picture/">
+<meta property="og:image" content="http://yoursite.com/picture/">
+<meta property="og:image" content="http://yoursite.com/picture/">
+<meta property="og:image" content="http://yoursite.com/picture/">
+<meta property="og:image" content="http://yoursite.com/picture/">
+<meta property="og:image" content="http://yoursite.com/picture/">
+<meta property="og:image" content="http://yoursite.com/picture/">
+<meta property="og:updated_time" content="2019-03-18T10:15:38.490Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Apollo基础课程之定位">
+<meta name="twitter:description" content="学习百度Apollo无人驾驶课程之定位教程。本周学习定位模块的知识，了解车辆如何以个位数厘米级别的精度进行自定位。定位是让无人车自己知道自身确切的位置，定位对无人驾驶尤其重要，对于无人车来讲不仅仅要找出自身的大概位置，而是要以10厘米级别，将车感信息与高精地图信息相比对来精确地位置寻找。">
+<meta name="twitter:image" content="http://yoursite.com/picture/">
+  <link rel="canonical" href="http://yoursite.com/2019/03/15/Apollo基础课程第三课之定位/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Apollo基础课程之定位 | Hexo</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/15/Apollo基础课程第三课之定位/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lu Tian">
+      <meta itemprop="description" content="每天进步一点点">
+      <meta itemprop="image" content="/images/timg.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">Apollo基础课程之定位
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-15 02:58:27" itemprop="dateCreated datePublished" datetime="2019-03-15T02:58:27+08:00">2019-03-15</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-03-18 18:15:38" itemprop="dateModified" datetime="2019-03-18T18:15:38+08:00">2019-03-18</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/无人驾驶/" itemprop="url" rel="index"><span itemprop="name">无人驾驶</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span></span>
+            </span>
+          
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="学习百度Apollo无人驾驶课程之定位教程。"><a href="#学习百度Apollo无人驾驶课程之定位教程。" class="headerlink" title="学习百度Apollo无人驾驶课程之定位教程。"></a>学习百度Apollo无人驾驶课程之定位教程。</h2><p>本周学习定位模块的知识，了解车辆如何以个位数厘米级别的精度进行自定位。<br>定位是让无人车自己知道自身确切的位置，定位对无人驾驶尤其重要，对于无人车来讲不仅仅要找出自身的大概位置，而是要以10厘米级别，将车感信息与高精地图信息相比对来精确地位置寻找。</p>
+<a id="more"></a>
+<h3 id="定位的描述"><a href="#定位的描述" class="headerlink" title="定位的描述"></a>定位的描述</h3><p>在日常生活中，假设你有一张高精地图，定位的任务是确定你的车辆在这张高精地图上的位置。</p>
+<p>大多数时候我们用GPS来定位，我们用手机导航，手机中的app用我们的位置信息也是用GPS来定位，比如常用的外卖app，这已经足够了。但是<strong>PS对于无人车来讲是远远不够远远不够精确的</strong>。因此我们需要找到别的方式来进行更加准确的定位，确定车辆在地图上的位置，<strong>最常用的方法是将汽车传感器所看到的内容与地图上所显示的内容相比较</strong>。车辆传感器可测量车辆与静态障碍物之间的距离。车子就在自身的坐标系中测量这些距离以及这些静态障碍物的方向。在这个坐标系中，<strong>汽车的前进方向始终与车头保持一致，但不一定与地图坐标系保持一致</strong>。当车辆传感器测量到地图上的物体，会将传感器的地标观测值，与地标在地图上的位置匹配，转换到地图自带坐标系，反之亦然，从而达到地图与车感数据的对比。<br>接下来介绍几种可选择的方法，每种都有自己的优劣，<strong>接下来介绍几种主流的定位方法</strong>。</p>
+<h3 id="定位方法介绍"><a href="#定位方法介绍" class="headerlink" title="定位方法介绍"></a>定位方法介绍</h3><h4 id="1，GNNS-RTK"><a href="#1，GNNS-RTK" class="headerlink" title="1，GNNS RTK"></a>1，GNNS RTK</h4><p>如果你在野外迷路，然后看到一棵离自己75米远的树，你现在只知道你自己在以这棵树为圆心半径是75米的一个圆上。但是如果你还知道你你离一个房子64米远，你就知道你在这以这栋房子为圆心半径为64米的圆与刚刚那个圆的交点，此时两个圆的交点有两个，我们还不能完全确定自己的位置。如果我们又看到了第三个路标，假设它是路灯，并且我们离它55米远，那我们就知道了自己相对于这些地标位置的确切值。<br><img src="/picture/" alt><br>首先假设现在有一个世界地图标注了这三个地标在世界上的确切位置，那么就可以知道自己的确切位置了，这就称为<strong>三角测量</strong>。<br><strong>GPS就是这样的工作原理</strong>，只是参照物是卫星(同步卫星，和地球公转的角速度一样)。三颗卫星再加上一颗用来定位高度的卫星，4颗卫星就可以知道自身的确切位置了。GPS这类系统的名称为全球导航卫星系统或GNNS，GPS是其中使用最为广泛的GNNS系统。<br><img src="/pictur/" alt><br>GPS分为三部分：</p>
+<ul>
+<li>1,卫星，在任何特定时间大约有30颗GPS卫星在太空运行，它们距离地球的距离约为2万公里</li>
+<li>2，由各地的控制站组成，控制站用于监视和控制卫星，主要目的是<strong>让系统保持运行并验证GPS广播信号的精确度</strong></li>
+<li>3，GSP接收器，这部分我们可能最熟悉，它位于手机、电脑、汽车、船只以及许多电子设备中<br>GPS实际上并不直接测量你与卫星之间的距离，而时首先测量信号的飞行时间即TOF原理。通过将光速乘这个飞行时间，来计算距离卫星的距离。由于光的速度很大，所以即使是很小的时间误差也会在计算距离的时候造成巨大的误差。<br><img src="/picture/" alt><br>为了减小这个误差，每颗卫星都配置了原子钟。为进一步减小误差，使用<strong>实时运动定位(RTK)</strong>。RTK需要在地面上建几个基站，每个基站都知道自己精确的地面”实况位置”，但是每个基站同时也通过GSP测量自己的位置。已知的”地面实况”位置与通过GPS测量的位置之间的偏差，为<strong>GPS测量结果中的误差</strong>。然后将这个误差传递给其他GPS接收器以供其调整自身的位置计算。在RTK的帮助下，GPS可以将定位误差限制在10厘米以内。<br><img src="/picture/" alt><br>不过GSP有个缺点，就是高楼大厦和其他障碍物可能会阻挡GPS信号，这个问题在城市尤为明显，而无人车将来的商用化肯定是城市是主战场，这就使得定位会变得困难或极端情况下根本无法定位，这对于无人车来讲肯定是无法接受的。至于原因，你懂得。还有一个缺点，GPS更新频率很低，大概是10赫兹，由于无人车在快速移动可能需要更加频繁的更新位置信息。<h4 id="2，-惯性导航"><a href="#2，-惯性导航" class="headerlink" title="2， 惯性导航"></a>2， 惯性导航</h4>假设汽车以匀速行驶，如果提供了汽车的初始位置、速度、行驶时长，那么汽车的位置也随即从初始位置开始，然后速度乘以时间。<br><img src="/picture/" alt><br>假设给了初始速度，并给予加速度和驾驶时间，就可以使用加速度、初始速度、初始位置来计算汽车在任何时间点的车速和位置。<br><strong>加速度</strong>需要三轴加速度计的传感器来测量，有三种不同类型的三轴加速度计，它们采用不同的方法，但共同的目的都是精确测量加速度。加速度计根据车辆的坐标系记录测量结果，还需要陀螺仪传感器将这些测量值转换为全局坐标系测量值。<br><strong>三轴螺仪</strong>的三个外部平衡环一直在旋转，但三轴陀螺仪中的旋转轴始终固定在世界坐标系中，在坐标系中的位置是通过测量旋转轴和三个外部平衡环的相对位置来计算的。<br><img src="/pictur/" alt><br>加速度计和陀螺仪是<strong>惯性测量单元(IMU)</strong>的主要组成组件，IMU可以以高频率更新，可达100赫兹，所以IMU可以提供接近实时的位置信息。但是缺点是在于<strong>IMU的误差随时间的增加而增加</strong>，我们只能依靠惯性测量单元(IMU)在短时间范围内进行定位。不过我们可以结合GPS和IMU来进行定位。IMU弥补了GPS更新频率低的不足；GPS纠正了IMU的运动误差。不过即使将GPS和IMU结合起来也不能完全解决定位的问题，比如在山里面的隧道或峡谷中行驶那么可能很长时间没有GPS信号，我们需要考虑的极端情况。<h4 id="3，-激光雷达定位"><a href="#3，-激光雷达定位" class="headerlink" title="3， 激光雷达定位"></a>3， 激光雷达定位</h4>重磅产品登场，目前比较贵。不过相信随着商业化的步伐推进，逐渐会降价到普通消费者能接受的地步。</li>
+</ul>
+<p>激光雷达是利用<strong>点云匹配</strong>来对汽车进行定位。该方法是将来自激光雷达传感器的数据与预先存在的高精地图之间进行匹配(所以地图采集很重要，在后面会学习高精地图采集的相关知识，当然地图数据的更新也很重要)。通过这种方式来确定汽车在高精地图上的精确位置和行驶方向，匹配点云有很多方法，<strong>迭代最近点</strong>就是其中的一种。</p>
+<h5 id="1-迭代最近点"><a href="#1-迭代最近点" class="headerlink" title="1, 迭代最近点"></a>1, 迭代最近点</h5><p>对于第一次扫描的每个点，需要找到另一次扫描中最接近的匹配点，最终会找到许多匹配点对，把每个点的距离误差相加，然后计算平均距离误差。假设我们对两次点云扫描进行匹配。我们的目标是通过点云旋转和平移来最大限度地降低这一平均距离误差，就可以在传感器扫描和地图之间找到匹配，将通过传感器扫描到的车辆位置转换为全球地图上的位置并计算出在地图上的位置。<br><img src="/picture/" alt></p>
+<h5 id="2-滤波算法"><a href="#2-滤波算法" class="headerlink" title="2, 滤波算法"></a>2, 滤波算法</h5><p>滤波算法是另一种雷达定位算法。将扫描到的车辆位置转换为全球地图上的位置并计算出在地图上的精确位置，滤波算法是另一种雷达定位算法。它可以<strong>消除冗余信息</strong>并在地图上找到最可能的车辆位置。Apollo使用了直方图滤波算法，它有时也被称为<strong>误差平方和算法(SSD)</strong>。为了应用直方图滤波，将通过传感器扫描的点云数据滑过地图上的每个位置，在每个位置上计算扫描的点与高精地图上的对应点之间的误差或距离然后对误差的平方求和，求得的和越小说明扫描结果与地图之间的匹配越好。在事例中，蓝色表示较好，红色较差，绿色一般。<br><img src="/picture/" alt></p>
+<h5 id="3-卡尔曼滤波"><a href="#3-卡尔曼滤波" class="headerlink" title="3,卡尔曼滤波"></a>3,卡尔曼滤波</h5><p>卡尔曼滤波是另一种雷达定位算法，卡尔曼滤波用于根据我们在过去的状态和新的传感器测量结果预测我们当前的状态。它使用了预测更新周期，我们根据之前的状态及对移动距离和方向的改变来估计我们的位置。当然运动估计并不完美，所以需要通过传感器测量我们的位置并加以纠正。一旦测量出了新的位置，我们就利用概率规则将不完美的测量结果与现有的位置匹配起来。一直遵循这个预测更新周期，只要我们需要对车辆进行定位，先预测我们的新位置，然后用传感器测量我们的位置。雷达定位的主要优势在于稳定性，只要从高精地图开始并存在有效的传感器，就始终能进行定位。主要缺点在于<strong>难以构建高精地图并使其保持最新</strong>，事实上几乎不可能让地图完全保持最新，因为几乎每个地图均包含<strong>瞬态元素</strong>，汽车、行人、停放车辆、垃圾等等。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">学到一个新的概念:瞬态元素。看上下文也比较好理解，就是这些信息会随时变化，比如在某个位置的行人，会走开，也有可能会有新的人过来，这很正常，所以说不存在完全最新的高精地图。但是不变(或者变化周期稍长的信息)的元素可以确定，比如说道路的宽度，位置，路口。这些信息会变，但是变化周期较长，一旦变化也可以用地图采集车去进行重新采集数据并制作新的高精地图。</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-视觉定位"><a href="#4-视觉定位" class="headerlink" title="4, 视觉定位"></a>4, 视觉定位</h4><p>图像是要收集的最简单的数据类型，摄像头便宜且种类繁多、易于使用。但是实际上通过图像实现精确定位却非常困难，实际上摄像头图像通常与其他传感器的数据相结合以准确定位车辆。比如与GPS 数据相结合来定位。比单独使用摄像头定位效果更好。假设一辆车正在路上行驶，感知到右边有树，但是地图显示道路右侧有几棵树有很多不同的点位置。如何知道车辆现在看到哪棵树？我们可以使用概率来确定哪个点最可能代表我们的实际位置。有些点是无法看到右边有树，可以先排除。<br><img src="/picture/" alt><br>继续开车可以发现，有些点右边只有一棵树，也可以排除。<br><img src="/picture/" alt><br>这个过程称为<strong>粒子滤波</strong>。当然树木在许多道路上比较稀少，但是车道线在许多道路上却很常见，可以使用相同的粒子滤波原理对车道线进行拍照，然后使用拍摄的图像来确定车辆在道路中的位置，可以将道路摄像头图像与地图进行比较。如图所示，蓝色代表地图上两个不同位置的车道线，红色代表车辆摄像头观察到的车道线，红线与右侧蓝线的匹配度要比与左侧蓝线的匹配度高得多，更有可能位于右侧图像位置上。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">粒子滤波观察车道线</span><br></pre></td></tr></table></figure>
+
+<p><img src="/picture/" alt><br>视觉定位的优点在于图像数据很容易获得，缺点在于缺乏三维信息和对三维地图的依赖。<br>高精地图不仅可以减少计算需求，还可以通过提供有关驾驶环境的详细信息，来确保无人车的安全。保持这些地图的更新是一项重大任务，测试车队需要不断地对高精度地图进行验证和更新。此外，这些地图可能达到几厘米的精度，这是水准最高的制图精度。</p>
+<h2 id="Apollo定位"><a href="#Apollo定位" class="headerlink" title="Apollo定位"></a>Apollo定位</h2><p>接下来学习Apollo定位。<br>首先定义Apollo定位：<strong>Apollo使用基于GPS、IMU、激光雷达的多传感器融合定位系统</strong>，这种方法利用了不同传感器的互补优势，也提高了稳定性和准确性。<br>Apollo定位模块依赖于IMU、GPS、激光雷达、雷达高精地图，这些传感器同时支持GNSS定位和LiDAR定位，<strong>GNSS定位输出位置和速度信息</strong>，LiDAR定位<strong>输出位置和行进方向信息</strong>。融合框架通过卡尔曼滤波将这些输出结合在一起。以提高定位精度。<br><img src="/picture/" alt></p>
+<p>卡尔曼滤波建立在两步预测测量周期之上，在Apollo中，惯性导航解决方案用于卡尔曼滤波的预测步骤，GNSS 和 LiDAR 定位用于卡尔曼滤波的测量结果更新步骤。<br>附Apollo官方的自动驾驶发展路线图：现在是2019年3月，看样子有限制的自动驾驶很快就会到来，Robin在两会接受采访的时候说下半年会在长沙试水商业化运营。到时候应该会看到消息，我觉得那一天就将会是中国自动驾驶历史上值得纪念的一天，也会拉开中国汽车史上的新篇章。无人驾驶很可能是我们进入新智能时代的一个重要标志。<br><img src="/picture/" alt></p>
+
+    </div>
+
+    
+    
+    
+      
+
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/无人驾驶/" rel="tag"># 无人驾驶</a>
+            
+              <a href="/tags/Apllo/" rel="tag"># Apllo</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/03/14/ArrayMap/" rel="next" title="ArrayMap">
+                  <i class="fa fa-chevron-left"></i> ArrayMap
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/03/18/Apollo基础课程第四课之感知-上/" rel="prev" title="Apollo基础课程之感知(上)">
+                  Apollo基础课程之感知(上) <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#学习百度Apollo无人驾驶课程之定位教程。"><span class="nav-number">1.</span> <span class="nav-text">学习百度Apollo无人驾驶课程之定位教程。</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#定位的描述"><span class="nav-number">1.1.</span> <span class="nav-text">定位的描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定位方法介绍"><span class="nav-number">1.2.</span> <span class="nav-text">定位方法介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1，GNNS-RTK"><span class="nav-number">1.2.1.</span> <span class="nav-text">1，GNNS RTK</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2，-惯性导航"><span class="nav-number">1.2.2.</span> <span class="nav-text">2， 惯性导航</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3，-激光雷达定位"><span class="nav-number">1.2.3.</span> <span class="nav-text">3， 激光雷达定位</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-迭代最近点"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">1, 迭代最近点</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-滤波算法"><span class="nav-number">1.2.3.2.</span> <span class="nav-text">2, 滤波算法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-卡尔曼滤波"><span class="nav-number">1.2.3.3.</span> <span class="nav-text">3,卡尔曼滤波</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-视觉定位"><span class="nav-number">1.2.4.</span> <span class="nav-text">4, 视觉定位</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Apollo定位"><span class="nav-number">2.</span> <span class="nav-text">Apollo定位</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/timg.jpg"
+      alt="Lu Tian">
+  <p class="site-author-name" itemprop="name">Lu Tian</p>
+  <div class="site-description" itemprop="description">每天进步一点点</div>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/ltt19921124" title="GitHub &rarr; https://github.com/ltt19921124" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="/ltt19921124@163.com" title="E-Mail &rarr; ltt19921124@163.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="/302851414" title="QQ &rarr; 302851414"><i class="fa fa-fw fa-QQ"></i>QQ</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://liuwangshu.cn/" title="http://liuwangshu.cn/" rel="noopener" target="_blank">刘望舒</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/singwhatiwanna/" title="https://blog.csdn.net/singwhatiwanna/" rel="noopener" target="_blank">任玉刚</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://me.csdn.net/sinyu890807" title="https://me.csdn.net/sinyu890807" rel="noopener" target="_blank">郭霖</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lu Tian</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数"></span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长"></span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

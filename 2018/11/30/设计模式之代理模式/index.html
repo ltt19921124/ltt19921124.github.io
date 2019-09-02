@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/TiddlyWiki.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-.min.css?v=1.0.2">
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="代理模式(Proxy Pattern)也称为委托模式，是结构性模式的一种，它在日常开发中非常常用，实际上在日常生活中也非常常见，对于程序员来讲代理上网，叫同事帮忙买快餐也是代理模式，请律师处理纠纷也是代理模式，总之，它无处不在。">
+<meta name="keywords" content="设计模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式之代理模式">
+<meta property="og:url" content="http://yoursite.com/2018/11/30/设计模式之代理模式/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="代理模式(Proxy Pattern)也称为委托模式，是结构性模式的一种，它在日常开发中非常常用，实际上在日常生活中也非常常见，对于程序员来讲代理上网，叫同事帮忙买快餐也是代理模式，请律师处理纠纷也是代理模式，总之，它无处不在。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/picture/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8FUML%E5%9B%BE.jpg">
+<meta property="og:image" content="http://yoursite.com/picture/%E4%BB%A3%E7%90%86.png">
+<meta property="og:updated_time" content="2018-12-23T13:01:43.258Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="设计模式之代理模式">
+<meta name="twitter:description" content="代理模式(Proxy Pattern)也称为委托模式，是结构性模式的一种，它在日常开发中非常常用，实际上在日常生活中也非常常见，对于程序员来讲代理上网，叫同事帮忙买快餐也是代理模式，请律师处理纠纷也是代理模式，总之，它无处不在。">
+<meta name="twitter:image" content="http://yoursite.com/picture/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8FUML%E5%9B%BE.jpg">
+  <link rel="canonical" href="http://yoursite.com/2018/11/30/设计模式之代理模式/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>设计模式之代理模式 | Hexo</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/30/设计模式之代理模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lu Tian">
+      <meta itemprop="description" content="每天进步一点点">
+      <meta itemprop="image" content="/images/timg.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">设计模式之代理模式
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2018-11-30 15:34:58" itemprop="dateCreated datePublished" datetime="2018-11-30T15:34:58+08:00">2018-11-30</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2018-12-23 21:01:43" itemprop="dateModified" datetime="2018-12-23T21:01:43+08:00">2018-12-23</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/设计模式/" itemprop="url" rel="index"><span itemprop="name">设计模式</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span></span>
+            </span>
+          
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>代理模式(Proxy Pattern)也称为委托模式，是结构性模式的一种，它在日常开发中非常常用，实际上在日常生活中也非常常见，对于程序员来讲代理上网，叫同事帮忙买快餐也是代理模式，请律师处理纠纷也是代理模式，总之，它无处不在。</p>
+<a id="more"></a>
+
+<h5 id="一、代理的定义"><a href="#一、代理的定义" class="headerlink" title="一、代理的定义"></a>一、代理的定义</h5><p>为其他对象提供一种代理以控制对这个对象的访问。</p>
+<h5 id="二、代理模式的使用场景"><a href="#二、代理模式的使用场景" class="headerlink" title="二、代理模式的使用场景"></a>二、代理模式的使用场景</h5><p>当无法或不想直接访问某个对象时或访问某个对象有困难时可以通过一个代理对象来间接访问，为了保证客户端使用的透明性，委托对象与代理对象需要实现相同的接口。</p>
+<p>代理模式的UML图如下所示：</p>
+<hr>
+<p><img src="/picture/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8FUML%E5%9B%BE.jpg" alt></p>
+<p>代理模式的通用代码：</p>
+<p>抽象主题类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public abstract class Subject &#123;</span><br><span class="line">    /**</span><br><span class="line">    *一个普通的业务方法</span><br><span class="line">    */</span><br><span class="line">    public abstract void visit();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>真实主题类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public class RealSubject extends Subject &#123;</span><br><span class="line">    </span><br><span class="line">    public void visit() &#123;</span><br><span class="line">        //RealSubject中visit的具体实现</span><br><span class="line">        System.out.println(&quot;Real Subject!&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>代理类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public class ProxySubject extends Subject &#123;</span><br><span class="line">    //持有真实主题的引用</span><br><span class="line">    private RealSubject mSubject;</span><br><span class="line"></span><br><span class="line">    public ProxySubject (RealSubject mSubject) &#123;</span><br><span class="line">        this.mSubject = mSubject;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void visit() &#123;</span><br><span class="line">        //通过真实主题引用的对象调用真是主题中逻辑方法</span><br><span class="line">        mSubject.visit();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>客户类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public classClient &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        //构造一个真实主题对象</span><br><span class="line">        RealSunject real = new RealSubject();</span><br><span class="line"></span><br><span class="line">        //通过真实主题对象构造一个代理对象</span><br><span class="line">        ProxySubject proxy = new ProxySubject(real);</span><br><span class="line"></span><br><span class="line">        //调用代理的相关方法</span><br><span class="line">        proxy.visit();</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以上就是代理模式的通用代码。</p>
+<h5 id="三、代理模式的简单实现"><a href="#三、代理模式的简单实现" class="headerlink" title="三、代理模式的简单实现"></a>三、代理模式的简单实现</h5><p>我们模拟一个打官司的例子，具体的代码如下。</p>
+<p>诉讼接口类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public interface ILawsuit &#123;</span><br><span class="line">    //提交申请</span><br><span class="line">    void submit();</span><br><span class="line">    //进行举证</span><br><span class="line">    void burden();</span><br><span class="line">    //开始辩护</span><br><span class="line">    void defend();</span><br><span class="line">    //诉讼完成</span><br><span class="line">    void finish();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，里面有四个诉讼常规的流程。我们在接口定义四个抽象方法。</p>
+<p>具体诉讼人。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">public class XiaoMin implements ILawsuit &#123;</span><br><span class="line">    public void submit () &#123;</span><br><span class="line">        System.out.println(&quot;老板欠工资，特此申请仲裁！&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void burden () &#123;</span><br><span class="line">        System.out.println(&quot;这是合同书和过去一年银行流水&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void defend () &#123;</span><br><span class="line">        System.out.println(&quot;证据确凿，抵赖也没有用~&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void finish () &#123;</span><br><span class="line">        System.out.println(&quot;诉讼成功，判决老板即日起七天内结算工资！&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如上所述，类实现ILawsuit接口并实现四个抽象方法，实现具体的业务逻辑，接下来是代理类。</p>
+<p>代理律师：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">public class Lawyer implements ILawsuit &#123;</span><br><span class="line">    private ILawsuit mLawsuit;</span><br><span class="line"></span><br><span class="line">    public Lawyer(ILawsuit lawsuit) &#123;</span><br><span class="line">        mLawsuit = lawsuit;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">     public void submit () &#123;</span><br><span class="line">        mLawsuit.submit();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void burden () &#123;</span><br><span class="line">        mLawsuit.bueden();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void defend () &#123;</span><br><span class="line">        mLawsuit.defend();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void finish () &#123;</span><br><span class="line">        mLawsuit.finish();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>律师类代表律师，在该类里面会有一个被代理者的引用，律师所执行的方法实质就是简单地调用被代理者中的方法。接下来是客户类。</p>
+<p>客户类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">public class Client &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        //构造一个小民</span><br><span class="line">        ILawsuit xiaomin = new XiaoNin();</span><br><span class="line">        //构造一个代理律师并将小民作为参数传入</span><br><span class="line">        ILawsuit lawyer = new Lawyer(xiaomin);</span><br><span class="line">        //律师提交申请 </span><br><span class="line">        lawyer.submit();</span><br><span class="line">        //律师举证</span><br><span class="line">        lawyer.burden();</span><br><span class="line">        //律师辩护</span><br><span class="line">        lawyer.defend();</span><br><span class="line">        //完成诉讼</span><br><span class="line">        lawyer.finish();</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这就代理模式，这是一种委托机制，真是对象把方法的执行委托给代理对象，所以代理模式也叫委托模式，代理类也可以代理多个被代理类，就像上面的例子一样，律师可以代理多个人打官司，这也符合现实状况，而具体代理哪个人，则要看代理类持有的实际对象类型。</p>
+<p>代理小辉打官司可以吗？当然可以，我们只需要再定义一个XiaoHui类即可，再在客户类新增小辉这个类的引用，作为参数传入代理类的构造方法中。</p>
+<h5 id="四、静态代理和动态代理"><a href="#四、静态代理和动态代理" class="headerlink" title="四、静态代理和动态代理"></a>四、静态代理和动态代理</h5><p>代理模式分为静态代理和动态代理，静态代理如上述例子那样，代理者的代码由程序员自己或者通过一些自动化的工具生成固定的代码再对其进行编译，也就是说我们的代码运行前代理类的class编译文件就已存在；而动态代理则相反，通过反射机制动态地生成代理者的对象，也就是说我们在code阶段压根不需要知道代理谁，代理谁我们将在执行阶段决定，而Java也给我们提供了一个便捷的动态接口InvocationHandler，实现该接口要复写invoke()方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public class DynamicProxy implements InvocationHandler &#123;</span><br><span class="line">    public Object invoke (Object args 0,Method args1,Object[] args2) throws Throwable&#123;</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们通过invoke方法来调用具体的被代理方法，也就是真实的方法，动态代理可以使我们的代码更简洁，不过我们先要完善代理类。</p>
+<p>动态代理类</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public class DynamicProxy implements InvocationHandler &#123;</span><br><span class="line">    private Object obj;</span><br><span class="line"></span><br><span class="line">    public DynamicProxy (Object obj) &#123;</span><br><span class="line">        this.obj = obj;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Object invoke (Object proxy,Method method,Object[] args) throws Throwable &#123;</span><br><span class="line">        //调用被代理类的方法</span><br><span class="line">        Object result = method.invoke(obj,args);</span><br><span class="line">        return result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如上所示，我们申明一个Object的引用，该引用将指向被代理类，而我们调用被代理类的具体方法则在invoke方法中执行。也就是说我们原来由代理类所做的工作现在由InvocationHandler来处理，不需要关心到底代理谁。接下来修改客户类的逻辑。</p>
+<p>修改后的客户类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">public static void main (String[] args) &#123;</span><br><span class="line">    //构造一个小民</span><br><span class="line">    ILawsuit xiaomin = new XiaoMn();</span><br><span class="line">    </span><br><span class="line">    //构造一个动态代理</span><br><span class="line">    DynamicProxy proxy = new DynamicProxy(xiaomin);</span><br><span class="line"></span><br><span class="line">    //获取被代理类小民的ClassLoader</span><br><span class="line">    ClassLoader loader = xiaomin.getClass().getClassLoader();</span><br><span class="line"></span><br><span class="line">    //动态构造一个代理者律师</span><br><span class="line">    ILawsuit lawyer = (ILawsuit) proxy.newProxyInstance(loader,new Class[]&#123;ILawsuit.class&#125;,proxy);</span><br><span class="line"></span><br><span class="line">    //律师提交诉讼</span><br><span class="line">    lawyer.submit();</span><br><span class="line"></span><br><span class="line">    //律师进行举证</span><br><span class="line">    lawyer.bueden();</span><br><span class="line"></span><br><span class="line">    //律师替小民进行辩护</span><br><span class="line">    lawyer.defend();</span><br><span class="line"></span><br><span class="line">    //完成诉讼</span><br><span class="line">    lawyer.finish();</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果和以前一致，由此可见动态代理可以通过一个代理类来代理N个被代理类，其实质是对代理者和被代理者进行解耦，使两者没有直接的耦合关系，相对而言静态代理则只能为给定接口下的实现类进行代理，如果接口不同那就需要重新定义不同的代理类，较为复杂，不过静态代理类更符合面向对象原则，在开发时具体使用哪种方式，看我们的业务模式和自己的偏好了。</p>
+<p>静态代理和动态代理都是从code方面来区分代理模式的两种方式，我们也可以从其适应范围来区分两种不同类型的代理实现。</p>
+<ul>
+<li>远程代理<br>为对象在不同的内存地址空间提供局部代理。使系统可以将server部分的实现隐藏，以便client可以不必考虑server的存在</li>
+<li>虚拟代理<br>使用一个代理对象表示一个十分耗资源的对象并在真正需要时才创建</li>
+<li>保护代理<br>使用代理控制对原始对象的访问。该类型的代理常被用于原始对象有不同访问权限的情况</li>
+<li>智能引用<br>在访问原始对象时执行一些自己的附加操作并对指向原始对象的引用计数</li>
+</ul>
+<h5 id="四、Android源码中的代理模式"><a href="#四、Android源码中的代理模式" class="headerlink" title="四、Android源码中的代理模式"></a>四、Android源码中的代理模式</h5><p>Android源码中有不少使用代理模式的设计，比如源码中ActivityManagerProxy代理类，具体代理的是a、ActivityManagerService的子类ActivityManagerService。ActivityManagerProxy与ActivityManagerNative这个类在同一文件中。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">class ActivityManagerProxy implements IActivityManager &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>ActivityManagerProxy实现了IActivityManager接口，该接口定义了一些Activity相关的接口方法，其中有一些我们平时开发也常用到的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>IActivityManager接口类就相当于是代理类中的抽象主题，真正的实现主题是谁呢？就是我们提到的继承于ActivityManagerNative的ActivityManagerService类，这几个类之间的大致关系如下：</p>
+<hr>
+<p><img src="/picture/%E4%BB%A3%E7%90%86.png" alt></p>
+<p>如上UML图我们可知，ActivityManagerProxy和ActivityManagerNative都实现了IActivityManager，严格来说，ActivityManagerProxy就是代理部分，而ActivityManagerNative就是真是部分，不过ActivityManagerNative是个抽象类，并不处理具体逻辑，大部分逻辑的实现都由其子类ActivityManagerService承担，这也是我们说真是部分是ActivityManagerService而不是ActivityManagerNative，ActivityManagerService是系统级的Service并且运行于独立的进程空间中，可以通过ServiceManager来获取它，而AMP也运行于自己所处的进程空间中，两者并不相同，因此AMP和AMS的通信必定是通过进程间通信来实现的，这里的跨进程实现是基于Android的Binder机制，同时通过上图我们对代理模式的4种适应场景可以判断，此处源码所实现的代理实质为远程代理。AMP在实际的逻辑处理中并未过多地被外部类使用，因为在Android中管理与维护activity相关信息的类是另外一个叫做ActivityManager的类，ActivityManager虽说管理着activity的信息，但是实质大部分逻辑是由AMP承担，以getAppTasks为例，ActivityManager的getAppTasks的逻辑如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public List&lt;ActivityManager.AppTask&gt; getAppTasks() &#123;</span><br><span class="line">        ArrayList&lt;AppTask&gt; tasks = new ArrayList&lt;AppTask&gt;();</span><br><span class="line">        List&lt;IBinder&gt; appTasks;</span><br><span class="line">        try &#123;</span><br><span class="line">            appTasks = getService().getAppTasks(mContext.getPackageName());</span><br><span class="line">        &#125; catch (RemoteException e) &#123;</span><br><span class="line">            throw e.rethrowFromSystemServer();</span><br><span class="line">        &#125;</span><br><span class="line">        int numAppTasks = appTasks.size();</span><br><span class="line">        for (int i = 0; i &lt; numAppTasks; i++) &#123;</span><br><span class="line">            tasks.add(new AppTask(IAppTask.Stub.asInterface(appTasks.get(i))));</span><br><span class="line">        &#125;</span><br><span class="line">        return tasks;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，逻辑很简单，只是简单地调用了ActivityManager的getService方法获取了一个IActivityManager类型的对象，再调用getAppTasks方法。</p>
+<p>注意：在API 26之后，ActivityManagerProxy被移除了，取而代之的是AIDL方式，</p>
+
+    </div>
+
+    
+    
+    
+      
+
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/设计模式/" rel="tag"># 设计模式</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2018/11/30/设计原则之依赖倒置原则/" rel="next" title="设计原则之依赖倒置原则">
+                  <i class="fa fa-chevron-left"></i> 设计原则之依赖倒置原则
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2018/12/03/Android多线程技术/" rel="prev" title="Android多线程技术">
+                  Android多线程技术 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#一、代理的定义"><span class="nav-number">1.</span> <span class="nav-text">一、代理的定义</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#二、代理模式的使用场景"><span class="nav-number">2.</span> <span class="nav-text">二、代理模式的使用场景</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#三、代理模式的简单实现"><span class="nav-number">3.</span> <span class="nav-text">三、代理模式的简单实现</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#四、静态代理和动态代理"><span class="nav-number">4.</span> <span class="nav-text">四、静态代理和动态代理</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#四、Android源码中的代理模式"><span class="nav-number">5.</span> <span class="nav-text">四、Android源码中的代理模式</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/timg.jpg"
+      alt="Lu Tian">
+  <p class="site-author-name" itemprop="name">Lu Tian</p>
+  <div class="site-description" itemprop="description">每天进步一点点</div>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/ltt19921124" title="GitHub &rarr; https://github.com/ltt19921124" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="/ltt19921124@163.com" title="E-Mail &rarr; ltt19921124@163.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="/302851414" title="QQ &rarr; 302851414"><i class="fa fa-fw fa-QQ"></i>QQ</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://liuwangshu.cn/" title="http://liuwangshu.cn/" rel="noopener" target="_blank">刘望舒</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/singwhatiwanna/" title="https://blog.csdn.net/singwhatiwanna/" rel="noopener" target="_blank">任玉刚</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://me.csdn.net/sinyu890807" title="https://me.csdn.net/sinyu890807" rel="noopener" target="_blank">郭霖</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lu Tian</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数"></span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长"></span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/TiddlyWiki.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-.min.css?v=1.0.2">
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="在安卓与源码中，很多地方用到了回调机制，最近学习java，接触到了回调机制(CallBack)，理解它很有必要。循序渐进来理解java的回调机制。">
+<meta name="keywords" content="java，回调">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java回调机制">
+<meta property="og:url" content="http://yoursite.com/2019/03/01/java回调机制/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="在安卓与源码中，很多地方用到了回调机制，最近学习java，接触到了回调机制(CallBack)，理解它很有必要。循序渐进来理解java的回调机制。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-02-28T22:33:21.856Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="java回调机制">
+<meta name="twitter:description" content="在安卓与源码中，很多地方用到了回调机制，最近学习java，接触到了回调机制(CallBack)，理解它很有必要。循序渐进来理解java的回调机制。">
+  <link rel="canonical" href="http://yoursite.com/2019/03/01/java回调机制/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>java回调机制 | Hexo</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/01/java回调机制/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lu Tian">
+      <meta itemprop="description" content="每天进步一点点">
+      <meta itemprop="image" content="/images/timg.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">java回调机制
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-01 05:58:59 / 修改时间：06:33:21" itemprop="dateCreated datePublished" datetime="2019-03-01T05:58:59+08:00">2019-03-01</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span></span>
+            </span>
+          
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>在安卓与源码中，很多地方用到了回调机制，最近学习java，接触到了回调机制(CallBack)，理解它很有必要。<br>循序渐进来理解java的回调机制。</p>
+<a id="more"></a>
+<h2 id="一、普通的功能和方法调用"><a href="#一、普通的功能和方法调用" class="headerlink" title="一、普通的功能和方法调用"></a>一、普通的功能和方法调用</h2><p>我们用一个加法的实现功能来引出并理解回调。模拟一个低年级的小朋友去做老师布置的加法题目，简单的加法题目。比如，这里先是1+1。小明很容易就算出答案，我们也写出最简单的代码。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"> 1 public class Student</span><br><span class="line"> 2 &#123;</span><br><span class="line"> 3     private String name = null;</span><br><span class="line"> 4 </span><br><span class="line"> 5     public Student(String name)</span><br><span class="line"> 6     &#123;</span><br><span class="line"> 7         // TODO Auto-generated constructor stub</span><br><span class="line"> 8         this.name = name;</span><br><span class="line"> 9     &#125;</span><br><span class="line">10     </span><br><span class="line">11     public void setName(String name)</span><br><span class="line">12     &#123;</span><br><span class="line">13         this.name = name;</span><br><span class="line">14     &#125;</span><br><span class="line">15     </span><br><span class="line">16     private int calcADD(int a, int b)</span><br><span class="line">17     &#123;</span><br><span class="line">18         return a + b;</span><br><span class="line">19     &#125;</span><br><span class="line">20     </span><br><span class="line">21     public void fillBlank(int a, int b)</span><br><span class="line">22     &#123;</span><br><span class="line">23         int result = calcADD(a, b);</span><br><span class="line">24         System.out.println(name + &quot;心算:&quot; + a + &quot; + &quot; + b + &quot; = &quot; + result);</span><br><span class="line">25     &#125;</span><br><span class="line">26 &#125;</span><br></pre></td></tr></table></figure>
+
+<p>客户端代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"> 1 public class Test</span><br><span class="line"> 2 &#123;</span><br><span class="line"> 3     public static void main(String[] args)</span><br><span class="line"> 4     &#123;</span><br><span class="line"> 5         int a = 1;</span><br><span class="line"> 6         int b = 1;</span><br><span class="line"> 7         Student s = new Student(&quot;小明&quot;);</span><br><span class="line"> 8         s.fillBlank(a, b);</span><br><span class="line"> 9     &#125;</span><br><span class="line">10 &#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">小明心算:1 + 1 = 2</span><br></pre></td></tr></table></figure>
+
+<h2 id="二、改进后的代码"><a href="#二、改进后的代码" class="headerlink" title="二、改进后的代码"></a>二、改进后的代码</h2><p>假设老师布置的是189 + 231呢？小明怎么办呢？我们假设小明没有学过三位数的加法，他最多学到来能位数的，这时小明可能要借助计算器来帮助他算。如果把计算的功能单独抽出来，并修改Student类，如下：<br>新增一个计算器类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">1 public class Calculator</span><br><span class="line">2 &#123;</span><br><span class="line">3     public int add(int a, int b)</span><br><span class="line">4     &#123;</span><br><span class="line">5         return a + b;</span><br><span class="line">6     &#125;</span><br><span class="line">7 &#125;</span><br></pre></td></tr></table></figure>
+
+<p>修改后的Student类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"> 1 public class Student</span><br><span class="line"> 2 &#123;</span><br><span class="line"> 3     private String name = null;</span><br><span class="line"> 4 </span><br><span class="line"> 5     public Student(String name)</span><br><span class="line"> 6     &#123;</span><br><span class="line"> 7         // TODO Auto-generated constructor stub</span><br><span class="line"> 8         this.name = name;</span><br><span class="line"> 9     &#125;</span><br><span class="line">10     </span><br><span class="line">11     public void setName(String name)</span><br><span class="line">12     &#123;</span><br><span class="line">13         this.name = name;</span><br><span class="line">14     &#125;</span><br><span class="line">15     </span><br><span class="line">16     @SuppressWarnings(&quot;unused&quot;)</span><br><span class="line">17     private int calcADD(int a, int b)</span><br><span class="line">18     &#123;</span><br><span class="line">19         return a + b;</span><br><span class="line">20     &#125;</span><br><span class="line">21     </span><br><span class="line">22     private int useCalculator(int a, int b)</span><br><span class="line">23     &#123;</span><br><span class="line">24         return new Calculator().add(a, b);</span><br><span class="line">25     &#125;</span><br><span class="line">26     </span><br><span class="line">27     public void fillBlank(int a, int b)</span><br><span class="line">28     &#123;</span><br><span class="line">29         int result = useCalculator(a, b);</span><br><span class="line">30         System.out.println(name + &quot;使用计算器:&quot; + a + &quot; + &quot; + b + &quot; = &quot; + result);</span><br><span class="line">31     &#125;</span><br><span class="line">32 &#125;</span><br></pre></td></tr></table></figure>
+
+<p>如上所示。客户端代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"> 1 public class Test</span><br><span class="line"> 2 &#123;</span><br><span class="line"> 3     public static void main(String[] args)</span><br><span class="line"> 4     &#123;</span><br><span class="line"> 5         int a = 189;</span><br><span class="line"> 6         int b = 231;</span><br><span class="line"> 7         Student s = new Student(&quot;小明&quot;);</span><br><span class="line"> 8         s.fillBlank(a, b);</span><br><span class="line"> 9     &#125;</span><br><span class="line">10 &#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">小明使用计算器:189 + 231 = 410</span><br></pre></td></tr></table></figure>
+
+<h2 id="三、继续引出问题-老师继续出更加超纲的题"><a href="#三、继续引出问题-老师继续出更加超纲的题" class="headerlink" title="三、继续引出问题(老师继续出更加超纲的题)"></a>三、继续引出问题(老师继续出更加超纲的题)</h2><p>老师觉得小名很聪明，于是加大了题目的难度，如果老师继续出的题是26549 + 16487 呢？小明应该怎么办呢？<br>小名当然可以继续用计算器算，但是不需要每次都自己算，我们可以改进一下代码:<br>定义一个超级计算器类，超级计算器的add方法应该包含两个操作数和小明自身的引用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> public class SuperCalculator</span><br><span class="line">2 &#123;</span><br><span class="line">3     public void add(int a, int b, Student  xiaoming)</span><br><span class="line">4     &#123;</span><br><span class="line">5         int result = a + b;</span><br><span class="line">6         xiaoming.fillBlank(a, b, result);</span><br><span class="line">7     &#125;</span><br><span class="line">8 &#125;</span><br></pre></td></tr></table></figure>
+
+<p>修改后Student代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">public class Student</span><br><span class="line">&#123;</span><br><span class="line">    private String name = null;</span><br><span class="line"></span><br><span class="line">    public Student(String name)</span><br><span class="line">    &#123;</span><br><span class="line">        // TODO Auto-generated constructor stub</span><br><span class="line">        this.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    public void setName(String name)</span><br><span class="line">    &#123;</span><br><span class="line">        this.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    public void callHelp (int a, int b)</span><br><span class="line">    &#123;</span><br><span class="line">        new SuperCalculator().add(a, b, this);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    public void fillBlank(int a, int b, int result)</span><br><span class="line">    &#123;</span><br><span class="line">        System.out.println(name + &quot;求助小红计算:&quot; + a + &quot; + &quot; + b + &quot; = &quot; + result);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>客户端代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public class Test</span><br><span class="line">&#123;</span><br><span class="line">    public static void main(String[] args)</span><br><span class="line">    &#123;</span><br><span class="line">        int a = 26549;</span><br><span class="line">        int b = 16487;</span><br><span class="line">        Student s = new Student(&quot;小明&quot;);</span><br><span class="line">        s.callHelp(a, b);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">小明求助小红计算:26549 + 16487 = 43036</span><br></pre></td></tr></table></figure>
+
+<p>执行流程为：小明通过自身的callHelp方法调用了小红（new SuperCalculator()）的add方法，在调用的时候将自身的引用（this）当做参数一并传入，小红在使用计算器得出结果之后，回调了小明的fillBlank方法，将结果填在了黑板上的空格里。<br>灯灯灯！到这里，回调功能就正式登场了，小明的<strong>fillBlank方法就是我们常说的回调函数</strong>。<br>通过这种方式，可以很明显的看出，对于完成老师的填空题这个任务上，小明已经不需要等待到加法做完且结果填写在黑板上才能去跟小伙伴们撒欢了，填空这个工作由超级计算器小红来做了。回调的优势已经开始体现了。</p>
+<h2 id="四、理解回调"><a href="#四、理解回调" class="headerlink" title="四、理解回调"></a>四、理解回调</h2><p>如果不仅仅小明需要这个计算的功能，一个小商贩(如果一位老奶奶平时卖东西，但是她不太会算数)也需要呢？<br>我们定义一个接口，如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public interface doJob</span><br><span class="line">&#123;</span><br><span class="line">    public void fillBlank(int a, int b, int result);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>修改后的超级计算器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public class SuperCalculator</span><br><span class="line">&#123;</span><br><span class="line">    public void add(int a, int b, doJob  customer)</span><br><span class="line">    &#123;</span><br><span class="line">        int result = a + b;</span><br><span class="line">        customer.fillBlank(a, b, result);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>修改后的Student类代码(小明的代码):</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">public class Student</span><br><span class="line">&#123;</span><br><span class="line">    private String name = null;</span><br><span class="line"></span><br><span class="line">    public Student(String name)</span><br><span class="line">    &#123;</span><br><span class="line">        // TODO Auto-generated constructor stub</span><br><span class="line">        this.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    public void setName(String name)</span><br><span class="line">    &#123;</span><br><span class="line">        this.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    public class doHomeWork implements doJob</span><br><span class="line">    &#123;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        public void fillBlank(int a, int b, int result)</span><br><span class="line">        &#123;</span><br><span class="line">            // TODO Auto-generated method stub</span><br><span class="line">            System.out.println(name + &quot;求助小红计算:&quot; + a + &quot; + &quot; + b + &quot; = &quot; + result);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    public void callHelp (int a, int b)</span><br><span class="line">    &#123;</span><br><span class="line">        new SuperCalculator().add(a, b, new doHomeWork());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>小商贩的代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">public class Seller</span><br><span class="line">&#123;</span><br><span class="line">    private String name = null;</span><br><span class="line"></span><br><span class="line">    public Seller(String name)</span><br><span class="line">    &#123;</span><br><span class="line">        // TODO Auto-generated constructor stub</span><br><span class="line">        this.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    public void setName(String name)</span><br><span class="line">    &#123;</span><br><span class="line">        this.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    public class doHomeWork implements doJob</span><br><span class="line">    &#123;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        public void fillBlank(int a, int b, int result)</span><br><span class="line">        &#123;</span><br><span class="line">            // TODO Auto-generated method stub</span><br><span class="line">            System.out.println(name + &quot;求助小红算账:&quot; + a + &quot; + &quot; + b + &quot; = &quot; + result + &quot;元&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    public void callHelp (int a, int b)</span><br><span class="line">    &#123;</span><br><span class="line">        new SuperCalculator().add(a, b, new doHomeWork());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>客户端代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public class Test</span><br><span class="line">&#123;</span><br><span class="line">    public static void main(String[] args)</span><br><span class="line">    &#123;</span><br><span class="line">        int a = 56;</span><br><span class="line">        int b = 31;</span><br><span class="line">        int c = 26497;</span><br><span class="line">        int d = 11256;</span><br><span class="line">        Student s1 = new Student(&quot;小明&quot;);</span><br><span class="line">        Seller s2 = new Seller(&quot;老婆婆&quot;);</span><br><span class="line">        </span><br><span class="line">        s1.callHelp(a, b);</span><br><span class="line">        s2.callHelp(c, d);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">小明求助小红计算:56 + 31 = 87</span><br><span class="line">老婆婆求助小红算账:26497 + 11256 = 37753元</span><br></pre></td></tr></table></figure>
+
+<p>以上就是回调的整个过程，也就是从计算加法引申出来。</p>
+
+    </div>
+
+    
+    
+    
+      
+
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/java，回调/" rel="tag"># java，回调</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/02/28/EventBus浅析/" rel="next" title="EventBus浅析">
+                  <i class="fa fa-chevron-left"></i> EventBus浅析
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/03/01/LeetCode算法/" rel="prev" title="LeetCode算法">
+                  LeetCode算法 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、普通的功能和方法调用"><span class="nav-number">1.</span> <span class="nav-text">一、普通的功能和方法调用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、改进后的代码"><span class="nav-number">2.</span> <span class="nav-text">二、改进后的代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、继续引出问题-老师继续出更加超纲的题"><span class="nav-number">3.</span> <span class="nav-text">三、继续引出问题(老师继续出更加超纲的题)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、理解回调"><span class="nav-number">4.</span> <span class="nav-text">四、理解回调</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/timg.jpg"
+      alt="Lu Tian">
+  <p class="site-author-name" itemprop="name">Lu Tian</p>
+  <div class="site-description" itemprop="description">每天进步一点点</div>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/ltt19921124" title="GitHub &rarr; https://github.com/ltt19921124" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="/ltt19921124@163.com" title="E-Mail &rarr; ltt19921124@163.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="/302851414" title="QQ &rarr; 302851414"><i class="fa fa-fw fa-QQ"></i>QQ</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://liuwangshu.cn/" title="http://liuwangshu.cn/" rel="noopener" target="_blank">刘望舒</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/singwhatiwanna/" title="https://blog.csdn.net/singwhatiwanna/" rel="noopener" target="_blank">任玉刚</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://me.csdn.net/sinyu890807" title="https://me.csdn.net/sinyu890807" rel="noopener" target="_blank">郭霖</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lu Tian</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数"></span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长"></span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

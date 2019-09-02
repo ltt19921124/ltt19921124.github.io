@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/TiddlyWiki.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-.min.css?v=1.0.2">
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="一、访问其他程序中的数据内容提供器的用法一般有两种，一种是使用现有的内容提供器来读取和操作相应程序的数据，另一种是创建自己的内容提供器给我们程序的数据提供外部访问接口。">
+<meta name="keywords" content="安卓,ContentProvider">
+<meta property="og:type" content="article">
+<meta property="og:title" content="跨程序共享数据--Android之内容提供器(ContentProvider)学习">
+<meta property="og:url" content="http://yoursite.com/2018/12/25/跨程序共享数据-Android之内容提供器-ContentProvider-学习/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="一、访问其他程序中的数据内容提供器的用法一般有两种，一种是使用现有的内容提供器来读取和操作相应程序的数据，另一种是创建自己的内容提供器给我们程序的数据提供外部访问接口。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/picture/10.png">
+<meta property="og:image" content="http://yoursite.com/picture/9.png">
+<meta property="og:image" content="http://yoursite.com/picture/11.png">
+<meta property="og:image" content="http://yoursite.com/picture/12.png">
+<meta property="og:updated_time" content="2018-12-25T17:10:35.608Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="跨程序共享数据--Android之内容提供器(ContentProvider)学习">
+<meta name="twitter:description" content="一、访问其他程序中的数据内容提供器的用法一般有两种，一种是使用现有的内容提供器来读取和操作相应程序的数据，另一种是创建自己的内容提供器给我们程序的数据提供外部访问接口。">
+<meta name="twitter:image" content="http://yoursite.com/picture/10.png">
+  <link rel="canonical" href="http://yoursite.com/2018/12/25/跨程序共享数据-Android之内容提供器-ContentProvider-学习/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>跨程序共享数据--Android之内容提供器(ContentProvider)学习 | Hexo</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/25/跨程序共享数据-Android之内容提供器-ContentProvider-学习/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lu Tian">
+      <meta itemprop="description" content="每天进步一点点">
+      <meta itemprop="image" content="/images/timg.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">跨程序共享数据--Android之内容提供器(ContentProvider)学习
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2018-12-25 15:05:07" itemprop="dateCreated datePublished" datetime="2018-12-25T15:05:07+08:00">2018-12-25</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2018-12-26 01:10:35" itemprop="dateModified" datetime="2018-12-26T01:10:35+08:00">2018-12-26</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/安卓/" itemprop="url" rel="index"><span itemprop="name">安卓</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span></span>
+            </span>
+          
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="一、访问其他程序中的数据"><a href="#一、访问其他程序中的数据" class="headerlink" title="一、访问其他程序中的数据"></a>一、访问其他程序中的数据</h2><p>内容提供器的用法一般有两种，一种是使用现有的内容提供器来读取和操作相应程序的数据，另一种是创建自己的内容提供器给我们程序的数据提供外部访问接口。</p>
+<a id="more"></a>
+
+<h2 id="二、ContentProvider的基本用法"><a href="#二、ContentProvider的基本用法" class="headerlink" title="二、ContentProvider的基本用法"></a>二、ContentProvider的基本用法</h2><p>想要访问一个应用程序中共享的数据，就要借助ContentResolver这个类，可通过Context的getContentResolver()得到这个类的实例。ContentResolver类提供了一系列的方法用于对于进行CRUD操作，其中insert()用于添加数据，update()用于更新数据，delete()方法用于更新数据，query()方法用于查询数据。SQLiteDatabase也是用这几个方法来进行CRUD操作，只不过他们在方法参数上有些区别。</p>
+<p>不同于SQLiteDatabase，ContentResolver类的CRUD是不接收表名参数的，而是使用Uri参数代替，它被称为内筒URI，它给内容提供器中的数据建立了唯一的标识符，由两部分组成：authority和path，authority是用于对不同的应用程序做区分的，一般为了避免冲突，都会采用程序包名的方式来进行命名。比如某个程序的包名是com.example.app，那么该程序的authority就可命名为com.example.app.provider；path则是一般用于对同一应用的不同表做区分的，通常会添加到authority后面，如有两张表table1、table2，path就可命名为/table1和/table2,然后将authority与path进行组合，内容URI就成为了com.example.app.provider/table1和com.example.app.provider/table2。我们会在这个字符串的头部加上协议声明:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">content://com.example.app.provider/table1</span><br><span class="line">content://com.example.app.provider/table2</span><br></pre></td></tr></table></figure>
+
+<p>内容URI可以非常清楚地表达我们想要访问哪个程序中哪张表的数据。也正因如此，ContentResolver中的CRUD方法才都接收Uri对象作为参数，因为如果使用表名的话，系统将无法得知我们期望访问的是哪个应用程序里的表。</p>
+<p>得到内容URI字符串之后，我们还要将它们解析成Uri对象才可以作为参数传入，解析的方法如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Uri uri = Uri.parse(&quot;content://com.example.app.provider/table1&quot;);</span><br></pre></td></tr></table></figure>
+
+<p>只需要调用Uri.parse()方法，就可以将内容Uri字符串解析成Uri对象了。解析之后我们就可以使用这鞥Uri对象来查询table1中的数据了，代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Cursor cursor = getContentResolver().query(</span><br><span class="line">    uri,</span><br><span class="line">    projection,</span><br><span class="line">    selection,</span><br><span class="line">    selectionArgs,</span><br><span class="line">    sortOrder</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>查询完成后返回的是一个Cursor对象，这时候我们可以将Cursor对象从Cursor对象中逐个读取出来，读取的思路仍然是通过移动游标的位置来遍历Cursor的所有行，然后再取出每一行中相应列的数据，代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">if (cursor != null) &#123;</span><br><span class="line">    while (cursor.moveToBext) &#123;</span><br><span class="line">        String column1 = cursor.getString(cursor.getColumnIndex(&quot;column1&quot;);</span><br><span class="line">        int column2 = cursor.getInt(cursor.getColumnIndex(&quot;column2&quot;));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>向table1中添加一条数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ContentValues values = new ContentValues();</span><br><span class="line">values.put(&quot;column1&quot;,&quot;text&quot;);</span><br><span class="line">values.put(&quot;column1&quot;,1);</span><br><span class="line">getContentResolver().insert(uri,values);</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，是将待添加的数据组黄到ContentValues中，然后调用ContentResolver的insert()方法，将Uri和ContentValues作为参数传入即可。<br>如果想更新这条添加的数据，把column1的值清空，可以借助ContentResolver的update方法实现，代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ContentValues values = new ContentValues();</span><br><span class="line">values.put(&quot;column1&quot;,&quot;&quot;);</span><br><span class="line">getContentResolver().update(uri,values,&quot;column1 = ? and column2 = ?&quot;,new String[] &#123;&quot;text&quot;,&quot;1&quot;&#125;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-读取联系人"><a href="#1-读取联系人" class="headerlink" title="1,读取联系人"></a>1,读取联系人</h4><p>项目源代码地址：<a href="https://github.com/ltt19921124/AndroidStudioProjects" target="_blank" rel="noopener">读取联系人(ContactsTest)</a><br>这是一个读取手机联系人信息的项目，我们希望读取联系人的信息并能够在listview中显示出来，修改activity_main.xml，代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span><br><span class="line">&lt;LinearLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</span><br><span class="line">    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;</span><br><span class="line">    xmlns:tools=&quot;http://schemas.android.com/tools&quot;</span><br><span class="line">    android:layout_width=&quot;match_parent&quot;</span><br><span class="line">    android:layout_height=&quot;match_parent&quot;</span><br><span class="line">    tools:context=&quot;.MainActivity&quot;&gt;</span><br><span class="line">    </span><br><span class="line">    &lt;ListView</span><br><span class="line">        android:id=&quot;@+id/contacts_view&quot;</span><br><span class="line">        android:layout_width=&quot;match_parent&quot;</span><br><span class="line">        android:layout_height=&quot;match_parent&quot;&gt;</span><br><span class="line">    &lt;/ListView&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&lt;/LinearLayout&gt;</span><br></pre></td></tr></table></figure>
+
+<p>在MainActivity的代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line">public class MainActivity extends AppCompatActivity &#123;</span><br><span class="line">    ArrayAdapter&lt;String&gt; adapter;</span><br><span class="line">    List&lt;String&gt; contactsList = new ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected void onCreate(Bundle savedInstanceState) &#123;</span><br><span class="line">        super.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">        ListView contactsView = findViewById(R.id.contacts_view);</span><br><span class="line">        adapter = new ArrayAdapter&lt;&gt;(this,android.R.layout.simple_list_item_1,contactsList);</span><br><span class="line">        contactsView.setAdapter(adapter);</span><br><span class="line">        if (ContextCompat.checkSelfPermission(this,Manifest.permission.READ_CONTACTS)</span><br><span class="line">                != PackageManager.PERMISSION_GRANTED) &#123;</span><br><span class="line">            ActivityCompat.requestPermissions(this,new String[] &#123;Manifest.</span><br><span class="line">            permission.READ_CONTACTS&#125;,1);</span><br><span class="line">        &#125;else  &#123;</span><br><span class="line">            readContacts();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void readContacts () &#123;</span><br><span class="line">        Cursor cursor = null;</span><br><span class="line"></span><br><span class="line">        try &#123;</span><br><span class="line">            cursor = getContentResolver().query(ContactsContract.CommonDataKinds.</span><br><span class="line">                Phone.CONTENT_URI,null,null,null,null);</span><br><span class="line">            if (cursor != null) &#123;</span><br><span class="line">                while (cursor.moveToNext()) &#123;</span><br><span class="line">                    //获取联系人姓名</span><br><span class="line">                    String displayName = cursor.getString(cursor.getColumnIndex</span><br><span class="line">                            (ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));</span><br><span class="line">                    //获取联系人手机号</span><br><span class="line">                    String number = cursor.getString(cursor.getColumnIndex</span><br><span class="line">                            (ContactsContract.CommonDataKinds.Phone.NUMBER));</span><br><span class="line">                    contactsList.add(displayName + &quot;\n&quot; + number);</span><br><span class="line">                &#125;</span><br><span class="line">                adapter.notifyDataSetChanged();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; catch (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">            if (cursor != null) &#123;</span><br><span class="line">                cursor.close();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) &#123;</span><br><span class="line">        switch (requestCode) &#123;</span><br><span class="line">            case 1:</span><br><span class="line">                if (grantResults.length &gt; 0 &amp;&amp; grantResults[0] == PackageManager.</span><br><span class="line">                        PERMISSION_GRANTED) &#123;</span><br><span class="line">                    readContacts();</span><br><span class="line">                &#125; else &#123;</span><br><span class="line">                    Toast.makeText(this,&quot;You denied the permission&quot;,Toast.LENGTH_SHORT).show();</span><br><span class="line">                &#125;</span><br><span class="line">                break;</span><br><span class="line">                default:</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在onCreate方法中，首先获取了ListView的实例，并给它设置好了适配器，然后开始调用运行时权限的处理逻辑，因为READ_CONTACTS属于危险权限，所以要先获取权限。获得授权之后调用readContacts()方法来读取联系人信息。运行程序，首先会弹出申请访问联系人权限的对话框，我们点击”始终允许”，当然也可以点击拒绝。</p>
+<p><img src="/picture/10.png" alt><br>点击允许后，程序会显示联系人信息，如下图所示：<br><img src="/picture/9.png" alt></p>
+<h4 id="readContacts方法解析："><a href="#readContacts方法解析：" class="headerlink" title="readContacts方法解析："></a>readContacts方法解析：</h4><ul>
+<li>这里使用了ContentResolver的query()方法来查询联系人的数据，不过传入的Uri参数为什么没有调用Uri.parse()方法去解析一个内容URI字符串呢？因为ContactsContract.CommomDataKinds.PHhone()类已经帮我们做好了封装，提供了一个CONTENT_URI常量，而这个常量就是使用Uri.parse()解析出来的结果。接着对Cursor对象进行遍历，将联系人姓名和手机号这些数据逐个取出，联系人姓名这一列对应的常量是ContactsContract.CommonDataKinds.DISPLAY_NAME,联系人手机号对应的常量是ContactsContract.CommonDataKinds.PHONE_NUMBER。两个数据都取出之后，将它们进行拼接，并且在中间加上换行符，然后将拼接后的数据添加到ListView的数据源里，并通知刷新一下ListView,最后要把cursor对象关闭。</li>
+<li>还有读取联系人的权限”android.permission.READ_CONTACTS”要在清单文件里声明。</li>
+</ul>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><ul>
+<li>想要访问内容提供器中共享的数据，必须借助ContentResolver类</li>
+<li>ContentResolver的增删改查方法都不接收表明参数，而是使用Uri作为参数，我们称它为内容URI</li>
+<li>得到内容URI字符串后，我们要将它解析成Uri对象才可以作为参数传入(Uri.parse()方法)</li>
+<li>通过Uri对象查询数据，返回的是一个Cursor对象，这个时候我们就可以将数据从Cursor对象中逐个读取出来</li>
+</ul>
+<h2 id="三、创建自己的内容提供器"><a href="#三、创建自己的内容提供器" class="headerlink" title="三、创建自己的内容提供器"></a>三、创建自己的内容提供器</h2><p>前面我们学习了如何在自己程序中访问其他应用程序的数据。总体来说思路还算非常简单，只需要获取到该应用程序的内容URI，然后借助ContentResolver进行CRUD操作就可以了。问题来了？这些提供外部访问接口的应用程序如何实现这种功能的呢？他们又是怎样保证数据的安全性呢，从而能使得隐私数据不会泄露出去？接下来一一讲解。</p>
+<h4 id="1，创建内容提供器的步骤"><a href="#1，创建内容提供器的步骤" class="headerlink" title="1，创建内容提供器的步骤"></a>1，创建内容提供器的步骤</h4><p>前面提到过，如果想跨程序共享数据，官方推荐的是用内容提供器，可以新建一个类去继承ContentProvider的方式来创建一个自己的内容提供器，ContentProvider类有6个抽象方法，我们在使用子类继承它的时候，需要将这6个抽象方法全部复写，新建MyProvider继承ContentProvider,代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="2，实现跨程序数据共享"><a href="#2，实现跨程序数据共享" class="headerlink" title="2，实现跨程序数据共享"></a>2，实现跨程序数据共享</h4><p>我们在上一章的DatabaseTest项目的基础上继续开发，通过内容提供器来给它加入外部访问接口。打开DatabaseTest项目，首先将MyDatabaseHelper中使用Toast弹出创建数据库成功的提示去除掉，因为跨程序访问时不能直接使用Toast。然后创建一个内容提供器，右键点击报名–&gt;New–&gt;Other–&gt;ContentProvider，将内容提供器命名为DatabaseProvider，authority指定为com.example.databasetest.provider。选中Exported和Enabled属性。<br>修改DatabaseProvider中的代码，如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br></pre></td><td class="code"><pre><span class="line">public class DatabaseProvider extends ContentProvider &#123;</span><br><span class="line"></span><br><span class="line">    public static final int BOOK_DIR = 0;</span><br><span class="line"></span><br><span class="line">    public static final int BOOK_ITEM = 1;</span><br><span class="line"></span><br><span class="line">    public static final int CATEGORY_DIR = 2;</span><br><span class="line"></span><br><span class="line">    public static final int CATEGORY_ITEM = 3;</span><br><span class="line"></span><br><span class="line">    public static final String AUTHORITY = &quot;com.example.databasetest.provider&quot;;</span><br><span class="line"></span><br><span class="line">    private static UriMatcher uriMatcher;</span><br><span class="line"></span><br><span class="line">    private MyDatabaseHelper dbHelper;</span><br><span class="line"></span><br><span class="line">    static &#123;</span><br><span class="line">        uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);</span><br><span class="line">        uriMatcher.addURI(AUTHORITY, &quot;book&quot;, BOOK_DIR);</span><br><span class="line">        uriMatcher.addURI(AUTHORITY, &quot;book/#&quot;, BOOK_ITEM);</span><br><span class="line">        uriMatcher.addURI(AUTHORITY, &quot;category&quot;, CATEGORY_DIR);</span><br><span class="line">        uriMatcher.addURI(AUTHORITY, &quot;category/#&quot;, CATEGORY_ITEM);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public boolean onCreate() &#123;</span><br><span class="line">        dbHelper = new MyDatabaseHelper(getContext(), &quot;BookStore.db&quot;, null, 2);</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) &#123;</span><br><span class="line">        // 查询数据</span><br><span class="line">        SQLiteDatabase db = dbHelper.getReadableDatabase();</span><br><span class="line">        Cursor cursor = null;</span><br><span class="line">        switch (uriMatcher.match(uri)) &#123;</span><br><span class="line">            case BOOK_DIR:</span><br><span class="line">                cursor = db.query(&quot;Book&quot;, projection, selection, selectionArgs, null, null, sortOrder);</span><br><span class="line">                break;</span><br><span class="line">            case BOOK_ITEM:</span><br><span class="line">                String bookId = uri.getPathSegments().get(1);</span><br><span class="line">                cursor = db.query(&quot;Book&quot;, projection, &quot;id = ?&quot;, new String[] &#123; bookId &#125;, null, null, sortOrder);</span><br><span class="line">                break;</span><br><span class="line">            case CATEGORY_DIR:</span><br><span class="line">                cursor = db.query(&quot;Category&quot;, projection, selection, selectionArgs, null, null, sortOrder);</span><br><span class="line">                break;</span><br><span class="line">            case CATEGORY_ITEM:</span><br><span class="line">                String categoryId = uri.getPathSegments().get(1);</span><br><span class="line">                cursor = db.query(&quot;Category&quot;, projection, &quot;id = ?&quot;, new String[] &#123; categoryId &#125;, null, null, sortOrder);</span><br><span class="line">                break;</span><br><span class="line">            default:</span><br><span class="line">                break;</span><br><span class="line">        &#125;</span><br><span class="line">        return cursor;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public Uri insert(Uri uri, ContentValues values) &#123;</span><br><span class="line">        // 添加数据</span><br><span class="line">        SQLiteDatabase db = dbHelper.getWritableDatabase();</span><br><span class="line">        Uri uriReturn = null;</span><br><span class="line">        switch (uriMatcher.match(uri)) &#123;</span><br><span class="line">            case BOOK_DIR:</span><br><span class="line">            case BOOK_ITEM:</span><br><span class="line">                long newBookId = db.insert(&quot;Book&quot;, null, values);</span><br><span class="line">                uriReturn = Uri.parse(&quot;content://&quot; + AUTHORITY + &quot;/book/&quot; + newBookId);</span><br><span class="line">                break;</span><br><span class="line">            case CATEGORY_DIR:</span><br><span class="line">            case CATEGORY_ITEM:</span><br><span class="line">                long newCategoryId = db.insert(&quot;Category&quot;, null, values);</span><br><span class="line">                uriReturn = Uri.parse(&quot;content://&quot; + AUTHORITY + &quot;/category/&quot; + newCategoryId);</span><br><span class="line">                break;</span><br><span class="line">            default:</span><br><span class="line">                break;</span><br><span class="line">        &#125;</span><br><span class="line">        return uriReturn;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) &#123;</span><br><span class="line">        // 更新数据</span><br><span class="line">        SQLiteDatabase db = dbHelper.getWritableDatabase();</span><br><span class="line">        int updatedRows = 0;</span><br><span class="line">        switch (uriMatcher.match(uri)) &#123;</span><br><span class="line">            case BOOK_DIR:</span><br><span class="line">                updatedRows = db.update(&quot;Book&quot;, values, selection, selectionArgs);</span><br><span class="line">                break;</span><br><span class="line">            case BOOK_ITEM:</span><br><span class="line">                String bookId = uri.getPathSegments().get(1);</span><br><span class="line">                updatedRows = db.update(&quot;Book&quot;, values, &quot;id = ?&quot;, new String[] &#123; bookId &#125;);</span><br><span class="line">                break;</span><br><span class="line">            case CATEGORY_DIR:</span><br><span class="line">                updatedRows = db.update(&quot;Category&quot;, values, selection, selectionArgs);</span><br><span class="line">                break;</span><br><span class="line">            case CATEGORY_ITEM:</span><br><span class="line">                String categoryId = uri.getPathSegments().get(1);</span><br><span class="line">                updatedRows = db.update(&quot;Category&quot;, values, &quot;id = ?&quot;, new String[] &#123; categoryId &#125;);</span><br><span class="line">                break;</span><br><span class="line">            default:</span><br><span class="line">                break;</span><br><span class="line">        &#125;</span><br><span class="line">        return updatedRows;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public int delete(Uri uri, String selection, String[] selectionArgs) &#123;</span><br><span class="line">        // 删除数据</span><br><span class="line">        SQLiteDatabase db = dbHelper.getWritableDatabase();</span><br><span class="line">        int deletedRows = 0;</span><br><span class="line">        switch (uriMatcher.match(uri)) &#123;</span><br><span class="line">            case BOOK_DIR:</span><br><span class="line">                deletedRows = db.delete(&quot;Book&quot;, selection, selectionArgs);</span><br><span class="line">                break;</span><br><span class="line">            case BOOK_ITEM:</span><br><span class="line">                String bookId = uri.getPathSegments().get(1);</span><br><span class="line">                deletedRows = db.delete(&quot;Book&quot;, &quot;id = ?&quot;, new String[] &#123; bookId &#125;);</span><br><span class="line">                break;</span><br><span class="line">            case CATEGORY_DIR:</span><br><span class="line">                deletedRows = db.delete(&quot;Category&quot;, selection, selectionArgs);</span><br><span class="line">                break;</span><br><span class="line">            case CATEGORY_ITEM:</span><br><span class="line">                String categoryId = uri.getPathSegments().get(1);</span><br><span class="line">                deletedRows = db.delete(&quot;Category&quot;, &quot;id = ?&quot;, new String[] &#123; categoryId &#125;);</span><br><span class="line">                break;</span><br><span class="line">            default:</span><br><span class="line">                break;</span><br><span class="line">        &#125;</span><br><span class="line">        return deletedRows;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public String getType(Uri uri) &#123;</span><br><span class="line">        switch (uriMatcher.match(uri)) &#123;</span><br><span class="line">            case BOOK_DIR:</span><br><span class="line">                return &quot;vnd.android.cursor.dir/vnd.com.example.databasetest. provider.book&quot;;</span><br><span class="line">            case BOOK_ITEM:</span><br><span class="line">                return &quot;vnd.android.cursor.item/vnd.com.example.databasetest. provider.book&quot;;</span><br><span class="line">            case CATEGORY_DIR:</span><br><span class="line">                return &quot;vnd.android.cursor.dir/vnd.com.example.databasetest. provider.category&quot;;</span><br><span class="line">            case CATEGORY_ITEM:</span><br><span class="line">                return &quot;vnd.android.cursor.item/vnd.com.example.databasetest. provider.category&quot;;</span><br><span class="line">        &#125;</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>另外注意，内容提供器一定要在清单文件注册，Android studio已经帮我们自动注册了(因为我们是用Android Studio的快捷功能创建内容提供器的)，打开AndroidManifest.xml文件，发现注册已经自动完成了。也就是在<application>标签多了一个<provider>标签。<br>现在DatabaseTest已经具有跨程序共享数据的功能了，我们新建一个ProviderTest项目，然后通过这个程序去访问DatabaseTest中的数据。新建ProviderTest项目，修改activity_main.xml，代码如下：</provider></application></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&lt;Button</span><br><span class="line">    android:id=&quot;@+id/add_data&quot;</span><br><span class="line">    android:layout_width=&quot;match_parent&quot;</span><br><span class="line">    android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">    android:text=&quot;Add To Data&quot;/&gt;</span><br><span class="line"></span><br><span class="line">&lt;Button</span><br><span class="line">    android:id=&quot;@+id/query_data&quot;</span><br><span class="line">    android:layout_width=&quot;match_parent&quot;</span><br><span class="line">    android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">    android:text=&quot;Query From Book&quot;/&gt;</span><br><span class="line"></span><br><span class="line">&lt;Button</span><br><span class="line">    android:id=&quot;@+id/update_data&quot;</span><br><span class="line">    android:layout_width=&quot;match_parent&quot;</span><br><span class="line">    android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">    android:text=&quot;Update Book&quot;/&gt;</span><br><span class="line">&lt;Button</span><br><span class="line">    android:id=&quot;@+id/delete_data&quot;</span><br><span class="line">    android:layout_width=&quot;match_parent&quot;</span><br><span class="line">    android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">    android:text=&quot;Delete From Book&quot;/&gt;</span><br></pre></td></tr></table></figure>
+
+<p>设置为垂直布局，设置四个按钮，分别用于添加、查询、修改和删除数据。然后修改MainActivity中的代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line">private String newId;</span><br><span class="line"></span><br><span class="line">   @Override</span><br><span class="line">   protected void onCreate(Bundle savedInstanceState) &#123;</span><br><span class="line">       super.onCreate(savedInstanceState);</span><br><span class="line">       setContentView(R.layout.activity_main);</span><br><span class="line"></span><br><span class="line">       Button addData = findViewById(R.id.add_data);</span><br><span class="line">       addData.setOnClickListener(new View.OnClickListener() &#123;</span><br><span class="line">           @Override</span><br><span class="line">           public void onClick(View v) &#123;</span><br><span class="line">               //添加数据</span><br><span class="line">               Uri uri = Uri.parse(&quot;content://com.example.databasetest.provider/book&quot;);</span><br><span class="line">               ContentValues values = new ContentValues();</span><br><span class="line">               values.put(&quot;name&quot;, &quot;A Clash of Kings&quot;);</span><br><span class="line">               values.put(&quot;author&quot;, &quot;George Martin&quot;);</span><br><span class="line">               values.put(&quot;pages&quot;, 1040);</span><br><span class="line">               values.put(&quot;price&quot;, 55.55);</span><br><span class="line">               Uri newUri = getContentResolver().insert(uri, values);</span><br><span class="line">               newId = newUri.getPathSegments().get(1);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;);</span><br><span class="line"></span><br><span class="line">       Button queryData = (Button) findViewById(R.id.query_data);</span><br><span class="line">       queryData.setOnClickListener(new View.OnClickListener() &#123;</span><br><span class="line">           @Override</span><br><span class="line">           public void onClick(View v) &#123;</span><br><span class="line">               // 查询数据</span><br><span class="line">               Uri uri = Uri.parse(&quot;content://com.example.databasetest.provider/book&quot;);</span><br><span class="line">               Cursor cursor = getContentResolver().query(uri, null, null, null, null);</span><br><span class="line">               if (cursor != null) &#123;</span><br><span class="line">                   while (cursor.moveToNext()) &#123;</span><br><span class="line">                       String name = cursor.getString(cursor. getColumnIndex(&quot;name&quot;));</span><br><span class="line">                       String author = cursor.getString(cursor. getColumnIndex(&quot;author&quot;));</span><br><span class="line">                       int pages = cursor.getInt(cursor.getColumnIndex (&quot;pages&quot;));</span><br><span class="line">                       double price = cursor.getDouble(cursor. getColumnIndex(&quot;price&quot;));</span><br><span class="line">                       Log.d(&quot;MainActivity&quot;, &quot;book name is &quot; + name);</span><br><span class="line">                       Log.d(&quot;MainActivity&quot;, &quot;book author is &quot; + author);</span><br><span class="line">                       Log.d(&quot;MainActivity&quot;, &quot;book pages is &quot; + pages);</span><br><span class="line">                       Log.d(&quot;MainActivity&quot;, &quot;book price is &quot; + price);</span><br><span class="line">                   &#125;</span><br><span class="line">                   cursor.close();</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;);</span><br><span class="line"></span><br><span class="line">       Button updateData = (Button) findViewById(R.id.update_data);</span><br><span class="line">       updateData.setOnClickListener(new View.OnClickListener() &#123;</span><br><span class="line">           @Override</span><br><span class="line">           public void onClick(View v) &#123;</span><br><span class="line">               // 更新数据</span><br><span class="line">               Uri uri = Uri.parse(&quot;content://com.example.databasetest.provider/book/&quot; + newId);</span><br><span class="line">               ContentValues values = new ContentValues();</span><br><span class="line">               values.put(&quot;name&quot;, &quot;A Storm of Swords&quot;);</span><br><span class="line">               values.put(&quot;pages&quot;, 1216);</span><br><span class="line">               values.put(&quot;price&quot;, 24.05);</span><br><span class="line">               getContentResolver().update(uri, values, null, null);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;);</span><br><span class="line"></span><br><span class="line">       Button deleteData = (Button) findViewById(R.id.delete_data);</span><br><span class="line">       deleteData.setOnClickListener(new View.OnClickListener() &#123;</span><br><span class="line">           @Override</span><br><span class="line">           public void onClick(View v) &#123;</span><br><span class="line">               // 删除数据</span><br><span class="line">               Uri uri = Uri.parse(&quot;content://com.example.databasetest.provider/book/&quot; + newId);</span><br><span class="line">               getContentResolver().delete(uri, null, null);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;);</span><br><span class="line"></span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们在四个按钮的点击事件里面处理了CRUD的逻辑</p>
+<ul>
+<li>添加数据的时候，调用了Uri.parse()方法将一个内容URI解析成Uri对象，然后把要添加的数据都存放到ContentValues对象中，接着调用ContentResolver的insert()方法执行添加操作就可以了。注意insert()方法会返回一个Uri对象，这个对象中包含了新增数据的id，我们通过getPathSegments()方法将这个id取出。</li>
+<li>查询数据的时候，调用Uri.parse()方法将一个内容URI解析成Uri对象，然后调用ContentResolver的query()方法去查询数据，查询的结果还是在Cursor对象中，之后对Cursor进行遍历，从中取出查询结果，并一一打印出来。</li>
+<li>更新数据，也是将内容URI解析成Uri对象，然后把想要更新的数据存放到ContentValues对象中，再调用ContentResolver的update()方法执行更新操作就可以了。这里为了不想让Book表中的其他行受到影响，在调用Uri.parse()方法的时候，给内容URI的尾部增加了一个id，而这个id正是添加数据是所返回的。这就表明我们只希望更新刚刚添加的那条数据，Book表中的其他行不会受到影响。</li>
+<li>删除数据，也是同样的方法解析一个以id结尾的内容URI，然后调用ContentResolver的delete方法执行删除操作就可以了，由于我们在内容URI里指定了一个id，因此只会删除以拥有相应id的那行数据，Book表中的其他数据不会受影响。</li>
+</ul>
+<p>点击ADD TO BOOK按钮，此时数据就应该添加到了DatabaseTest程序的数据库中了，再通过点击Query From Book按钮检查，日志如图：</p>
+<hr>
+<p><img src="/picture/11.png" alt></p>
+<p>然后再点击Update Book按钮完成更新数据的操作，再点击一下Query From Book按钮进行检查，日志如图：</p>
+<hr>
+<p><img src="/picture/12.png" alt></p>
+<p>最后点击Delete From Book按钮，此时再点击Query From Book按钮查询数据，我们会发现查询不到数据了。由此可以看出，我们的跨进程访问数据功能实现了，现在不仅仅ProviderTest程序吗，任意一个程序都可以访问DatabaseTest程序中的数据，而且不需要担心隐私数据泄露的问题。</p>
+
+    </div>
+
+    
+    
+    
+      
+
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/安卓/" rel="tag"># 安卓</a>
+            
+              <a href="/tags/ContentProvider/" rel="tag"># ContentProvider</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2018/12/25/View的工作原理/" rel="next" title="View的工作原理">
+                  <i class="fa fa-chevron-left"></i> View的工作原理
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2018/12/27/Http协议浅析/" rel="prev" title="Http协议浅析">
+                  Http协议浅析 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、访问其他程序中的数据"><span class="nav-number">1.</span> <span class="nav-text">一、访问其他程序中的数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、ContentProvider的基本用法"><span class="nav-number">2.</span> <span class="nav-text">二、ContentProvider的基本用法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-读取联系人"><span class="nav-number">2.0.1.</span> <span class="nav-text">1,读取联系人</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#readContacts方法解析："><span class="nav-number">2.0.2.</span> <span class="nav-text">readContacts方法解析：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">2.0.3.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、创建自己的内容提供器"><span class="nav-number">3.</span> <span class="nav-text">三、创建自己的内容提供器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1，创建内容提供器的步骤"><span class="nav-number">3.0.1.</span> <span class="nav-text">1，创建内容提供器的步骤</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2，实现跨程序数据共享"><span class="nav-number">3.0.2.</span> <span class="nav-text">2，实现跨程序数据共享</span></a></li></ol></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/timg.jpg"
+      alt="Lu Tian">
+  <p class="site-author-name" itemprop="name">Lu Tian</p>
+  <div class="site-description" itemprop="description">每天进步一点点</div>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/ltt19921124" title="GitHub &rarr; https://github.com/ltt19921124" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="/ltt19921124@163.com" title="E-Mail &rarr; ltt19921124@163.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="/302851414" title="QQ &rarr; 302851414"><i class="fa fa-fw fa-QQ"></i>QQ</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://liuwangshu.cn/" title="http://liuwangshu.cn/" rel="noopener" target="_blank">刘望舒</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/singwhatiwanna/" title="https://blog.csdn.net/singwhatiwanna/" rel="noopener" target="_blank">任玉刚</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://me.csdn.net/sinyu890807" title="https://me.csdn.net/sinyu890807" rel="noopener" target="_blank">郭霖</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lu Tian</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数"></span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长"></span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

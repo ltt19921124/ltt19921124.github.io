@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/TiddlyWiki.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-.min.css?v=1.0.2">
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="一、高精地图与传统地图当我们开车时，打开导航地图通常会给我们推荐几条路线，甚至会显示道路是否拥堵以及每条路线将花费多长时间、交通管制，例如交通信号灯或限速标志等，我们会根据地图提供的信息来决定是在行驶中直行、左转还是右转以及对周围驾驶环境的评估。而无人驾驶车缺乏人类驾驶员固有的视觉和逻辑能力。如我们可以利用所看到的东西和GPS来确定自己的位置，还可以轻松准确地识别障碍物、其他车辆、行人、交通信号灯">
+<meta name="keywords" content="无人驾驶,Apllo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Apollo基础课程之高精地图">
+<meta property="og:url" content="http://yoursite.com/2019/03/18/Apollo基础课程第二课之高精地图/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="一、高精地图与传统地图当我们开车时，打开导航地图通常会给我们推荐几条路线，甚至会显示道路是否拥堵以及每条路线将花费多长时间、交通管制，例如交通信号灯或限速标志等，我们会根据地图提供的信息来决定是在行驶中直行、左转还是右转以及对周围驾驶环境的评估。而无人驾驶车缺乏人类驾驶员固有的视觉和逻辑能力。如我们可以利用所看到的东西和GPS来确定自己的位置，还可以轻松准确地识别障碍物、其他车辆、行人、交通信号灯">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-23T07:47:58.065Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Apollo基础课程之高精地图">
+<meta name="twitter:description" content="一、高精地图与传统地图当我们开车时，打开导航地图通常会给我们推荐几条路线，甚至会显示道路是否拥堵以及每条路线将花费多长时间、交通管制，例如交通信号灯或限速标志等，我们会根据地图提供的信息来决定是在行驶中直行、左转还是右转以及对周围驾驶环境的评估。而无人驾驶车缺乏人类驾驶员固有的视觉和逻辑能力。如我们可以利用所看到的东西和GPS来确定自己的位置，还可以轻松准确地识别障碍物、其他车辆、行人、交通信号灯">
+  <link rel="canonical" href="http://yoursite.com/2019/03/18/Apollo基础课程第二课之高精地图/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Apollo基础课程之高精地图 | Hexo</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/18/Apollo基础课程第二课之高精地图/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lu Tian">
+      <meta itemprop="description" content="每天进步一点点">
+      <meta itemprop="image" content="/images/timg.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">Apollo基础课程之高精地图
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-18 09:25:23" itemprop="dateCreated datePublished" datetime="2019-03-18T09:25:23+08:00">2019-03-18</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-08-23 15:47:58" itemprop="dateModified" datetime="2019-08-23T15:47:58+08:00">2019-08-23</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/无人驾驶/" itemprop="url" rel="index"><span itemprop="name">无人驾驶</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span></span>
+            </span>
+          
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="一、高精地图与传统地图"><a href="#一、高精地图与传统地图" class="headerlink" title="一、高精地图与传统地图"></a>一、高精地图与传统地图</h2><p>当我们开车时，打开导航地图通常会给我们推荐几条路线，甚至会显示道路是否拥堵以及每条路线将花费多长时间、交通管制，例如交通信号灯或限速标志等，我们会根据地图提供的信息来决定是在行驶中直行、左转还是右转以及对周围驾驶环境的评估。<br>而无人驾驶车缺乏人类驾驶员固有的视觉和逻辑能力。如我们可以利用所看到的东西和GPS来确定自己的位置，还可以轻松准确地识别障碍物、其他车辆、行人、交通信号灯等，但要想让无人车变得和人类一样聪明，可是一项非常艰巨的任务。</p>
+<a id="more"></a>
+<p>这时就需要高精地图了，<strong>高精地图是当前无人驾驶车技术不可或缺的一部分</strong>。它包含了大量的驾驶辅助信息，最重要是包含道路网的精确三维表征，例如<strong>交叉路口布局</strong>和<strong>路标位置</strong>。无人车就是靠这个信息而得以知道自己的确切位置，不然无人驾驶也就无从谈起。<br>实际上高精地图<strong>还包含很多语义信息</strong>，地图上可能会报告交通灯不同颜色的含义，也可能指示道路的速度限制，及左转车道开始的位置。<br>既然是”高精”地图，那么它最重要特征之一是精度，手机上的导航地图只能达到<strong>米级</strong>精度，而高精地图可以使车辆能够达到厘米级(个位数厘米级)的精度，这对确保无人车的<strong>安全性</strong>至关重要。</p>
+<h2 id="二、高精地图与定位、感知规划的关系"><a href="#二、高精地图与定位、感知规划的关系" class="headerlink" title="二、高精地图与定位、感知规划的关系"></a>二、高精地图与定位、感知规划的关系</h2><h3 id="2-1-高精地图用于定位"><a href="#2-1-高精地图用于定位" class="headerlink" title="2.1 高精地图用于定位"></a>2.1 高精地图用于定位</h3><p>高精地图是Apollo平台的核心，许多无人驾驶车模块都有赖于高精地图，有了高精地图车辆就可以在地图上进行自定位。这意味，需要弄清我们在地图上的位置，这就是定位——无人驾驶车辆在地图上的确切位置。<br>首先车辆可能会寻找地标，我们可以使用从各类传感器收集的数据，如摄像机图像数据、激光雷达收集的三维点云数据来查找地标。车辆将其收集的数据与其在高精地图上的已知地标进行比较，这一匹配过程是需要<strong>预处理</strong>、<strong>坐标转换</strong>、<strong>数据融合</strong>的复杂过程。<br>无人车的整个定位过程取决于高精地图，所以车辆需要通过高精地图明确它处于什么位置。</p>
+<h3 id="2-2-高精地图用于感知"><a href="#2-2-高精地图用于感知" class="headerlink" title="2.2 高精地图用于感知"></a>2.2 高精地图用于感知</h3><p>无人车也可以使用高精地图来帮助感知，就像人的眼睛和耳朵会受到环境因素的影响一样，无人车的传感器也是如此。摄像机、激光雷达、雷达探测物体的能力，在超过一定距离后都会受到限制。在恶劣的天气条件下或在夜间，传感器识别障碍物的能力可能会受到进一步限制。另外当车辆遇到障碍物时，传感器无法透过障碍物来确定障碍物后面的物体。这时，就需要借助高精地图的帮助了。<br>即使传感器尚未检测到交通信号灯，高精地图也可以将交通信号灯的位置提供给软件栈的其余部分，帮助车辆做下一个决策。<br>另一个好处在于，高精地图可<strong>帮助传感器缩小检测范围</strong>，如高精地图可能会告知我们在特定位置寻找停车标志，传感器就可以集中在该位置检测停车标志，被称为<strong>感兴趣区域ROI</strong>。ROI可帮助我们提高检测精确度和速度，并节约计算资源。</p>
+<h3 id="2-3-高精地图用于规划"><a href="#2-3-高精地图用于规划" class="headerlink" title="2.3 高精地图用于规划"></a>2.3 高精地图用于规划</h3><p>正如定位和感知依赖高精地图那样，规划也是如此。高精地图可帮助车辆找到合适的行车空间，还可以帮助规划器确定不同的路线选择，来帮助预测模块预测道路上其他车辆将来的位置。<br>如高精地图可帮助车辆识别车道的确切中心线，这样车辆可以尽可能地靠近中心行驶。在具有低速限制、人行横道或减速带的区域，高精地图可以使车辆能够提前查看并预先<br>减速。如果前方有障碍物，车辆可能需要变道，可帮助车辆缩小选择范围，以便选择最佳方案。</p>
+<h2 id="三、Apollo高精度地图与构建"><a href="#三、Apollo高精度地图与构建" class="headerlink" title="三、Apollo高精度地图与构建"></a>三、Apollo高精度地图与构建</h2><h3 id="3-1-Apollo高精地图"><a href="#3-1-Apollo高精地图" class="headerlink" title="3.1 Apollo高精地图"></a>3.1 Apollo高精地图</h3><p>Apollo高精地图专为无人车设计，里面包含了道路定义、交叉路口、交通信号、车道规则，及用于汽车导航的其他元素。<br>高精度地图可在许多方面为无人车提供帮助，如高精度地图通常会记录交通信号灯的精确位置和高度，从而大大降低了感知难度。<br>高精地图不仅可以减少计算需求，还可以通过提供有关驾驶环境的详细信息，来确保无人车的安全。保持这些地图的更新是一项重大任务，测试车队需要不断地对高精度地图进行验证和更新。此外，这些地图可能达到几厘米的精度，这是水准最高的制图精度。<br>Apollo 高精地图是最懂自动驾驶的高精地图，也是业界精细化程度最高、生产率最高、覆盖面最广的高精地图。目前，Apollo 高精地图的自动化程度已经达到了90%、准确识别率达到了95%以上，预计2020年可以覆盖全国所有的重点道路。<br>高精地图有很多种格式，为了方便数据共享，Apollo高精地图采用了OpenDRIVE格式，这是一种行业制图标准。同时，Apollo也对OpenDRIVE做出了改进，进而产生了Apollo OpenDRIVE标准，以便更适合无人车。</p>
+<h3 id="3-2-Apollo高精地图的构建"><a href="#3-2-Apollo高精地图的构建" class="headerlink" title="3.2 Apollo高精地图的构建"></a>3.2 Apollo高精地图的构建</h3><p>高精度地图的构建由五个过程组成：数据采集、数据处理、对象检测、手动验证和地图发布。<br>数据采集是一项庞大的密集型任务，近300辆Apollo测试车辆负责收集用于制作地图的源数据，以便确保每次道路发生改变时，地图均会得到快速更新。测试车辆使用了多种传感器，如GPS、IMU、激光雷达、摄像机。Apollo定义了一个硬件框架，将这些传感器集成到单个自主系统中，通过支持多种类的传感器，Apollo收集各类数据将这些数据融合，最终生成高精度地图。<br>数据处理指的是Apollo如何对收集到的数据进行整理、分类和精简，以获得没有任何语义信息或注释的初始地图模板。<br>对于对象检测，Apollo使用人工智能来检测静态对象并对其进行分类，其中包括车道线、交通标志、甚至是电线杆，手动验证可确保自动地图创建过程正确进行并及时发现问题。Apollo使手动验证团队能够高效标记和编辑地图，在经过数据采集、数据处理、对象检测、手动验证之后，高精地图才能发布。<br>除高精地图外，Apollo还发布了采用自上而下视图的相应定位地图、三维点云地图。<br>在构建和更新地图的过程中，Apollo使用众包向公众发布其数据采集工具，以便任何人都可以参与制作高精度地图的任务，这加快了高精地图制作和维护的过程。</p>
+
+    </div>
+
+    
+    
+    
+      
+
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/无人驾驶/" rel="tag"># 无人驾驶</a>
+            
+              <a href="/tags/Apllo/" rel="tag"># Apllo</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/03/18/Apollo基础课程第四课之感知-上/" rel="next" title="Apollo基础课程之感知(上)">
+                  <i class="fa fa-chevron-left"></i> Apollo基础课程之感知(上)
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/03/18/Apollo基础课程第一课之无人驾驶概览/" rel="prev" title="Apollo基础课程之无人驾驶概览">
+                  Apollo基础课程之无人驾驶概览 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、高精地图与传统地图"><span class="nav-number">1.</span> <span class="nav-text">一、高精地图与传统地图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、高精地图与定位、感知规划的关系"><span class="nav-number">2.</span> <span class="nav-text">二、高精地图与定位、感知规划的关系</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-高精地图用于定位"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 高精地图用于定位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-高精地图用于感知"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 高精地图用于感知</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-高精地图用于规划"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 高精地图用于规划</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、Apollo高精度地图与构建"><span class="nav-number">3.</span> <span class="nav-text">三、Apollo高精度地图与构建</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-Apollo高精地图"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 Apollo高精地图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-Apollo高精地图的构建"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 Apollo高精地图的构建</span></a></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/timg.jpg"
+      alt="Lu Tian">
+  <p class="site-author-name" itemprop="name">Lu Tian</p>
+  <div class="site-description" itemprop="description">每天进步一点点</div>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/ltt19921124" title="GitHub &rarr; https://github.com/ltt19921124" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="/ltt19921124@163.com" title="E-Mail &rarr; ltt19921124@163.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="/302851414" title="QQ &rarr; 302851414"><i class="fa fa-fw fa-QQ"></i>QQ</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://liuwangshu.cn/" title="http://liuwangshu.cn/" rel="noopener" target="_blank">刘望舒</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/singwhatiwanna/" title="https://blog.csdn.net/singwhatiwanna/" rel="noopener" target="_blank">任玉刚</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://me.csdn.net/sinyu890807" title="https://me.csdn.net/sinyu890807" rel="noopener" target="_blank">郭霖</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lu Tian</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数"></span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长"></span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

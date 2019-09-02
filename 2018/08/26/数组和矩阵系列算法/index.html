@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/TiddlyWiki.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-.min.css?v=1.0.2">
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="1，转圈打印矩阵    题目：给定一个矩阵，请按照转圈打印的方式打印它。    例如：    1   2   3   4    5   6   7   8    9   10  11  12    13  14  15  16">
+<meta name="keywords" content="数组和矩阵问题算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数组和矩阵系列算法">
+<meta property="og:url" content="http://yoursite.com/2018/08/26/数组和矩阵系列算法/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="1，转圈打印矩阵    题目：给定一个矩阵，请按照转圈打印的方式打印它。    例如：    1   2   3   4    5   6   7   8    9   10  11  12    13  14  15  16">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-11-09T14:32:04.916Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数组和矩阵系列算法">
+<meta name="twitter:description" content="1，转圈打印矩阵    题目：给定一个矩阵，请按照转圈打印的方式打印它。    例如：    1   2   3   4    5   6   7   8    9   10  11  12    13  14  15  16">
+  <link rel="canonical" href="http://yoursite.com/2018/08/26/数组和矩阵系列算法/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>数组和矩阵系列算法 | Hexo</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/26/数组和矩阵系列算法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lu Tian">
+      <meta itemprop="description" content="每天进步一点点">
+      <meta itemprop="image" content="/images/timg.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">数组和矩阵系列算法
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2018-08-26 21:37:29" itemprop="dateCreated datePublished" datetime="2018-08-26T21:37:29+08:00">2018-08-26</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2018-11-09 22:32:04" itemprop="dateModified" datetime="2018-11-09T22:32:04+08:00">2018-11-09</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/算法/" itemprop="url" rel="index"><span itemprop="name">算法</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span></span>
+            </span>
+          
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>1，转圈打印矩阵<br>    题目：给定一个矩阵，请按照转圈打印的方式打印它。<br>    例如：<br>    1   2   3   4<br>    5   6   7   8<br>    9   10  11  12<br>    13  14  15  16</p>
+<a id="more"></a>
+<p>转圈打印结果：1，2，3，4，8，12，16，15，14，13，9，5，6，7，11，10。<br>要求：时间复杂度O(1)。<br>解答：矩阵分圈处理，在矩阵式利用左上角的坐标(tR,tC)和右下角的坐标(dR,dC)就可以表示一个子矩阵，比如，题目中的矩阵，当(tR,tC)=(0,0)、(dR,dC)=(3,3)时，表示的矩阵就是整个矩阵，那么这个字矩阵最外层的部分就是：<br>        1   2   3   4<br>        5           8<br>          9           12<br>        13  14  15  16<br>这就是当(tR,tC)=(0,0)、(dR,dC)=(3,3)时的子矩阵。接下来令tR和tC加1，即(tR,tC)=(1,1),令dR和dC减1，即(dR,dC)=(2,2),此时表示的子矩阵如下：<br>        6   7<br>        10  11<br>再转圈打印这个矩阵，tR和tC加1，dR和dC减1，如果发现左上角坐标跑到了右下角坐标的右方或下方，整个过程就停止。<br>参看如下的代码，spiralOrderPrint方法，其中printEdge就是转圈打印一个子矩阵的外层。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">public static void spiralOrderPrint(int[][] matrix) &#123;</span><br><span class="line">	int tR = 0;</span><br><span class="line">	int tC = 0;</span><br><span class="line">	int dR = matrix.length - 1;</span><br><span class="line">	int dC = matrix[0].length - 1;</span><br><span class="line">	while (tR &lt;= dR &amp;&amp; tC &lt;= dC) &#123;</span><br><span class="line">		printEdge(matrix, tR++, tC++, dR--, dC--);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static void printEdge(int[][] m, int tR, int tC, int dR, int dC) &#123;</span><br><span class="line">	if (tR == dR) &#123; </span><br><span class="line">		for (int i = tC; i &lt;= dC; i++) &#123;</span><br><span class="line">			System.out.print(m[tR][i] + &quot; &quot;);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125; else if (tC == dC) &#123; </span><br><span class="line">		for (int i = tR; i &lt;= dR; i++) &#123;</span><br><span class="line">			System.out.print(m[i][tC] + &quot; &quot;);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125; else &#123; </span><br><span class="line">		int curC = tC;</span><br><span class="line">		int curR = tR;</span><br><span class="line">		while (curC != dC) &#123;</span><br><span class="line">			System.out.print(m[tR][curC] + &quot; &quot;);</span><br><span class="line">			curC++;</span><br><span class="line">		&#125;</span><br><span class="line">		while (curR != dR) &#123;</span><br><span class="line">			System.out.print(m[curR][dC] + &quot; &quot;);</span><br><span class="line">			curR++;</span><br><span class="line">		&#125;</span><br><span class="line">		while (curC != tC) &#123;</span><br><span class="line">			System.out.print(m[dR][curC] + &quot; &quot;);</span><br><span class="line">			curC--;</span><br><span class="line">		&#125;</span><br><span class="line">		while (curR != tR) &#123;</span><br><span class="line">			System.out.print(m[curR][tC] + &quot; &quot;);</span><br><span class="line">			curR--;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>2，将正方形矩阵顺时针转动90度<br>    题目：将一个n<em>n矩阵顺时针转90度，例如<br>        1   2   3   4<br>        5   6   7   8<br>        9   10  11  12<br>        13  14  15  16<br>    顺时针转90度后的矩阵<br>        13  9   5   1<br>        14  10  6   2<br>        15  11  7   3<br>        16  12  8   4<br>    要求：额外空间复杂度为O(1)。<br>    这里仍然使用分圈打印的方式，在矩阵的左上角和右下角的坐标就可以表示一个矩阵，比如，题目中的矩阵，当(tR,tC)=(0,0)、(dR,dC)=(3,3)时，表示的子矩阵就是整个矩阵，那么这个子矩阵最外层的部分如下：<br>    1   2   3   4<br>    5           8<br>    9           12<br>    13  14  15  16<br>    在这个外圈中，1，4，16，13为一组，然后让1占据4的位置，4占据16的位置，16占据13的位置，13占据1的位置，一组就调整完了。然后2，8，15，9，继续占据调整的过程，最后3，12 ，14 ，5为一组，继续占据调整的过程。然后(tC,tC)、(dR,dC)=(3,3)的子矩阵外层就调整完毕。接下来令tR和tC加1，即(tR,tC)=(1,1),令dR和dC减1，即(dR,dC)=(2,2),此时表示的矩阵如下<br>    6   7<br>    10  11<br>    这个外层只有一组，就是6，7，10，11，占据调整之后即可，所以如果子矩阵的大小是m</em>m，一共就有m-1组，分别进行占据调整即可。<br>    请参考如下代码中的rotate方法。</p>
+<figure class="highlight plain"><figcaption><span>static void rotate(int[][] matrix) &#123;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">	int tR = 0;</span><br><span class="line">	int tC = 0;</span><br><span class="line">	int dR = matrix.length - 1;</span><br><span class="line">	int dC = matrix[0].length - 1;</span><br><span class="line">	while (tR &lt; dR) &#123;</span><br><span class="line">		rotateEdge(matrix, tR++, tC++, dR--, dC--);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static void rotateEdge(int[][] m, int tR, int tC, int dR, int dC) &#123;</span><br><span class="line">	int times = dC - tC; </span><br><span class="line">	int tmp = 0;</span><br><span class="line">	for (int i = 0; i != times; i++) &#123; </span><br><span class="line">		tmp = m[tR][tC + i];</span><br><span class="line">		m[tR][tC + i] = m[dR - i][tC];</span><br><span class="line">		m[dR - i][tC] = m[dR][dC - i];</span><br><span class="line">		m[dR][dC - i] = m[tR + i][dC];</span><br><span class="line">		m[tR + i][dC] = tmp;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>3，“之”字型打印矩阵<br>    题目：给定一个矩阵，按照“之”字型打印矩阵，例如:<br>    1   2   3   4<br>    5   6   7   8<br>    9   10  11  12<br>    13  14  15  16<br>    “之”字型打印矩阵的结果为：1，2，5，9，6，3，4，7，10，13，14，11，8，12，15，16。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">   public static void printMatrixZigZag(int[][] matrix) &#123;</span><br><span class="line">	int tR = 0;</span><br><span class="line">	int tC = 0;</span><br><span class="line">	int dR = 0;</span><br><span class="line">	int dC = 0;</span><br><span class="line">	int endR = matrix.length - 1;</span><br><span class="line">	int endC = matrix[0].length - 1;</span><br><span class="line">	boolean fromUp = false;</span><br><span class="line">	while (tR != endR + 1) &#123;</span><br><span class="line">		printLevel(matrix, tR, tC, dR, dC, fromUp);</span><br><span class="line">		tR = tC == endC ? tR + 1 : tR;</span><br><span class="line">		tC = tC == endC ? tC : tC + 1;</span><br><span class="line">		dC = dR == endR ? dC + 1 : dC;</span><br><span class="line">		dR = dR == endR ? dR : dR + 1;</span><br><span class="line">		fromUp = !fromUp;</span><br><span class="line">	&#125;</span><br><span class="line">	System.out.println();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static void printLevel(int[][] m, int tR, int tC, int dR, int dC,</span><br><span class="line">		boolean f) &#123;</span><br><span class="line">	if (f) &#123;</span><br><span class="line">		while (tR != dR + 1) &#123;</span><br><span class="line">			System.out.print(m[tR++][tC--] + &quot; &quot;);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125; else &#123;</span><br><span class="line">		while (dR != tR - 1) &#123;</span><br><span class="line">			System.out.print(m[dR--][dC++] + &quot; &quot;);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>4，找到无序数组中最小的k个数<br>题目：给定一个无序的整型数组arr，找到其中最小的k个数。<br>要求：数组长度为n，排序之后自然可以得到最小的k个数，此时时间复杂度与排序的时间复杂度相同，均为O(logn)。本体要求读者实现时间复杂度为O(nlogk)和O(n)的方法。<br>O(nlogk)时间复杂度的方法：用堆结构解决，已知维护一个有k个元素的大根堆，这个堆代表目前选出的k个最小的数，在堆里的k个元素中堆顶的元素是最小的k个数里最大的那个。接下里遍历数组，遍历的过程中看当前数是否比堆定元素小，若是，就把堆顶的元素替换成当前的数，然后从堆定的位置调整整个堆，让替换操作后的最大元素继续处在堆定的位置；若不是，则不进行任何操作，继续遍历下一个数；在遍历完成后，堆中的k个数就是所有数组中最小的k个数。<br>参看下面的getMinKNumsByHeap方法，代码中的heapinsert和heapfy方法分别为堆排序中的建堆和调整堆的实现。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">// O(N*logK)</span><br><span class="line">	public static int[] getMinKNumsByHeap(int[] arr, int k) &#123;</span><br><span class="line">		if (k &lt; 1 || k &gt; arr.length) &#123;</span><br><span class="line">			return arr;</span><br><span class="line">		&#125;</span><br><span class="line">		int[] kHeap = new int[k];</span><br><span class="line">		for (int i = 0; i != k; i++) &#123;</span><br><span class="line">			heapInsert(kHeap, arr[i], i);</span><br><span class="line">		&#125;</span><br><span class="line">		for (int i = k; i != arr.length; i++) &#123;</span><br><span class="line">			if (arr[i] &lt; kHeap[0]) &#123;</span><br><span class="line">				kHeap[0] = arr[i];</span><br><span class="line">				heapify(kHeap, 0, k);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		return kHeap;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public static void heapInsert(int[] arr, int value, int index) &#123;</span><br><span class="line">		arr[index] = value;</span><br><span class="line">		while (index != 0) &#123;</span><br><span class="line">			int parent = (index - 1) / 2;</span><br><span class="line">			if (arr[parent] &lt; arr[index]) &#123;</span><br><span class="line">				swap(arr, parent, index);</span><br><span class="line">				index = parent;</span><br><span class="line">			&#125; else &#123;</span><br><span class="line">				break;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public static void heapify(int[] arr, int index, int heapSize) &#123;</span><br><span class="line">		int left = index * 2 + 1;</span><br><span class="line">		int right = index * 2 + 2;</span><br><span class="line">		int largest = index;</span><br><span class="line">		while (left &lt; heapSize) &#123;</span><br><span class="line">			if (arr[left] &gt; arr[index]) &#123;</span><br><span class="line">				largest = left;</span><br><span class="line">			&#125;</span><br><span class="line">			if (right &lt; heapSize &amp;&amp; arr[right] &gt; arr[largest]) &#123;</span><br><span class="line">				largest = right;</span><br><span class="line">			&#125;</span><br><span class="line">			if (largest != index) &#123;</span><br><span class="line">				swap(arr, largest, index);</span><br><span class="line">			&#125; else &#123;</span><br><span class="line">				break;</span><br><span class="line">			&#125;</span><br><span class="line">			index = largest;</span><br><span class="line">			left = index * 2 + 1;</span><br><span class="line">			right = index * 2 + 2;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	public static void swap(int[] arr, int index1, int index2) &#123;</span><br><span class="line">		int tmp = arr[index1];</span><br><span class="line">		arr[index1] = arr[index2];</span><br><span class="line">		arr[index2] = tmp;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<p>O(n)的算法，会用到经典的bfprt算法，该算法于1973年由blum、floyd、pratt、rivest、tarjan联合发明，它解决了这样一个问题，在O(n)时间复杂度内,从无序的数组中找到第k小的数，显而易见的是，如果我们找到了第k小的数，那么想求arr中最小的k个数，就是再遍历一次数组的工作量而已，所以关键的问题就变成了如何理解并实现brprt算法。<br>    bfprt算法是如何找到第k小的数？以下是算法的过程，假设bfprt算法的函数是int select(int[]arr,k)，该函数的功能为在arr中找到第k小的数，然后返回该数。<br>    select(arr,k)的过程如下：<br>    1),将arr中的n个元素划分成n/5组，每组5个元素，如果最后的组不够5个元素，那么最后的元素成为一组(n%5个元素)。<br>    2),对每个数组进行插入排序，只针对每个组最多5个元素之间的组内排序，组与组之间并不排序。排序之后找到每个组的中位数，如果组的元素个数为偶数，这里规定找不到中位数。<br>    3),步骤2中一共会找到n/5个中位数，让这些中位数组成一个新的数组，记为mArr。递归调用select(mArr,mArr.length/2)，意义是找到mArr这个数组中的中位数，即mArr中的第(mArr.length/2)小的数。<br>    4),假设步骤3递归调用select(mArr,mArr.length/2)后，返回的数为x，根据这个x划分整个arr数组(partition过程)，划分的过程为：在arr中，比x小的数都在x的左边，比x大的数都在x的右边，x在中间。假划分完成后，x在arr中的位置记为i。<br>    5)，如果i==k，说明x为整个数组中第k小的数，直接返回。<br>        如果i&lt;k，说明x处在第k小的数的左边，应该在x的右边寻找第k小的数，所以递归调用select函数，在右半区寻找第k-i小的数。<br>        如果i&gt;k，说明x处在第k小的数的右边，应该在x的左边寻找第k小的数，所以递归调用select函数，在左半区寻找第k-i小的数。</p>
+<pre><code>bfprt算法为什么能做到O(n)的时间复杂度呢？以下是bfprt时间复杂度的分析：
+1，在上述过程，除了步骤3和步骤5要用递归函数外，其他的所有处理过程都可以在O(n)时间内完成。
+2，步骤3中有递归函数的调用，且递归处理的数组大小为n/5(即T(n/5))。
+3，步骤5也递归调用了select函数，那么递归处理的数组大小最大为多少呢？具体地说，我们关心的是由x划分出的左半区最大有多大和由x划分出去的右半区最大有多大。
+数学证明了bfprt算法的时间复杂度是O(n)。
+具体请参看如下代码中的getMinKnumsByBFPRT方法。</code></pre><figure class="highlight plain"><figcaption><span>static int[] getMinKNumsByBFPRT(int[] arr, int k) &#123;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br></pre></td><td class="code"><pre><span class="line">	if (k &lt; 1 || k &gt; arr.length) &#123;</span><br><span class="line">		return arr;</span><br><span class="line">	&#125;</span><br><span class="line">	int minKth = getMinKthByBFPRT(arr, k);</span><br><span class="line">	int[] res = new int[k];</span><br><span class="line">	int index = 0;</span><br><span class="line">	for (int i = 0; i != arr.length; i++) &#123;</span><br><span class="line">		if (arr[i] &lt; minKth) &#123;</span><br><span class="line">			res[index++] = arr[i];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	for (; index != res.length; index++) &#123;</span><br><span class="line">		res[index] = minKth;</span><br><span class="line">	&#125;</span><br><span class="line">	return res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static int getMinKthByBFPRT(int[] arr, int K) &#123;</span><br><span class="line">	int[] copyArr = copyArray(arr);</span><br><span class="line">	return select(copyArr, 0, copyArr.length - 1, K - 1);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static int[] copyArray(int[] arr) &#123;</span><br><span class="line">	int[] res = new int[arr.length];</span><br><span class="line">	for (int i = 0; i != res.length; i++) &#123;</span><br><span class="line">		res[i] = arr[i];</span><br><span class="line">	&#125;</span><br><span class="line">	return res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static int select(int[] arr, int begin, int end, int i) &#123;</span><br><span class="line">	if (begin == end) &#123;</span><br><span class="line">		return arr[begin];</span><br><span class="line">	&#125;</span><br><span class="line">	int pivot = medianOfMedians(arr, begin, end);</span><br><span class="line">	int[] pivotRange = partition(arr, begin, end, pivot);</span><br><span class="line">	if (i &gt;= pivotRange[0] &amp;&amp; i &lt;= pivotRange[1]) &#123;</span><br><span class="line">		return arr[i];</span><br><span class="line">	&#125; else if (i &lt; pivotRange[0]) &#123;</span><br><span class="line">		return select(arr, begin, pivotRange[0] - 1, i);</span><br><span class="line">	&#125; else &#123;</span><br><span class="line">		return select(arr, pivotRange[1] + 1, end, i);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static int medianOfMedians(int[] arr, int begin, int end) &#123;</span><br><span class="line">	int num = end - begin + 1;</span><br><span class="line">	int offset = num % 5 == 0 ? 0 : 1;</span><br><span class="line">	int[] mArr = new int[num / 5 + offset];</span><br><span class="line">	for (int i = 0; i &lt; mArr.length; i++) &#123;</span><br><span class="line">		int beginI = begin + i * 5;</span><br><span class="line">		int endI = beginI + 4;</span><br><span class="line">		mArr[i] = getMedian(arr, beginI, Math.min(end, endI));</span><br><span class="line">	&#125;</span><br><span class="line">	return select(mArr, 0, mArr.length - 1, mArr.length / 2);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static int[] partition(int[] arr, int begin, int end, int pivotValue) &#123;</span><br><span class="line">	int small = begin - 1;</span><br><span class="line">	int cur = begin;</span><br><span class="line">	int big = end + 1;</span><br><span class="line">	while (cur != big) &#123;</span><br><span class="line">		if (arr[cur] &lt; pivotValue) &#123;</span><br><span class="line">			swap(arr, ++small, cur++);</span><br><span class="line">		&#125; else if (arr[cur] &gt; pivotValue) &#123;</span><br><span class="line">			swap(arr, cur, --big);</span><br><span class="line">		&#125; else &#123;</span><br><span class="line">			cur++;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	int[] range = new int[2];</span><br><span class="line">	range[0] = small + 1;</span><br><span class="line">	range[1] = big - 1;</span><br><span class="line">	return range;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static int getMedian(int[] arr, int begin, int end) &#123;</span><br><span class="line">	insertionSort(arr, begin, end);</span><br><span class="line">	int sum = end + begin;</span><br><span class="line">	int mid = (sum / 2) + (sum % 2);</span><br><span class="line">	return arr[mid];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static void insertionSort(int[] arr, int begin, int end) &#123;</span><br><span class="line">	for (int i = begin + 1; i != end + 1; i++) &#123;</span><br><span class="line">		for (int j = i; j != begin; j--) &#123;</span><br><span class="line">			if (arr[j - 1] &gt; arr[j]) &#123;</span><br><span class="line">				swap(arr, j - 1, j);</span><br><span class="line">			&#125; else &#123;</span><br><span class="line">				break;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static void swap(int[] arr, int index1, int index2) &#123;</span><br><span class="line">	int tmp = arr[index1];</span><br><span class="line">	arr[index1] = arr[index2];</span><br><span class="line">	arr[index2] = tmp;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static void printArray(int[] arr) &#123;</span><br><span class="line">	for (int i = 0; i != arr.length; i++) &#123;</span><br><span class="line">		System.out.print(arr[i] + &quot; &quot;);</span><br><span class="line">	&#125;</span><br><span class="line">	System.out.println();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>5，需要排序的最短子数组长度<br>题目：一个无序数组arr，求出需要排序的最短子数组长度。<br>例如：arr={1,5,3,4,2,6},返回4，因为只有[5,3,4,2]需要排序。<br>解答：可以做到时间复杂度O(n)，额外空间复杂度O(1)。<br>初始化变量noMinIndex=-1，从右向左遍历，遍历的过程中记录右侧出现过的数的最小值，记为min。假设当前数为arr[i]，如果arr[i]&gt;min,说明如果要整体有序，min值必然会挪到arr[i]的左边。用noMinIndex记录最左边出现这种情况的位置。如果遍历完成后，noMinIndex依然等于-1，说明从右到左始终不升序，原本数组就有序，直接返回0，即完全不需要排序。<br>接下来从左往右遍历，遍历的过程中记录左侧出现过的数的最大值，记为max。假设当前数为arr[i]，如果arr[i]&lt;max,说明如果有序，max值必然会挪到arr[i]的右边。用变量noMaxIndex记录最右边出现这种情况的位置。<br>遍历完成后，arr[noMinIndex…noMaxIndex]就是需要排序的那部分，返回它的长度即可。<br>具体过程参看下面的getMinLength方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">   public static int getMinLength(int[] arr) &#123;</span><br><span class="line">	if (arr == null || arr.length &lt; 2) &#123;</span><br><span class="line">		return 0;</span><br><span class="line">	&#125;</span><br><span class="line">	int min = arr[arr.length - 1];</span><br><span class="line">	int noMinIndex = -1;</span><br><span class="line">	for (int i = arr.length - 2; i != -1; i--) &#123;</span><br><span class="line">		if (arr[i] &gt; min) &#123;</span><br><span class="line">			noMinIndex = i;</span><br><span class="line">		&#125; else &#123;</span><br><span class="line">			min = Math.min(min, arr[i]);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	if (noMinIndex == -1) &#123;</span><br><span class="line">		return 0;</span><br><span class="line">	&#125;</span><br><span class="line">	int max = arr[0];</span><br><span class="line">	int noMaxIndex = -1;</span><br><span class="line">	for (int i = 1; i != arr.length; i++) &#123;</span><br><span class="line">		if (arr[i] &lt; max) &#123;</span><br><span class="line">			noMaxIndex = i;</span><br><span class="line">		&#125; else &#123;</span><br><span class="line">			max = Math.max(max, arr[i]);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	return noMaxIndex - noMinIndex + 1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>6，在数组中找到出现次数大于n/k的数<br>题目：给定一个数组，打印其出现次数大于一半的数，如果没有这样的数，打印提示信息。<br>进阶：给定一个数组arr，再给定一个整数k，打印所有出现次数大于n/k的数，如果没有这样的数，打印提示信息。<br>要求：原问题要求的时间复杂度为O(n),额外空间复杂度为O(1)，进阶问题要求时间复杂度为O(n*k)，额外空间复杂度为O(k)。<br>解答：无论是原问题还是进阶问题，都可以用哈希表记录每个数及其出现的次数，但是额外空间复杂度为O(n)，不符合题目要求，所以本书不再详细讲这种方法。本书提供方法的核心思路是，一次在数组中删除k个不同的数，不停地删除，直到剩下数的种类不足k就停止删除，那么，如果一个数在数组中出现的次数大于n/k，则这个数最后一定会被生下来。<br>原问题，出现次数大于一半的数最多只会有一个，还可能不存在这样的数。具体的过程为，一次在数组中删除两个不的数，不停地删除，直到剩下的数只有一种，如果一个数出现次数大于一半，这个数最后一定会剩下来。如下代码中的printHalfMajor方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">   public static void printHalfMajor(int[] arr) &#123;</span><br><span class="line">	int cand = 0;</span><br><span class="line">	int times = 0;</span><br><span class="line">	for (int i = 0; i != arr.length; i++) &#123;</span><br><span class="line">		if (times == 0) &#123;</span><br><span class="line">			cand = arr[i];</span><br><span class="line">			times = 1;</span><br><span class="line">		&#125; else if (arr[i] == cand) &#123;</span><br><span class="line">			times++;</span><br><span class="line">		&#125; else &#123;</span><br><span class="line">			times--;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	times = 0;</span><br><span class="line">	for (int i = 0; i != arr.length; i++) &#123;</span><br><span class="line">		if (arr[i] == cand) &#123;</span><br><span class="line">			times++;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	if (times &gt; arr.length / 2) &#123;</span><br><span class="line">		System.out.println(cand);</span><br><span class="line">	&#125; else &#123;</span><br><span class="line">		System.out.println(&quot;no such number.&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>第一个for循环就是一次在数组中删除掉两个不同的数的代码实现。<br>把cand变量叫候选，times叫作次数，读者先不用纠结这两个变量是什么意义，我们看在第一个for循环中发生了什么。<br>        times=0时，表示当前没有候选，则把当前数arr[i]设为候选，同时把times设置成1.<br>        times!=0时，表示当前有候选，如果当前的数arr[i]与候选一样，同时把times加1，如果当前的数att[i]与候选不一样，就把times减1，减到0则表示又没有候选了。<br>进阶问题也是类似的思想，一次在数组中删除k个不同的数，不停地删除，直到剩下的数的种类不足k，那么，如果某些数在数组中出现次数大于n/k，则这些数最后一定会剩下来。<br>具体参看如下的printKMajor方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">   public static void printKMajor(int[] arr, int K) &#123;</span><br><span class="line">	if (K &lt; 2) &#123;</span><br><span class="line">		System.out.println(&quot;the value of K is invalid.&quot;);</span><br><span class="line">		return;</span><br><span class="line">	&#125;</span><br><span class="line">	HashMap&lt;Integer, Integer&gt; cands = new HashMap&lt;Integer, Integer&gt;();</span><br><span class="line">	for (int i = 0; i != arr.length; i++) &#123;</span><br><span class="line">		if (cands.containsKey(arr[i])) &#123;</span><br><span class="line">			cands.put(arr[i], cands.get(arr[i]) + 1);</span><br><span class="line">		&#125; else &#123;</span><br><span class="line">			if (cands.size() == K - 1) &#123;</span><br><span class="line">				allCandsMinusOne(cands);</span><br><span class="line">			&#125; else &#123;</span><br><span class="line">				cands.put(arr[i], 1);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	HashMap&lt;Integer, Integer&gt; reals = getReals(arr, cands);</span><br><span class="line">	boolean hasPrint = false;</span><br><span class="line">	for (Entry&lt;Integer, Integer&gt; set : cands.entrySet()) &#123;</span><br><span class="line">		Integer key = set.getKey();</span><br><span class="line">		if (reals.get(key) &gt; arr.length / K) &#123;</span><br><span class="line">			hasPrint = true;</span><br><span class="line">			System.out.print(key + &quot; &quot;);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	System.out.println(hasPrint ? &quot;&quot; : &quot;no such number.&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static void allCandsMinusOne(HashMap&lt;Integer, Integer&gt; map) &#123;</span><br><span class="line">	List&lt;Integer&gt; removeList = new LinkedList&lt;Integer&gt;();</span><br><span class="line">	for (Entry&lt;Integer, Integer&gt; set : map.entrySet()) &#123;</span><br><span class="line">		Integer key = set.getKey();</span><br><span class="line">		Integer value = set.getValue();</span><br><span class="line">		if (value == 1) &#123;</span><br><span class="line">			removeList.add(key);</span><br><span class="line">		&#125;</span><br><span class="line">		map.put(key, value - 1);</span><br><span class="line">	&#125;</span><br><span class="line">	for (Integer removeKey : removeList) &#123;</span><br><span class="line">		map.remove(removeKey);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static HashMap&lt;Integer, Integer&gt; getReals(int[] arr,</span><br><span class="line">		HashMap&lt;Integer, Integer&gt; cands) &#123;</span><br><span class="line">	HashMap&lt;Integer, Integer&gt; reals = new HashMap&lt;Integer, Integer&gt;();</span><br><span class="line">	for (int i = 0; i != arr.length; i++) &#123;</span><br><span class="line">		int curNum = arr[i];</span><br><span class="line">		if (cands.containsKey(curNum)) &#123;</span><br><span class="line">			if (reals.containsKey(curNum)) &#123;</span><br><span class="line">				reals.put(curNum, reals.get(curNum) + 1);</span><br><span class="line">			&#125; else &#123;</span><br><span class="line">				reals.put(curNum, 1);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	return reals;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>7，在行列都排好序的矩阵中找数<br>    题目：给定一个m*n的整型矩阵matrix和一个整数k，matrix的每一行和每一列都是排好序的。实现函数，判断k是否在matrix中。<br>    例如：<br>        0   1   2   3<br>        2   3   4   7<br>        4   4   4   7<br>        5   7   7   9<br>        如果k为7，返回true；如果k为6，返回false。<br>    要求：时间复杂度为O(n+m)，额外空间复杂度为O(1)。<br>    思路:用以下步骤解决<br>        1),从矩阵最右上角的数开始寻找(row=0,col=m-1)。<br>        2),比较当前数matrix[row][col]与k的关系：<br>            如果与k相等，说明已找到，直接返回true。<br>            如果比k大，因为矩阵每一列都已拍好，所以在当前数所在的列中，处于当前数下方的数都会比k小，则没必要继续在第col列上寻找，令col=col-1，重复步骤2。<br>            如果比k小，因为矩阵每一行都已排好序，所以在当前数所在的行中，处于当前数左方的数都会比k小，则没有必要继续在第row行上寻找，令row=row-1，重复步骤2.<br>        3),如果找到越界都没有发现与k相等的数，则返回false。<br>    或者，也可以用以下步骤。<br>        1),从矩阵最左下角的数开始寻找(row=n-1,col=0)。<br>        2),比较当前数matrix[row][col]与k的关系：<br>            如果比与k相等，说明找到了，返回true。<br>            如果比k大，因为矩阵每一行都已经排好序，所以在当前数所在的行中，当前数右方的数都会比k大，则没有必要继续在第row行上寻找，令row=row-1，重复步骤2.<br>            如果比k小，因为矩阵每一列都已排序，所以在当前数所在的列中，处于数上方的数都会比k小，则没有必要继续在第col列上寻找，令col=col+1，重复步骤。<br>        3),如果越界还没有发现与k相等的数，则返回false。<br>        具体请参看如下代码中的isContains方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">   public static boolean isContains(int[][] matrix, int K) &#123;</span><br><span class="line">	int row = 0;</span><br><span class="line">	int col = matrix[0].length - 1;</span><br><span class="line">	while (row &lt; matrix.length &amp;&amp; col &gt; -1) &#123;</span><br><span class="line">		if (matrix[row][col] == K) &#123;</span><br><span class="line">			return true;</span><br><span class="line">		&#125; else if (matrix[row][col] &gt; K) &#123;</span><br><span class="line">			col--;</span><br><span class="line">		&#125; else &#123;</span><br><span class="line">			row++;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	return false;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>8，    最长的可整合子数组的长度<br>    题目：给出最长可整合子数组长度定义，一个数组在排序后，每相邻两个数差值的绝对值都为1，则该数组为可整合数组。例如，[5,3,4,6,2],符合每相邻两个数差的绝对值都为1，所以这个数组为可整合数组。<br>    给定一个整型数组arr，请返回其中最大可整合子数组的长度。例如，[5,5,3,2,6,3]的最大可整合子数组为[5,3,2,6,4]。<br>    解答：时间复杂度高但简单的解法，对arr中的每一个子数组arr<a href="0<=i<=j<=n-1">i…j</a>，都验证一下是否符合可整合数组的定义，也就是把arr[i..j]排序一下，看是否依次递增且每次递增1。然后在所有符合可整合数组定义的子数组中，记录最大的那个长度，返回即可。需要注意的是，在考察每一个arr[i…j]是否符合数组定义的时候，都得把arr[i…j]单独复制成一个新的数组，然后把这个新的数组排序、验证，而不能直接改变arr中元素的顺序。所以大体过程如下：<br>        1)，依次考查每一个子数组arr[i…j]，一共有n的平方。<br>        2),对每一个子数组arr[i…j]，复制成一个新的数组，记为newArr，把newArr排序，然后验证是否可整合数组的定义，这一步代价为O(nlogn)。<br>        3),步骤3中符合条件的、最大的那个子数组的长度就是结果。<br>    具体参看如下代码中的getLIL1方法，时间复杂度为O(n<em>n) * O(nlogn)–&gt;O（n</em>n*n * logn）。<br>    代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">public static int getLIL1(int[] arr) &#123;</span><br><span class="line">	if (arr == null || arr.length == 0) &#123;</span><br><span class="line">		return 0;</span><br><span class="line">	&#125;</span><br><span class="line">	int len = 0;</span><br><span class="line">	for (int i = 0; i &lt; arr.length; i++) &#123;</span><br><span class="line">		for (int j = i; j &lt; arr.length; j++) &#123;</span><br><span class="line">			if (isIntegrated(arr, i, j)) &#123;</span><br><span class="line">				len = Math.max(len, j - i + 1);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	return len;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static boolean isIntegrated(int[] arr, int left, int right) &#123;</span><br><span class="line">	int[] newArr = Arrays.copyOfRange(arr, left, right + 1); // O(N)</span><br><span class="line">	Arrays.sort(newArr); // O(N*logN)</span><br><span class="line">	for (int i = 1; i &lt; newArr.length; i++) &#123;</span><br><span class="line">		if (newArr[i - 1] != newArr[i] - 1) &#123;</span><br><span class="line">			return false;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	return true;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这是时间复杂度非常高的方法。<br>更高效的方法，有没有更高效的判断可整合数组的方法呢？也就是有没有更高效的方法来加速验证呢？判断一个数组是否是可整合数组还可以用以下方法来判断，一个数组中如果没有重复元素，并且如果最大值减去最小值，再加1的结果等于元素个数(max-min+1==元素个数),那么这个数组就是可整合数组。比如[3,2,5,6,4]，max-min+1=6-2+1=元素个数，所以这个数组是可整合数组。<br>这样，验证一个数组是否是可整合数组的时间复杂度可以从O(nlogn)加速至O(1)，整个过程的时间复杂度就可加速到O(n*n)。具体参看如下代码中的getLIL2方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">   public static int getLIL2(int[] arr) &#123;</span><br><span class="line">	if (arr == null || arr.length == 0) &#123;</span><br><span class="line">		return 0;</span><br><span class="line">	&#125;</span><br><span class="line">	int len = 0;</span><br><span class="line">	int max = 0;</span><br><span class="line">	int min = 0;</span><br><span class="line">	HashSet&lt;Integer&gt; set = new HashSet&lt;Integer&gt;(); </span><br><span class="line">	for (int i = 0; i &lt; arr.length; i++) &#123;</span><br><span class="line">		max = Integer.MIN_VALUE;</span><br><span class="line">		min = Integer.MAX_VALUE;</span><br><span class="line">		for (int j = i; j &lt; arr.length; j++) &#123;</span><br><span class="line">			if (set.contains(arr[j])) &#123;</span><br><span class="line">				break;</span><br><span class="line">			&#125;</span><br><span class="line">			set.add(arr[j]);</span><br><span class="line">			max = Math.max(max, arr[j]);</span><br><span class="line">			min = Math.min(min, arr[j]);</span><br><span class="line">			if (max - min == j - i) &#123; </span><br><span class="line">				len = Math.max(len, j - i + 1);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		set.clear();</span><br><span class="line">	&#125;</span><br><span class="line">	return len;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+      
+
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/数组和矩阵问题算法/" rel="tag"># 数组和矩阵问题算法</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2018/08/26/位运算/" rel="next" title="位运算">
+                  <i class="fa fa-chevron-left"></i> 位运算
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2018/08/26/Manacher算法分析/" rel="prev" title="Manacher算法分析">
+                  Manacher算法分析 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/timg.jpg"
+      alt="Lu Tian">
+  <p class="site-author-name" itemprop="name">Lu Tian</p>
+  <div class="site-description" itemprop="description">每天进步一点点</div>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/ltt19921124" title="GitHub &rarr; https://github.com/ltt19921124" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="/ltt19921124@163.com" title="E-Mail &rarr; ltt19921124@163.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="/302851414" title="QQ &rarr; 302851414"><i class="fa fa-fw fa-QQ"></i>QQ</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://liuwangshu.cn/" title="http://liuwangshu.cn/" rel="noopener" target="_blank">刘望舒</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/singwhatiwanna/" title="https://blog.csdn.net/singwhatiwanna/" rel="noopener" target="_blank">任玉刚</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://me.csdn.net/sinyu890807" title="https://me.csdn.net/sinyu890807" rel="noopener" target="_blank">郭霖</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lu Tian</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数"></span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长"></span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

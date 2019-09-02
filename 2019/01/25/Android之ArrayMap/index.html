@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/TiddlyWiki.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-.min.css?v=1.0.2">
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="参考Android达摩院的ArrayMap文章。ArrayMap是Android中存储的一个数据结构。是Android专门针对内存优化而设计的，用于取代Java API中的HashMap。为了进一步优化key是int类型的Map，Android再次提供了效率更高的数据结构SparseArray，可避免自动装箱过程。对于key为其他类型则使用ArrayMap。HashMap的get和put方法的时间">
+<meta name="keywords" content="安卓">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android之ArrayMap">
+<meta property="og:url" content="http://yoursite.com/2019/01/25/Android之ArrayMap/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="参考Android达摩院的ArrayMap文章。ArrayMap是Android中存储的一个数据结构。是Android专门针对内存优化而设计的，用于取代Java API中的HashMap。为了进一步优化key是int类型的Map，Android再次提供了效率更高的数据结构SparseArray，可避免自动装箱过程。对于key为其他类型则使用ArrayMap。HashMap的get和put方法的时间">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/picture/arrmap.png">
+<meta property="og:updated_time" content="2019-03-06T18:49:01.290Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android之ArrayMap">
+<meta name="twitter:description" content="参考Android达摩院的ArrayMap文章。ArrayMap是Android中存储的一个数据结构。是Android专门针对内存优化而设计的，用于取代Java API中的HashMap。为了进一步优化key是int类型的Map，Android再次提供了效率更高的数据结构SparseArray，可避免自动装箱过程。对于key为其他类型则使用ArrayMap。HashMap的get和put方法的时间">
+<meta name="twitter:image" content="http://yoursite.com/picture/arrmap.png">
+  <link rel="canonical" href="http://yoursite.com/2019/01/25/Android之ArrayMap/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Android之ArrayMap | Hexo</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/25/Android之ArrayMap/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lu Tian">
+      <meta itemprop="description" content="每天进步一点点">
+      <meta itemprop="image" content="/images/timg.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">Android之ArrayMap
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-25 01:58:00" itemprop="dateCreated datePublished" datetime="2019-01-25T01:58:00+08:00">2019-01-25</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-03-07 02:49:01" itemprop="dateModified" datetime="2019-03-07T02:49:01+08:00">2019-03-07</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/安卓-数据结构/" itemprop="url" rel="index"><span itemprop="name">安卓 数据结构</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span></span>
+            </span>
+          
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong>参考Android达摩院的ArrayMap文章。</strong><br>ArrayMap是Android中存储的一个数据结构。是Android专门针对内存优化而设计的，用于取代Java API中的HashMap。为了进一步优化key是int类型的Map，Android再次提供了效率更高的数据结构SparseArray，可避免自动装箱过程。对于key为其他类型则使用ArrayMap。HashMap的get和put方法的时间复杂度是O(1)是以牺牲大量内存为代价而才得以实现的，SparseArray和ArrayMap性能略低于HashMap，但是更节省内存，用在移动端是权衡的结果。</p>
+<a id="more"></a>
+<h2 id="一、ArrayMap源码分析"><a href="#一、ArrayMap源码分析" class="headerlink" title="一、ArrayMap源码分析"></a>一、ArrayMap源码分析</h2><h3 id="1-1-基本成员变量"><a href="#1-1-基本成员变量" class="headerlink" title="1.1 基本成员变量"></a>1.1 基本成员变量</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">public final class ArrayMap&lt;K,V&gt; implements Map&lt;K,V&gt; &#123;</span><br><span class="line">    </span><br><span class="line">    private static final boolean CONCURRENT_MODIFICATION_EXCEPTIONS = true;</span><br><span class="line">    //默认的容量的最小值</span><br><span class="line">    private static final int BASE_SIZE = 4;</span><br><span class="line">    //缓存数组的上限</span><br><span class="line">    private static final int CACHE_SIZE = 10;</span><br><span class="line">    //用于缓存大小为4的ArrayMap</span><br><span class="line">    static Object[] mBaseCache;</span><br><span class="line"></span><br><span class="line">    static int mBaseCacheSize;</span><br><span class="line">    //用于缓存大小为8的ArrayMap</span><br><span class="line">    static Object[] mTwiceBaseCache;</span><br><span class="line">    static int mTwiceBaseCacheSize;</span><br><span class="line"></span><br><span class="line">    final boolean mIdentityHashCode;</span><br><span class="line">    //由key的hashcode所组成的数组</span><br><span class="line">    int[] mHashes;</span><br><span class="line">    //由key-value对所组成的数组，是mHashes的两倍</span><br><span class="line">    Object[] mArray;</span><br><span class="line">    //成员变量的个数</span><br><span class="line">    int mSize;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>1,ArrayMap对象的存储格式如下图所示：</p>
+<ul>
+<li>mHashes是一个记录所有key的hashcode值组成的数组，是从升序排序</li>
+<li>mArray是一个记录着所有key-value键值对所组成的数组</li>
+</ul>
+<p><img src="/picture/arrmap.png" alt></p>
+<p>mSize:记录ArrayMap对象中有多少对数据，put或append方法时，mSize会加1，执行remove则减1。mSize往往小于mHashes.length，如果mSize大于或等于mHashes.length，则说明mHashes和mArray需要扩容。</p>
+<p>2，ArrayMap中还有两个很重要的成员变量mBaseCache和mTwiceBaseCache，用于ArrayMap所在进程的全局缓存功能。</p>
+<ul>
+<li><strong>mBaseCache</strong>：用于缓存大小为4的ArrayMap，mBaseCacheSize记录着当前已缓存的数据，超过10个就不在缓存</li>
+<li><strong>mTwiceBaseCache</strong>：用于缓存大小为8的ArrayMap，mTwiceBaseCache记录着当前已缓存的数量，超过10个则不再缓存<br>ArrayMap用两个大小为10的缓存队列来分别保存大小为4和8的Map对象。为了节省内存有更加保守的内存扩容和内存收缩策略。我们来看看ArrayMap缓存和扩容机制。<h3 id="1-2-ArrayMap缓存机制"><a href="#1-2-ArrayMap缓存机制" class="headerlink" title="1.2 ArrayMap缓存机制"></a>1.2 ArrayMap缓存机制</h3>ArrayMap是专门为Android优化而设计的Map对象，使用比较高频，很多场景可能起初都是数据很少，为了减少频繁地创建和回收，特意设计了两个缓存池，分别缓存大小为4和8的ArrayMap对象。要理解缓存机制，就需要看内存是怎么分配(allocArrays)和内存释放(freeArrays)。<h4 id="1-2-1"><a href="#1-2-1" class="headerlink" title="1.2.1"></a>1.2.1</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">228  private static void freeArrays(final int[] hashes, final Object[] array, final int size) &#123;</span><br><span class="line">229        if (hashes.length == (BASE_SIZE*2)) &#123;</span><br><span class="line">230            synchronized (ArrayMap.class) &#123;</span><br><span class="line">                  当大小为8的缓存池数量小于10个，则将其放入缓存池</span><br><span class="line">231                if (mTwiceBaseCacheSize &lt; CACHE_SIZE) &#123;</span><br><span class="line">232                    array[0] = mTwiceBaseCache;//arr[0]指向原来的缓存池</span><br><span class="line">233                    array[1] = hashes;</span><br><span class="line">234                    for (int i=(size&lt;&lt;1)-1; i&gt;=2; i--) &#123;</span><br><span class="line">235                        array[i] = null;//清空其它数据</span><br><span class="line">236                    &#125;</span><br><span class="line">237                    mTwiceBaseCache = array;//mTwiceBaseCache指向新加入缓存池的Array</span><br><span class="line">238                    mTwiceBaseCacheSize++;</span><br><span class="line">239                    if (DEBUG) Log.d(TAG, &quot;Storing 2x cache &quot; + array</span><br><span class="line">240                            + &quot; now have &quot; + mTwiceBaseCacheSize + &quot; entries&quot;);</span><br><span class="line">241                &#125;</span><br><span class="line">242            &#125;</span><br><span class="line">243        &#125; else if (hashes.length == BASE_SIZE) &#123;//当释放的是大小为4的对象，原理同上</span><br><span class="line">244            synchronized (ArrayMap.class) &#123;</span><br><span class="line">245                if (mBaseCacheSize &lt; CACHE_SIZE) &#123;</span><br><span class="line">246                    array[0] = mBaseCache;</span><br><span class="line">247                    array[1] = hashes;</span><br><span class="line">248                    for (int i=(size&lt;&lt;1)-1; i&gt;=2; i--) &#123;</span><br><span class="line">249                        array[i] = null;</span><br><span class="line">250                    &#125;</span><br><span class="line">251                    mBaseCache = array;</span><br><span class="line">252                    mBaseCacheSize++;</span><br><span class="line">253                    if (DEBUG) Log.d(TAG, &quot;Storing 1x cache &quot; + array</span><br><span class="line">254                            + &quot; now have &quot; + mBaseCacheSize + &quot; entries&quot;);</span><br><span class="line">255                &#125;</span><br><span class="line">256            &#125;</span><br><span class="line">257        &#125;</span><br><span class="line">258  &#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>如上代码就是freeArrays方法的代码，最初mTwiceBaseCacheSize和mBaseCacheSize缓存池中都没有数据，在freeArrays释放内存时，如果同时满足释放的Arrays大小等于4或8，且对应的缓存池个数未达上限，则会把该array加入到缓存池中。加入的方法时将数组array的0角标元素指向原有的缓存池，1角标元素指向hashes数组的地址，arr[2]元素以后的数据全部为null。再把缓存池的头部指向最新的array的位置，并将该缓存池大小执行加1操作。<br>freeArrays触发时机</p>
+<ul>
+<li>当执行removeAt()移除最后一个元素的情况</li>
+<li>当执行clear()清理的时候</li>
+<li>当执行ensureCapacity()在当前容量小于预期容量的时候，先执行allocArrays函数，再执行freeArrays函数</li>
+<li>当执行put()在容量满的时候，先执行allocArrays，再执行freeArrays<h4 id="1-2-2"><a href="#1-2-2" class="headerlink" title="1.2.2"></a>1.2.2</h4>allocArrays()函数代码<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">190 private void allocArrays(final int size) &#123;</span><br><span class="line">191        if (mHashes == EMPTY_IMMUTABLE_INTS) &#123;</span><br><span class="line">192            throw new UnsupportedOperationException(&quot;ArrayMap is immutable&quot;);</span><br><span class="line">193        &#125;</span><br><span class="line">194        if (size == (BASE_SIZE*2)) &#123;//当分配大小为8的对象，先查看缓存池</span><br><span class="line">195            synchronized (ArrayMap.class) &#123;</span><br><span class="line">196                if (mTwiceBaseCache != null) &#123;//当缓存池不为空时</span><br><span class="line">197                    final Object[] array = mTwiceBaseCache;</span><br><span class="line">198                    mArray = array;//从缓存中取出mArray</span><br><span class="line">199                    mTwiceBaseCache = (Object[])array[0];//将缓存池指向上一条缓存地址</span><br><span class="line">200                    mHashes = (int[])array[1];//从缓存中mHashes</span><br><span class="line">201                    array[0] = array[1] = null;</span><br><span class="line">202                    mTwiceBaseCacheSize--;//缓存池大小减1</span><br><span class="line">203                    if (DEBUG) Log.d(TAG, &quot;Retrieving 2x cache &quot; + mHashes</span><br><span class="line">204                            + &quot; now have &quot; + mTwiceBaseCacheSize + &quot; entries&quot;);</span><br><span class="line">205                    return;</span><br><span class="line">206                &#125;</span><br><span class="line">207            &#125;</span><br><span class="line">208        &#125; else if (size == BASE_SIZE) &#123;////当分配的是大小为4的对象，原理同上</span><br><span class="line">209            synchronized (ArrayMap.class) &#123;</span><br><span class="line">210                if (mBaseCache != null) &#123;</span><br><span class="line">211                    final Object[] array = mBaseCache;</span><br><span class="line">212                    mArray = array;</span><br><span class="line">213                    mBaseCache = (Object[])array[0];</span><br><span class="line">214                    mHashes = (int[])array[1];</span><br><span class="line">215                    array[0] = array[1] = null;</span><br><span class="line">216                    mBaseCacheSize--;</span><br><span class="line">217                    if (DEBUG) Log.d(TAG, &quot;Retrieving 1x cache &quot; + mHashes</span><br><span class="line">218                            + &quot; now have &quot; + mBaseCacheSize + &quot; entries&quot;);</span><br><span class="line">219                    return;</span><br><span class="line">220                &#125;</span><br><span class="line">221            &#125;</span><br><span class="line">222        &#125;</span><br><span class="line">            //分配除了4和8之外大小对象的情况，则直接创建新的数组</span><br><span class="line">223        mHashes = new int[size];</span><br><span class="line">225        mArray = new Object[size&lt;&lt;1];</span><br><span class="line">226  &#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>allocArrays分配内存时，如果所需分配的大小等于4或8，且相应的缓存池不为空，则会从相应的缓存池中取出</p>
+
+    </div>
+
+    
+    
+    
+      
+
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/安卓/" rel="tag"># 安卓</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/01/12/java反射机制学习/" rel="next" title="java反射机制学习">
+                  <i class="fa fa-chevron-left"></i> java反射机制学习
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/02/01/单调栈结构/" rel="prev" title="单调栈结构">
+                  单调栈结构 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、ArrayMap源码分析"><span class="nav-number">1.</span> <span class="nav-text">一、ArrayMap源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-基本成员变量"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 基本成员变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-ArrayMap缓存机制"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 ArrayMap缓存机制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-1"><span class="nav-number">1.2.1.</span> <span class="nav-text">1.2.1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-2"><span class="nav-number">1.2.2.</span> <span class="nav-text">1.2.2</span></a></li></ol></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/timg.jpg"
+      alt="Lu Tian">
+  <p class="site-author-name" itemprop="name">Lu Tian</p>
+  <div class="site-description" itemprop="description">每天进步一点点</div>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/ltt19921124" title="GitHub &rarr; https://github.com/ltt19921124" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="/ltt19921124@163.com" title="E-Mail &rarr; ltt19921124@163.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="/302851414" title="QQ &rarr; 302851414"><i class="fa fa-fw fa-QQ"></i>QQ</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://liuwangshu.cn/" title="http://liuwangshu.cn/" rel="noopener" target="_blank">刘望舒</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/singwhatiwanna/" title="https://blog.csdn.net/singwhatiwanna/" rel="noopener" target="_blank">任玉刚</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://me.csdn.net/sinyu890807" title="https://me.csdn.net/sinyu890807" rel="noopener" target="_blank">郭霖</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lu Tian</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数"></span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长"></span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

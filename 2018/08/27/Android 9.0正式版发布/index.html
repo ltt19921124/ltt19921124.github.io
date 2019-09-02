@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/TiddlyWiki.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-.min.css?v=1.0.2">
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="注：此篇文章内容来自于刘望舒的公众号。历时一年google于昨天发布了android 9.0正式版，并宣布系统版本android p被正式命名为”Pie”(馅饼)。此名并不意外，此前有关android 9.0系统的活动就是在3月14号举行的，而3月14号正是有名的”Pie”日(圆周率)纪念日。">
+<meta name="keywords" content="安卓,google io">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 9.0正式版发布">
+<meta property="og:url" content="http://yoursite.com/2018/08/27/Android 9.0正式版发布/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="注：此篇文章内容来自于刘望舒的公众号。历时一年google于昨天发布了android 9.0正式版，并宣布系统版本android p被正式命名为”Pie”(馅饼)。此名并不意外，此前有关android 9.0系统的活动就是在3月14号举行的，而3月14号正是有名的”Pie”日(圆周率)纪念日。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-11-09T14:32:04.898Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 9.0正式版发布">
+<meta name="twitter:description" content="注：此篇文章内容来自于刘望舒的公众号。历时一年google于昨天发布了android 9.0正式版，并宣布系统版本android p被正式命名为”Pie”(馅饼)。此名并不意外，此前有关android 9.0系统的活动就是在3月14号举行的，而3月14号正是有名的”Pie”日(圆周率)纪念日。">
+  <link rel="canonical" href="http://yoursite.com/2018/08/27/Android 9.0正式版发布/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Android 9.0正式版发布 | Hexo</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/27/Android 9.0正式版发布/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lu Tian">
+      <meta itemprop="description" content="每天进步一点点">
+      <meta itemprop="image" content="/images/timg.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">Android 9.0正式版发布
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2018-08-27 11:33:58" itemprop="dateCreated datePublished" datetime="2018-08-27T11:33:58+08:00">2018-08-27</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2018-11-09 22:32:04" itemprop="dateModified" datetime="2018-11-09T22:32:04+08:00">2018-11-09</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/安卓/" itemprop="url" rel="index"><span itemprop="name">安卓</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span></span>
+            </span>
+          
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>注：此篇文章内容来自于刘望舒的公众号。<br>历时一年google于昨天发布了android 9.0正式版，并宣布系统版本android p被正式命名为”Pie”(馅饼)。<br>此名并不意外，此前有关android 9.0系统的活动就是在3月14号举行的，而3月14号正是有名的”Pie”日(圆周率)纪念日。</p>
+<a id="more"></a>
+<p>android 9.0系统重大更新<br>    在正式版本推送前，google曾经陆续发布了三个预览版本，根据google官方博客表示，在这期间共有超过140000名开发者通过android beta项目试用了之前发布的开发者预览版，收到了<br>超过1000条报错与特性请求。<br>        然后经过一系列的开发和反复测试，终于于昨天发布了正式版本，谷歌已经向全球的pixel设备推送了正式版的更新。<br>        动态电量管理<br>            android 9.0主打 AI技术，声称”让智能手机变得更便捷、操作更简单更贴合需求”，利用机器学习技术对系统资源进行有效分配。它能够记录用户最常用的应用，并为这些应用进行有限分配。它能够记录用户最常用的应用，并为这些应用有限分配电量；而一些不常用的应用则会被智能休眠，从而保证充足的电池续航时间。<br>        文本识别与Smart Linkify<br>            android 9中对识别文本的机器学习模型进行了扩展，使其可以识别出类似日期或航班号这样的信息，此外，smart linkify还允许开发者通过linkify api使用文本识别模式完成多项操作，比如对用户可采取的操作提出建议，让系统在文本识别精确度与速度上都有所提升。<br>        神经网络 API 1.1<br>            优化了对神经网络api，进行了扩展与改进，进一步优化了android对机器学习硬件加速的支持。神经网络api 1.1,共增加了9个新算子的支持，他们分别是Pad、BatchToSpaceND、SpaceToBatchND、Transpace、Strided Slice、Mean、Div、Sub和Squeeze。TensorFlow Lite就是一个已经用上此API的典型机器学习框架。<br>        凹口屏支持<br>            增加了凹口屏的支持，系统会通过调整状态栏高度将应用内容与屏幕缺口区域分开。如果用户的应用含有沉浸式内容，可调用displaycutout apis确认缺口形状与位置，然后请求围绕缺口进行全面布局。另外，系统还加入了开发者选项模拟任意设备上的凹口形状，极大简化了应用支持凹口屏幕所需要的构建以及测试流程。<br>        文本放大镜<br>            android 9中添加了文字放大镜工具(Magnifier widget)。由于该放大器提供了可以在文本上拖拽的文本放大面板，所以有助于用户精准地定位光标或文本选择手柄。这个功能能够运用在所有附加在窗口的视图上，比如个性化小部件和定制文本呈现等等。而且，该放大器工具还可以提供任何视图或界面的放大版本，而不仅仅是文本。<br>        默认使用HTTPS<br>            为了将所有的网络流量从明文逐渐迁移至TLS，系统改变了从网络安全配置的默认设置，以阻止所有明文流量，强制应用通过TLS建立网络连接，除非开发者明确允许特定域名使用明文传输。<br>        用户隐私保护<br>            android 9新加入了多项机制，加强了对用户隐私的保护。系统禁止所有处于空闲状态的应用对话筒、摄像头和所有sensormanager传感器的访问。当应用的UID空闲时，麦克风将会报告”无音频信号”,传感器将会停止报告事件，应用使用的摄像头也会断开连接，并在应用试图访问时生成错误。<br>        使用wifi-rtt,进行室内定位<br>            android 9为IEEE 802.11mc Wi-Fi协议添加了平台支持(也成为WiFi往返时间，RTT)，可以让用户在应用中使用室内定位功能。在提供硬件支持的android 9设备上，在启动位置服务并勾选”允许获取地理位置信息”选项后，应用就可以使用RTT API测量与附近WiFi接入点的距离。除此之外，android 9中还包括大量其他的新特性，比如借助ART运行时显著提高了应用的特性表现与运行效率；改进和优化了Kotlin代码性能；改善了通知的实用性和可操作性，可以调用新的messagingstyle api来显示对话、附加照片、表情和智能回复建议；引入了统一的身份验证对话框，支持指纹识别、面部识别以及虹膜识别等等更多性能可查看谷歌官方微博。<br>            从今天开始，pixel设备将陆续获取android 9的更新推送。<br>        除此之外，android碎片化问题仍然存在，在android系统版本中，android 6.0占比最多，7.0、7.1占比之和30.8超过6.0，android 8.0份额在提升，速度也很快。<br>        对于开发者有什么意义?<br>            值得关注的是project treble机制，这个机制在9.0开始，google深度集成这一特性，并且不允许厂商进行阉割。这就是为什么今年vivo、小米等国产厂商都在今年的io大会就支持了android p的升级，这也是必须支持。<br>            pt机制带来的好处是，能够帮助oem厂商更快地为旗下android智能手机推送最新的系统版本，同时也能够让厂商更加便利地定制和修改自己的系统。另一方面，也可以让手机厂商绕过芯片厂商直接提供最新的android版本升级。</p>
+
+    </div>
+
+    
+    
+    
+      
+
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/安卓/" rel="tag"># 安卓</a>
+            
+              <a href="/tags/google-io/" rel="tag"># google io</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2018/08/27/安卓基础/" rel="next" title="安卓基础">
+                  <i class="fa fa-chevron-left"></i> 安卓基础
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2018/08/27/Java中this和super关键字的用法/" rel="prev" title="Java中this和super关键字的用法">
+                  Java中this和super关键字的用法 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/timg.jpg"
+      alt="Lu Tian">
+  <p class="site-author-name" itemprop="name">Lu Tian</p>
+  <div class="site-description" itemprop="description">每天进步一点点</div>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/ltt19921124" title="GitHub &rarr; https://github.com/ltt19921124" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="/ltt19921124@163.com" title="E-Mail &rarr; ltt19921124@163.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="/302851414" title="QQ &rarr; 302851414"><i class="fa fa-fw fa-QQ"></i>QQ</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://liuwangshu.cn/" title="http://liuwangshu.cn/" rel="noopener" target="_blank">刘望舒</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/singwhatiwanna/" title="https://blog.csdn.net/singwhatiwanna/" rel="noopener" target="_blank">任玉刚</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://me.csdn.net/sinyu890807" title="https://me.csdn.net/sinyu890807" rel="noopener" target="_blank">郭霖</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lu Tian</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数"></span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长"></span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

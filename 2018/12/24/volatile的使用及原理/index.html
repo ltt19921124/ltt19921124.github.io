@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/TiddlyWiki.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-.min.css?v=1.0.2">
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="一、volatile的使用我们先理解可见性、有序性以及原子性三个概念，通常我们用synchronized关键字来解决这些问题，不过synchronized是重量级锁，对系统的性能有比较大的影响，所以如果有其他解决方案，我们都会优先考虑其他方案，避免使用synchronized关键字。而volatile关键字是就是java提供的解决可见性和有序性问题的关键字。注意：对于原子性，volatile变量的">
+<meta name="keywords" content="java,并发,volatile">
+<meta property="og:type" content="article">
+<meta property="og:title" content="volatile的使用及原理">
+<meta property="og:url" content="http://yoursite.com/2018/12/24/volatile的使用及原理/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="一、volatile的使用我们先理解可见性、有序性以及原子性三个概念，通常我们用synchronized关键字来解决这些问题，不过synchronized是重量级锁，对系统的性能有比较大的影响，所以如果有其他解决方案，我们都会优先考虑其他方案，避免使用synchronized关键字。而volatile关键字是就是java提供的解决可见性和有序性问题的关键字。注意：对于原子性，volatile变量的">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-12-24T17:06:27.267Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="volatile的使用及原理">
+<meta name="twitter:description" content="一、volatile的使用我们先理解可见性、有序性以及原子性三个概念，通常我们用synchronized关键字来解决这些问题，不过synchronized是重量级锁，对系统的性能有比较大的影响，所以如果有其他解决方案，我们都会优先考虑其他方案，避免使用synchronized关键字。而volatile关键字是就是java提供的解决可见性和有序性问题的关键字。注意：对于原子性，volatile变量的">
+  <link rel="canonical" href="http://yoursite.com/2018/12/24/volatile的使用及原理/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>volatile的使用及原理 | Hexo</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/24/volatile的使用及原理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lu Tian">
+      <meta itemprop="description" content="每天进步一点点">
+      <meta itemprop="image" content="/images/timg.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">volatile的使用及原理
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2018-12-24 22:12:53" itemprop="dateCreated datePublished" datetime="2018-12-24T22:12:53+08:00">2018-12-24</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2018-12-25 01:06:27" itemprop="dateModified" datetime="2018-12-25T01:06:27+08:00">2018-12-25</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span></span>
+            </span>
+          
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="一、volatile的使用"><a href="#一、volatile的使用" class="headerlink" title="一、volatile的使用"></a>一、volatile的使用</h2><p>我们先理解可见性、有序性以及原子性三个概念，通常我们用synchronized关键字来解决这些问题，不过synchronized是重量级锁，对系统的性能有比较大的影响，所以如果有其他解决方案，我们都会优先考虑其他方案，避免使用synchronized关键字。而volatile关键字是就是java提供的解决可见性和有序性问题的关键字。注意：对于原子性，volatile变量的单次读写操作可以保证原子性，如long、double类型变量，但是不能保证i++这种操作的原子性，因为i++本质上是读、写两次操作。</p>
+<a id="more"></a>
+<h2 id="二、volatile的使用"><a href="#二、volatile的使用" class="headerlink" title="二、volatile的使用"></a>二、volatile的使用</h2><p>通过一个经典的单例(DCL单例设计模式)来说明volatile的使用。<br>如下代码所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">public class Singleton &#123;</span><br><span class="line"></span><br><span class="line">	private static volatile Singleton single;</span><br><span class="line">	private Singleton() &#123;</span><br><span class="line">		</span><br><span class="line">	&#125;//私有化构造函数，禁止外部实例化</span><br><span class="line">	public static Singleton getInstance () &#123;</span><br><span class="line">		if (single == null) &#123;</span><br><span class="line">			synchronized (single) &#123;</span><br><span class="line">				if (single == null) &#123;</span><br><span class="line">					single = new Singleton();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		return single;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		// TODO Auto-generated method stub</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="1，防止重排序"><a href="#1，防止重排序" class="headerlink" title="1，防止重排序"></a>1，防止重排序</h4><p>加了volatile关键字才能真正保证线程安全，为什么呢？首先了解对象的构造过程，实例化一个对象可以分为三个步骤：</p>
+<ul>
+<li>1)，分配内存空间</li>
+<li>2)，将内存空间的地址赋给对应的引用</li>
+<li>3)，初始化对象<br>按照这个流程的话，多线程环境下，就可能将一个未初始化的对象引用暴露出来，从而导致不可预料的后果，因此我们要将变量设置为volatile了类型的变量。</li>
+</ul>
+<p>####,2，实现可见性<br>可见性指一个线程修改了共享变量，而另一个线程却看不到。引用可见性的原因是每个线程拥有自己一个高速缓存–线程工作内存。volatile关键字能有效的解决这个问题，看下面代码片段：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">package test2;</span><br><span class="line"></span><br><span class="line">public class VolatileTest &#123;</span><br><span class="line">	int a = 1;</span><br><span class="line">	int b = 2;</span><br><span class="line">	</span><br><span class="line">	void change () &#123;</span><br><span class="line">		a = 3;</span><br><span class="line">		b = a;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	void print() &#123;</span><br><span class="line">		System.out.println(&quot;b=&quot; + &quot;;a+&quot; + a);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		while (true) &#123;</span><br><span class="line">			final VolatileTest test = new VolatileTest();</span><br><span class="line">			new Thread(new Runnable() &#123;</span><br><span class="line">				</span><br><span class="line">				@Override</span><br><span class="line">				public void run() &#123;</span><br><span class="line">					try &#123;</span><br><span class="line">						Thread.sleep(10);</span><br><span class="line">					&#125; catch (InterruptedException e) &#123;</span><br><span class="line">						e.printStackTrace();</span><br><span class="line">					&#125;</span><br><span class="line">					test.change();</span><br><span class="line">					</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;).start();</span><br><span class="line">			</span><br><span class="line">			new Thread (new Runnable() &#123;</span><br><span class="line">				</span><br><span class="line">				@Override</span><br><span class="line">				public void run() &#123;</span><br><span class="line">					// TODO Auto-generated method stub</span><br><span class="line">					try &#123;</span><br><span class="line">						Thread.sleep(10);</span><br><span class="line">					&#125; catch (InterruptedException e) &#123;</span><br><span class="line">						// TODO Auto-generated catch block</span><br><span class="line">						e.printStackTrace();</span><br><span class="line">					&#125;</span><br><span class="line">					test.print();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;).start();</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>直观上说，上述代码只会有两种结果：b=2;a=1 、b=3;a=3。但是居然出了第三种结果：b=3;a=1。为什么会出现这种结果呢？正常情况下，如果先执行change方法，再执行print方法，输出结果应该是b=3;a=3。相反，如果先执行print方法，再执行change方法，结果就应该是b=2;a=1。那么b=3;a=1是怎么产生的？原因是第一个线程将值a=3修改后，但是对第二个线程是不可见的，所以才会出现这一结果，如果将a和b也改为用volatile修饰，则不会出现这样的问题了。</p>
+<h4 id="3，保证原子性"><a href="#3，保证原子性" class="headerlink" title="3，保证原子性"></a>3，保证原子性</h4><p>volatile关键字只能保证单词读写的原子性。这个在JLS中有描述。关于volatile关键字还有一个情况容易被误解，接下来用代码演示。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">public class VolatileTest2 &#123;</span><br><span class="line">	volatile int i;</span><br><span class="line">	</span><br><span class="line">	public void add() &#123;</span><br><span class="line">		i++;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		// TODO Auto-generated method stub</span><br><span class="line">		final VolatileTest2 test2 = new VolatileTest2();</span><br><span class="line">		for (int i = 0; i &lt; 1000; i++) &#123;</span><br><span class="line">			new Thread (new Runnable() &#123;</span><br><span class="line">				</span><br><span class="line">				@Override</span><br><span class="line">				public void run() &#123;</span><br><span class="line">					// TODO Auto-generated method stub</span><br><span class="line">					try &#123;</span><br><span class="line">						Thread.sleep(10);</span><br><span class="line">					&#125; catch (InterruptedException e) &#123;</span><br><span class="line">						// TODO Auto-generated catch block</span><br><span class="line">						e.printStackTrace();</span><br><span class="line">					&#125;</span><br><span class="line">					test2.add();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;).start();</span><br><span class="line">		&#125;</span><br><span class="line">		try &#123;</span><br><span class="line">			Thread.sleep(1000);</span><br><span class="line">		&#125; catch (InterruptedException e) &#123;</span><br><span class="line">			// TODO Auto-generated catch block</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(test2.i);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里运行结果是981(在我的电脑上)，如果是线程安全的那么这段程序的运行结果应该是1000才对，我们从这里可以看出，volatile是无法保证原子性的，i++是一个复合操作，包括三个步：</p>
+<ul>
+<li>1),读取i的值</li>
+<li>2),对i加1操作</li>
+<li>3),将i的值写会内存</li>
+</ul>
+<p>volatile是无法保证这三个步骤具有原子性的，我们可以通过AtomicInteger或者synchronized来保证+1这个操作的原子性。</p>
+<h2 id="三、volatile的原理"><a href="#三、volatile的原理" class="headerlink" title="三、volatile的原理"></a>三、volatile的原理</h2><p>voliti有三个特征或者说三个作用。</p>
+<h4 id="1，保证可见性"><a href="#1，保证可见性" class="headerlink" title="1，保证可见性"></a>1，保证可见性</h4><p>线程本身并不与主内存进行数据的交互，而是通过线程的工作内存来完成相应的操作。这也是导致线程间数据不可见的本质原因。因此要实现volatile变量的可见性，volatile变量的读写与普通变量的读写有以下区别：</p>
+<ul>
+<li>1)，修改volatile变量时会强制将修改后的值刷新到主内存中</li>
+<li>2), 修改volatile变量后会导致其他线程工作内存中对应的变量值失效。因此，再次读取该变量的值的时候就要重新从主内存去读取</li>
+</ul>
+<p>这两个特性，能保证volatile的可见性。</p>
+<h4 id="2，禁止指令重排序"><a href="#2，禁止指令重排序" class="headerlink" title="2，禁止指令重排序"></a>2，禁止指令重排序</h4><p>看一段代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">int a=1,b=3;//1</span><br><span class="line">b++;//2</span><br><span class="line">volatile int c;//3</span><br><span class="line"></span><br><span class="line">c = a + b;//4</span><br></pre></td></tr></table></figure>
+
+<p>处理器有的时候会将执行的顺序进行优化，会调乱执行的顺序，禁止指令重排序的意思是说第三行代码之前代码一定会全部执行完之后，才会执行第四行的代码，至于第三行代码前面的代码什么顺序，volatile不关心，也控制不了，但是一定能保证他们会在4之前执行。</p>
+<h4 id="3，内存屏障"><a href="#3，内存屏障" class="headerlink" title="3，内存屏障"></a>3，内存屏障</h4><h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><p>只有在一种情况下使用volatile才能保证并发安全，同时满足两个条件：</p>
+<ul>
+<li>1，对变量的写操作不依赖于当前值</li>
+<li>2，该变量没有包含在具有其他变量的不变式中</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/java/" rel="tag"># java</a>
+            
+              <a href="/tags/并发/" rel="tag"># 并发</a>
+            
+              <a href="/tags/volatile/" rel="tag"># volatile</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2018/12/23/设计模式之观察者模式/" rel="next" title="设计模式之观察者模式">
+                  <i class="fa fa-chevron-left"></i> 设计模式之观察者模式
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2018/12/25/View的工作原理/" rel="prev" title="View的工作原理">
+                  View的工作原理 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、volatile的使用"><span class="nav-number">1.</span> <span class="nav-text">一、volatile的使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、volatile的使用"><span class="nav-number">2.</span> <span class="nav-text">二、volatile的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1，防止重排序"><span class="nav-number">2.0.1.</span> <span class="nav-text">1，防止重排序</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3，保证原子性"><span class="nav-number">2.0.2.</span> <span class="nav-text">3，保证原子性</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、volatile的原理"><span class="nav-number">3.</span> <span class="nav-text">三、volatile的原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1，保证可见性"><span class="nav-number">3.0.1.</span> <span class="nav-text">1，保证可见性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2，禁止指令重排序"><span class="nav-number">3.0.2.</span> <span class="nav-text">2，禁止指令重排序</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3，内存屏障"><span class="nav-number">3.0.3.</span> <span class="nav-text">3，内存屏障</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、总结"><span class="nav-number">4.</span> <span class="nav-text">四、总结</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/timg.jpg"
+      alt="Lu Tian">
+  <p class="site-author-name" itemprop="name">Lu Tian</p>
+  <div class="site-description" itemprop="description">每天进步一点点</div>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/ltt19921124" title="GitHub &rarr; https://github.com/ltt19921124" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="/ltt19921124@163.com" title="E-Mail &rarr; ltt19921124@163.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="/302851414" title="QQ &rarr; 302851414"><i class="fa fa-fw fa-QQ"></i>QQ</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://liuwangshu.cn/" title="http://liuwangshu.cn/" rel="noopener" target="_blank">刘望舒</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/singwhatiwanna/" title="https://blog.csdn.net/singwhatiwanna/" rel="noopener" target="_blank">任玉刚</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://me.csdn.net/sinyu890807" title="https://me.csdn.net/sinyu890807" rel="noopener" target="_blank">郭霖</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lu Tian</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数"></span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长"></span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

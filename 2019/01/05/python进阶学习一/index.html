@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/TiddlyWiki.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-.min.css?v=1.0.2">
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="python进阶学习前面学习python的基本语法和基本数据类型，现在开始进入编程阶段(之前的学习是学习基本的语法和数据结构)，用代码编辑器或专业的IDE来编写并执行python程序。">
+<meta name="keywords" content="python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python进阶学习一">
+<meta property="og:url" content="http://yoursite.com/2019/01/05/python进阶学习一/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="python进阶学习前面学习python的基本语法和基本数据类型，现在开始进入编程阶段(之前的学习是学习基本的语法和数据结构)，用代码编辑器或专业的IDE来编写并执行python程序。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/picture/pythontest.png">
+<meta property="og:image" content="http://yoursite.com/picture/exepython.png">
+<meta property="og:image" content="http://yoursite.com/picture/snippet.png">
+<meta property="og:image" content="http://yoursite.com/picture/snippet_result.png">
+<meta property="og:image" content="http://yoursite.com/picture/test5if_problem.png">
+<meta property="og:updated_time" content="2019-01-06T10:24:17.665Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="python进阶学习一">
+<meta name="twitter:description" content="python进阶学习前面学习python的基本语法和基本数据类型，现在开始进入编程阶段(之前的学习是学习基本的语法和数据结构)，用代码编辑器或专业的IDE来编写并执行python程序。">
+<meta name="twitter:image" content="http://yoursite.com/picture/pythontest.png">
+  <link rel="canonical" href="http://yoursite.com/2019/01/05/python进阶学习一/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>python进阶学习一 | Hexo</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/05/python进阶学习一/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lu Tian">
+      <meta itemprop="description" content="每天进步一点点">
+      <meta itemprop="image" content="/images/timg.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">python进阶学习一
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-05 14:44:56" itemprop="dateCreated datePublished" datetime="2019-01-05T14:44:56+08:00">2019-01-05</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-01-06 18:24:17" itemprop="dateModified" datetime="2019-01-06T18:24:17+08:00">2019-01-06</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span></span>
+            </span>
+          
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="python进阶学习"><a href="#python进阶学习" class="headerlink" title="python进阶学习"></a>python进阶学习</h2><p>前面学习python的基本语法和基本数据类型，现在开始进入编程阶段(之前的学习是学习基本的语法和数据结构)，用代码编辑器或专业的IDE来编写并执行python程序。</p>
+<a id="more"></a>
+<h3 id="1，编写一个简单的python程序"><a href="#1，编写一个简单的python程序" class="headerlink" title="1，编写一个简单的python程序"></a>1，编写一个简单的python程序</h3><p>编写一个简单的python程序，打印输出Hello Python。新建文本文件，输入如下程序代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">a = 1</span><br><span class="line">b = 2</span><br><span class="line">c = 3</span><br><span class="line">print(&apos;Hello Python&apos;)</span><br></pre></td></tr></table></figure>
+
+<p>这个小程序的作用很简单，就是打印输出一条语句，我们把文本的后缀名改为.py，这是python文件的格式，把它保存在某个盘的某个目录下，我这里是保存在G:\python&gt;目录下，在Windows命令行窗口进入该目录，执行dir命令，可以看到有test.py文件；执行该程序，执行的命令是:python <em>.py，</em>代表文件名，我这里是test.py，python文件的截图如下所示：</p>
+<hr>
+<p><img src="/picture/pythontest.png" alt><br>在命令行窗口执行该程序：</p>
+<hr>
+<p><img src="/picture/exepython.png" alt><br>结果如上图所示。</p>
+<h3 id="2，小知识点以及编码规范"><a href="#2，小知识点以及编码规范" class="headerlink" title="2，小知识点以及编码规范"></a>2，小知识点以及编码规范</h3><p>python中形式上的常量字母要大写，当定义一个变量的时候没有定义在类或函数里面并且我们用的是小写字母的时候，，pylint会提示这应该是一个常量，因为pylint就是按照这个标准来判断的。以下代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">print(&apos;please input account&apos;)</span><br><span class="line">user_account = input()</span><br></pre></td></tr></table></figure>
+
+<h4 id="pylint"><a href="#pylint" class="headerlink" title="pylint"></a>pylint</h4><p>pylint会提示这应该是一个常量，因为这个变量没有在类或函数里，只是在一个模块里。虽然这里input函数返回的应该是一个变量。</p>
+<h4 id="pass语句"><a href="#pass语句" class="headerlink" title="pass语句"></a>pass语句</h4><p>pass语句，也叫占位语句，空语句,为了保证代码的完整性</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">if True:</span><br><span class="line">    pass :空语句，占位语句，保证代码的完整性,比如写API接口的时候，先写一些空的代码，这时候pass就会经常出现。</span><br></pre></td></tr></table></figure>
+
+<h4 id="snippet片段"><a href="#snippet片段" class="headerlink" title="snippet片段"></a>snippet片段</h4><p>snippet 片段，它的作用可以提高我们的编码效率，相当于代码提示，比如我们输入if，IDE会提示我们可以选择实现什么代码，我们选中就会自动生成一小段代码：</p>
+<hr>
+<p><img src="/picture/snippet.png" alt><br>选中后就会自动生成如下代码：</p>
+<hr>
+<p><img src="/picture/snippet_result.png" alt>)<br>ifelse代码块可以嵌套，如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">if condition:</span><br><span class="line">    if condition:</span><br><span class="line">        pass</span><br><span class="line">    else:</span><br><span class="line">        pass</span><br><span class="line">else:</span><br><span class="line">    if condition:</span><br><span class="line">        pass</span><br><span class="line">    else:</span><br><span class="line">        pass</span><br></pre></td></tr></table></figure>
+
+<h4 id="if-else分支嵌套"><a href="#if-else分支嵌套" class="headerlink" title="if else分支嵌套"></a>if else分支嵌套</h4><p>代码如下所示，运行，输入1，按理应该是输出apple，可是结果却是shopping，为什么？输入2、3也是同样的结果。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">a = input()</span><br><span class="line"></span><br><span class="line">if a == 1:</span><br><span class="line">    print(&apos;apple&apos;)</span><br><span class="line">else:</span><br><span class="line">    if a == 2:</span><br><span class="line">        print(&apos;orange&apos;)</span><br><span class="line">    else:</span><br><span class="line">        if a == 3:</span><br><span class="line">            print(&apos;banana&apos;)</span><br><span class="line">        else:</span><br><span class="line">            print(&apos;shopping&apos;)</span><br><span class="line"></span><br><span class="line">PS G:\python&gt; python .\test5.py</span><br><span class="line">1</span><br><span class="line">shopping</span><br><span class="line"></span><br><span class="line">PS G:\python&gt; python .\test5.py</span><br><span class="line">2</span><br><span class="line">shopping</span><br><span class="line"></span><br><span class="line">PS G:\python&gt; python .\test5.py</span><br><span class="line">3</span><br><span class="line">shopping</span><br></pre></td></tr></table></figure>
+
+<p>上述代码的解释：a = input(),a是字符串类型并不是整型，我们在 a = input()语句后面加入print(type(a))，看打印的结果：</p>
+<hr>
+<p><img src="/picture/test5if_problem.png" alt><br>这就证明了a的类型是str类型，所以a == 2当然是false，代码会执行最后的else后面的print()语句。我们可以将a强转为int类型，这样就可以和数字做比较了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">a = input()</span><br><span class="line">a = int(a)</span><br><span class="line">...</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>输入值为1的时候的运行结果:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">PS G:\python&gt; python .\test5.py</span><br><span class="line">1</span><br><span class="line">&lt;class &apos;int&apos;&gt;</span><br><span class="line">apple</span><br></pre></td></tr></table></figure>
+
+<p>打印出了’apple’，说明 “a == 1”返回了True。根本原因就是input函数，接收的值都认为是字符串，这是动态语言的一个不好的特点，变量没有具体的类型，不像java是强类型语言，这种问题很发现，代码没有写错没有报错信息所以很难解决。这是python语言的一个缺点。</p>
+<h4 id="elif的用法"><a href="#elif的用法" class="headerlink" title="elif的用法"></a>elif的用法</h4><p>elif是else if的简写，上面的代码可以用elif简写如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">a = input()</span><br><span class="line">print(&apos;a is&apos; + a)</span><br><span class="line">if a == 1:</span><br><span class="line">    print(&apos;apple&apos;)</span><br><span class="line">elif a == 2:</span><br><span class="line">    print(&apos;orange&apos;)</span><br><span class="line">elif a == 3:</span><br><span class="line">    print(&apos;banana&apos;)</span><br><span class="line">else:</span><br><span class="line">    print(&apos;shopping&apos;)</span><br></pre></td></tr></table></figure>
+
+<p>我们用elif对代码进行了重写，这样可以提高代码的阅读性。所有的elif代码块都是同级别的，尽量减少代码的级别减少嵌套，这是很好的编码习惯。上述代码中elif还是要配合if使用的，不能单独出现，最后的else是和elif配对使用的。注意：python中没有switch语句。</p>
+<h3 id="3-python循环语句"><a href="#3-python循环语句" class="headerlink" title="3,python循环语句"></a>3,python循环语句</h3><p>循环是计算机计算解决问题的最常见的思想，计算机里常见的循环有while和for循环。</p>
+<h4 id="3-1-while循环"><a href="#3-1-while循环" class="headerlink" title="3.1 while循环"></a>3.1 while循环</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 循环语句 </span><br><span class="line"># while for</span><br><span class="line">CONDITION = True</span><br><span class="line"></span><br><span class="line">while CONDITION:</span><br><span class="line">    print(&apos;I am while&apos;)</span><br></pre></td></tr></table></figure>
+
+<p>这是一个循环语句，会一直循环下去，是死循环，条件为真时会一直循环。我们不应该把常量作为while的判断语句，因为常量不会变，条件的判断结果也不会变。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">counter = 1</span><br><span class="line"></span><br><span class="line">while counter &lt;= 10:</span><br><span class="line">    counter += 1</span><br><span class="line">    print(counter)</span><br><span class="line">else:</span><br><span class="line">    print(&apos;EOF&apos;)</span><br></pre></td></tr></table></figure>
+
+<p>while条件判断为假时会打印出 “EOF”。<br>不过循环一般用for循环的多，不过有一种情况下while非常合适，就是递归。</p>
+<h4 id="3-2，for循环"><a href="#3-2，for循环" class="headerlink" title="3.2，for循环"></a>3.2，for循环</h4><p>for循环主要用于遍历/循环 序列或者集合、字典中，组概念的数据都可以用for循环，遍历—-for循环。<br>for循环基本结构：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">a = [&apos;apple&apos;,&apos;orange&apos;,&apos;banana&apos;,&apos;grape&apos;]</span><br><span class="line"></span><br><span class="line">for x in a:</span><br><span class="line">    print(x)</span><br><span class="line"></span><br><span class="line">#打印结果</span><br><span class="line">PS G:\python&gt; python .\test6.py</span><br><span class="line">apple</span><br><span class="line">orange</span><br><span class="line">banana</span><br><span class="line">grape</span><br><span class="line">##########</span><br></pre></td></tr></table></figure>
+
+<p>循环也可以嵌套循环，以上代码修改如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br></pre></td><td class="code"><pre><span class="line">a = [[&apos;apple&apos;,&apos;orange&apos;,&apos;banana&apos;,&apos;grape&apos;],[1,2,3]]</span><br><span class="line"></span><br><span class="line">for x in a:</span><br><span class="line">    print(x)</span><br><span class="line"></span><br><span class="line">#运行结果</span><br><span class="line">PS G:\python&gt; python .\test6.py</span><br><span class="line">[&apos;apple&apos;, &apos;orange&apos;, &apos;banana&apos;, &apos;grape&apos;]</span><br><span class="line">[1, 2, 3] </span><br><span class="line">#注意，这里并没有打印出每个元素，只是打印出了序列中的两个子序列，那如果我们要打印每个子元素(就是打印&quot;orange&quot;和另一个序列中的1,2,3)应该怎么办呢？这个时候我们就可以用循环的嵌套。</span><br><span class="line">#######</span><br><span class="line">#循环嵌套</span><br><span class="line">a = [[&apos;apple&apos;,&apos;orange&apos;,&apos;banana&apos;,&apos;grape&apos;],[1,2,3]]</span><br><span class="line"></span><br><span class="line">for x in a:</span><br><span class="line">    for y in x:</span><br><span class="line">        print(x)</span><br><span class="line"></span><br><span class="line">#运行结果</span><br><span class="line">PS G:\python&gt; python .\test6.py</span><br><span class="line">apple</span><br><span class="line">orange</span><br><span class="line">banana</span><br><span class="line">grape</span><br><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">##########</span><br><span class="line">#这里就是两个循环,这样打印就没有换行。</span><br><span class="line"></span><br><span class="line">a = [[&apos;apple&apos;,&apos;orange&apos;,&apos;banana&apos;,&apos;grape&apos;],[1,2,3]]</span><br><span class="line"></span><br><span class="line">for x in a:</span><br><span class="line">    for y in x:</span><br><span class="line">        print(x,end=&apos;&apos;)</span><br><span class="line">#</span><br><span class="line">PS G:\python&gt; python .\test6.py</span><br><span class="line">appleorangebananagrape123</span><br><span class="line">###########</span><br><span class="line">a = [[&apos;apple&apos;,&apos;orange&apos;,&apos;banana&apos;,&apos;grape&apos;],[1,2,3]]</span><br><span class="line"></span><br><span class="line">for x in a:</span><br><span class="line">    for y in x:</span><br><span class="line">        print(y)</span><br><span class="line">else:</span><br><span class="line">    print(&apos;fruit is gone&apos;) #什么时候执行else语句，当元素遍历结束的时候执行。</span><br><span class="line"></span><br><span class="line">PS G:\python&gt; python .\test6.py</span><br><span class="line">apple</span><br><span class="line">orange</span><br><span class="line">banana</span><br><span class="line">grape</span><br><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">fruit is gone</span><br><span class="line">###########</span><br><span class="line">#循环终止 </span><br><span class="line">a = [1,2,3]</span><br><span class="line"></span><br><span class="line">for x in a:</span><br><span class="line">    if x == 2:</span><br><span class="line">        break</span><br><span class="line">    print(x)</span><br><span class="line">#打印，当x = 2的时候，结束循环</span><br><span class="line">PS G:\python&gt; python .\test7.py</span><br><span class="line">1</span><br><span class="line">a = [1,2,3]</span><br><span class="line">#############</span><br><span class="line">for x in a:</span><br><span class="line">    if x == 2:</span><br><span class="line">        break</span><br><span class="line">    print(x)</span><br><span class="line">#打印，跳出本次循环，继续下次循环</span><br><span class="line">PS G:\python&gt; python .\test7.py</span><br><span class="line">1</span><br><span class="line">3</span><br><span class="line">#############</span><br><span class="line">a = [1,2,3]</span><br><span class="line"></span><br><span class="line">for x in a:</span><br><span class="line">    if x == 2:</span><br><span class="line">        break</span><br><span class="line">    print(x)</span><br><span class="line">else:</span><br><span class="line">    print(&apos;EOF&apos;)</span><br><span class="line">#执行结果</span><br><span class="line">PS G:\python&gt; python .\test7.py</span><br><span class="line">1</span><br><span class="line">#为什么else语句没有执行呢？for和else结合使用正常情况下for语句结束是会执行else语句块的，但是如果for循环是异常终止的话，这种情况就不会执行。那么continue呢？会。</span><br><span class="line">#########</span><br><span class="line">a = [[&apos;apple&apos;,&apos;orange&apos;,&apos;banana&apos;,&apos;grape&apos;],[1,2,3]]</span><br><span class="line"></span><br><span class="line">for x in a:</span><br><span class="line">    for y in x:</span><br><span class="line">            if y == &apos;orange&apos;:</span><br><span class="line">                    break</span><br><span class="line">            print(y)</span><br><span class="line">else:</span><br><span class="line">    print(&apos;fruit is gone&apos;) #什么时候执行else语句，当元素遍历结束的时候执行。</span><br><span class="line">#执行结果</span><br><span class="line">PS G:\python&gt; python .\test6.py</span><br><span class="line">apple</span><br><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">fruit is gone</span><br><span class="line">#为什么这里有break语句，但是还是打印了1 2 3，因为这里有两个循环，break跳出的是里面的循环，不是外面的循环。我们试试跳出外层循环。</span><br><span class="line">#########</span><br><span class="line">a = [[&apos;apple&apos;,&apos;orange&apos;,&apos;banana&apos;,&apos;grape&apos;],[1,2,3]]</span><br><span class="line"></span><br><span class="line">for x in a:</span><br><span class="line">    if &apos;banana&apos; in x:</span><br><span class="line">        break</span><br><span class="line">    for y in x:</span><br><span class="line">            if y == &apos;orange&apos;:</span><br><span class="line">                    break</span><br><span class="line">            print(y)</span><br><span class="line">else:</span><br><span class="line">    print(&apos;fruit is gone&apos;) #什么时候执行else语句，当元素遍历结束的时候执行。</span><br><span class="line">#执行结果</span><br><span class="line">PS G:\python&gt;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">for x in range(0,10):</span><br><span class="line">    print(x)</span><br><span class="line">#执行结果</span><br><span class="line">PS G:\python&gt; python .\test7.py</span><br><span class="line">0</span><br><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">相当于java中的 for (int x=0;x &lt;=10;x++&gt;)&#123;System.out.println(x)&#125;</span><br></pre></td></tr></table></figure>
+
+<p>python的range函数，可以按照我们制定的规则生成一个序列。比如上面代码就是生成了一个0到9的序列，rage[0,10]：从1开始，不包含10，10在这里代表偏移量。再比如：range(0,10,2)什么意思呢？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">for x in range(0,10,2):</span><br><span class="line">    print(x,end = &apos; | &apos;)</span><br><span class="line">#打印</span><br><span class="line">PS G:\python&gt; python .\test7.py</span><br><span class="line">0 | 2 | 4 | 6 | 8 |</span><br></pre></td></tr></table></figure>
+
+<p>再看：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">for x in range(10,0,-2):</span><br><span class="line">    print(x,end = &apos; | &apos;)</span><br><span class="line">#打印</span><br><span class="line">PS G:\python&gt; python .\test7.py</span><br><span class="line">10 | 8 | 6 | 4 | 2 |</span><br></pre></td></tr></table></figure>
+
+<p>range(0,10,2)表示从0开始到10(不包含10)递增打印数字(公差为2)；<br>range(10,0,-2)表示从10到0(不包含0)递减打印数字(公差为2)，第三个参数为-2，大的数在第一个参数位置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">a = [1,2,3,4,5,6,7,8]</span><br><span class="line"></span><br><span class="line"># for x in range(0,len(a),2):</span><br><span class="line">#     print(a[x],end = &apos; | &apos;)</span><br><span class="line"></span><br><span class="line">b = a[0:len(a):2]</span><br><span class="line">print(b)</span><br><span class="line">#执行结果</span><br><span class="line">PS G:\python&gt; python .\test7.py</span><br><span class="line">[1, 3, 5, 7]</span><br></pre></td></tr></table></figure>
+
+<p>如上代码所示，a[0:len(a):2]意思是</p>
+<h4 id="引申：为什么python没有switch语句？"><a href="#引申：为什么python没有switch语句？" class="headerlink" title="引申：为什么python没有switch语句？"></a>引申：为什么python没有switch语句？</h4><p>在Design and History FAQ网站中，有关于这个问题的回答。官方的回答是我们可以用if … elif … elif …… else 语句块来起到其他语言中switch语句同样的效果，或者当需要从很多数量的case中去选择，那就建议用字典(dict)，官方原话是：”For cases where you need to choose from a very large number of possibilities,you can create a dictionary mapping case values to functions to call. For example:”。<br>小总结一下，也就是官方推荐这两种方式来代替switch语句，或者准确地说，用这两种方式起到switch语句在其它语言中起到的作用。</p>
+<p><a href="https://docs.python.org/3/faq/design.html#why-isn-t-there-a-switch-or-case-statement-in-python" target="_blank" rel="noopener">python为什么没有其他语言几乎都有的switch语句</a></p>
+
+    </div>
+
+    
+    
+    
+      
+
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/python/" rel="tag"># python</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/01/05/python基础学习三/" rel="next" title="python基础学习三">
+                  <i class="fa fa-chevron-left"></i> python基础学习三
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/01/06/python进阶学习二/" rel="prev" title="python进阶学习二">
+                  python进阶学习二 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#python进阶学习"><span class="nav-number">1.</span> <span class="nav-text">python进阶学习</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1，编写一个简单的python程序"><span class="nav-number">1.1.</span> <span class="nav-text">1，编写一个简单的python程序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2，小知识点以及编码规范"><span class="nav-number">1.2.</span> <span class="nav-text">2，小知识点以及编码规范</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#pylint"><span class="nav-number">1.2.1.</span> <span class="nav-text">pylint</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#pass语句"><span class="nav-number">1.2.2.</span> <span class="nav-text">pass语句</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#snippet片段"><span class="nav-number">1.2.3.</span> <span class="nav-text">snippet片段</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#if-else分支嵌套"><span class="nav-number">1.2.4.</span> <span class="nav-text">if else分支嵌套</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#elif的用法"><span class="nav-number">1.2.5.</span> <span class="nav-text">elif的用法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-python循环语句"><span class="nav-number">1.3.</span> <span class="nav-text">3,python循环语句</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-while循环"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1 while循环</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2，for循环"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2，for循环</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#引申：为什么python没有switch语句？"><span class="nav-number">1.3.3.</span> <span class="nav-text">引申：为什么python没有switch语句？</span></a></li></ol></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/timg.jpg"
+      alt="Lu Tian">
+  <p class="site-author-name" itemprop="name">Lu Tian</p>
+  <div class="site-description" itemprop="description">每天进步一点点</div>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/ltt19921124" title="GitHub &rarr; https://github.com/ltt19921124" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="/ltt19921124@163.com" title="E-Mail &rarr; ltt19921124@163.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="/302851414" title="QQ &rarr; 302851414"><i class="fa fa-fw fa-QQ"></i>QQ</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://liuwangshu.cn/" title="http://liuwangshu.cn/" rel="noopener" target="_blank">刘望舒</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/singwhatiwanna/" title="https://blog.csdn.net/singwhatiwanna/" rel="noopener" target="_blank">任玉刚</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://me.csdn.net/sinyu890807" title="https://me.csdn.net/sinyu890807" rel="noopener" target="_blank">郭霖</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lu Tian</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数"></span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长"></span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

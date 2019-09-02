@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/TiddlyWiki.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-.min.css?v=1.0.2">
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="一、基本网络相关概念1，网络分层分层为了将网络节点所要完成的数据的发送或转发、打包或拆包，以及控制信息的加载或拆出工作，分别由不同的硬件和模块来完成，这样分层的好处是可以可以将通信和网络互联这一原本复杂的问题简单化，网络分层有经典的七层网络和五层，一般来说五层协议更加常用，应用更广泛，因为它更好理解。网络分层的每一层都是为了完成某一种功能而设计的。为了实现这些功能就要遵守共同的规则，就是协议规则。">
+<meta name="keywords" content="Http,网络协议">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Http协议浅析">
+<meta property="og:url" content="http://yoursite.com/2018/12/27/Http协议浅析/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="一、基本网络相关概念1，网络分层分层为了将网络节点所要完成的数据的发送或转发、打包或拆包，以及控制信息的加载或拆出工作，分别由不同的硬件和模块来完成，这样分层的好处是可以可以将通信和网络互联这一原本复杂的问题简单化，网络分层有经典的七层网络和五层，一般来说五层协议更加常用，应用更广泛，因为它更好理解。网络分层的每一层都是为了完成某一种功能而设计的。为了实现这些功能就要遵守共同的规则，就是协议规则。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/picture/%E7%BD%91%E7%BB%9C%E5%88%86%E5%B1%82.png">
+<meta property="og:image" content="http://yoursite.com/picture/TCP%E4%BC%A0%E8%BE%93.png">
+<meta property="og:image" content="http://yoursite.com/picture/%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E5%92%8C%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B.png">
+<meta property="og:updated_time" content="2018-12-27T10:26:38.400Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Http协议浅析">
+<meta name="twitter:description" content="一、基本网络相关概念1，网络分层分层为了将网络节点所要完成的数据的发送或转发、打包或拆包，以及控制信息的加载或拆出工作，分别由不同的硬件和模块来完成，这样分层的好处是可以可以将通信和网络互联这一原本复杂的问题简单化，网络分层有经典的七层网络和五层，一般来说五层协议更加常用，应用更广泛，因为它更好理解。网络分层的每一层都是为了完成某一种功能而设计的。为了实现这些功能就要遵守共同的规则，就是协议规则。">
+<meta name="twitter:image" content="http://yoursite.com/picture/%E7%BD%91%E7%BB%9C%E5%88%86%E5%B1%82.png">
+  <link rel="canonical" href="http://yoursite.com/2018/12/27/Http协议浅析/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Http协议浅析 | Hexo</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/27/Http协议浅析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lu Tian">
+      <meta itemprop="description" content="每天进步一点点">
+      <meta itemprop="image" content="/images/timg.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">Http协议浅析
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2018-12-27 14:01:25 / 修改时间：18:26:38" itemprop="dateCreated datePublished" datetime="2018-12-27T14:01:25+08:00">2018-12-27</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/网络/" itemprop="url" rel="index"><span itemprop="name">网络</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span></span>
+            </span>
+          
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="一、基本网络相关概念"><a href="#一、基本网络相关概念" class="headerlink" title="一、基本网络相关概念"></a>一、基本网络相关概念</h2><p>1，网络分层<br>分层为了将网络节点所要完成的数据的发送或转发、打包或拆包，以及控制信息的加载或拆出工作，分别由不同的硬件和模块来完成，这样分层的好处是可以可以将通信和网络互联这一原本复杂的问题简单化，网络分层有经典的七层网络和五层，一般来说五层协议更加常用，应用更广泛，因为它更好理解。网络分层的每一层都是为了完成某一种功能而设计的。为了实现这些功能就要遵守共同的规则，就是协议规则。</p>
+<a id="more"></a>
+<hr>
+<p><img src="/picture/%E7%BD%91%E7%BB%9C%E5%88%86%E5%B1%82.png" alt></p>
+<p>如上图所示，从上到下一次分为应用层、传输层、网络层、数据链路层和物理层。我们比较关心的是应用层和传输层，这两层与我们平时的开发相关性较大。著名的TCP协议就是处于传输层(包括不可靠通信协议UDP，TCP是可靠的)；而Http、FTP、SMTP、POP3位于应用层。<br>2，TCP协议的三四握手与四次挥手<br>在分析OkHttp框架的时候会用到TCP的相关知识，通常我们进行HTTP连接的时候会进行TCP的三次握手，然后传输数据，之后再释放；连接。TCP传输如图所示：</p>
+<hr>
+<p><img src="/picture/TCP%E4%BC%A0%E8%BE%93.png" alt></p>
+<h4 id="三次握手和的过程详细如下："><a href="#三次握手和的过程详细如下：" class="headerlink" title="三次握手和的过程详细如下："></a>三次握手和的过程详细如下：</h4><hr>
+<p><img src="/picture/%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E5%92%8C%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B.png" alt></p>
+<h4 id="三次握手过程"><a href="#三次握手过程" class="headerlink" title="三次握手过程"></a>三次握手过程</h4><ul>
+<li>a,第一次握手，建立连接。客户端发送SYN包到服务器，其中包含客户端的初始序号seq=x，并进入SYN_SENT状态，等待服务器确认。（其中，SYN=1，ACK=0，表示这是一个TCP连接请求数据报文；序号seq=x，表明传输数据时的第一个数据字节的序号是x）。</li>
+<li>b,第二次握手：服务器收到请求后，必须确认客户的数据包。同时自己也发送一个SYN包，即SYN+ACK包，此时服务器进入SYN_RECV状态。（其中确认报文段中，标识位SYN=1，ACK=1，表示这是一个TCP连接响应数据报文，并含服务端的初始序号seq(服务器)=y，以及服务器对客户端初始序号的确认号ack(服务器)=seq(客户端)+1=x+1）。</li>
+<li>c，第三次握手：客户端收到服务器的SYN+ACK包，向服务器发送一个序列号(seq=x+1)，确认号为ack(客户端)=y+1，此包发送完毕，客户端和服务器进入ESTAB_LISHED(TCP连接成功)状态，完成三次握手。<h4 id="四次挥手过程"><a href="#四次挥手过程" class="headerlink" title="四次挥手过程"></a>四次挥手过程</h4></li>
+<li>a,首先，客户端发送一个FIN，用来关闭客户端到服务器的数据传送，然后等待服务器的确认。其中终止标志位FIN=1，序列号seq=u，此时客户端进入FIN_WAIT_1状态，表示客户端没有数据要发送给服务端了。</li>
+<li>b,服务器收到这个FIN，它发送一个ACK，确认ack为收到的序号加1。</li>
+<li>c,服务端想客户端发送一个FIN给客户端，请求关闭连接，同时服务端进入LAST_ACK状态。</li>
+<li>d,客户端收到FIN报文段后，发回一个ACK报文确认，并将确认序号seq设置为收到序号加1。首先进行关闭的一方将执行主动关闭，而另一方执行被动关闭。客户端发送FIN后，进入终止等待状态，服务器收到客户端连接释放报文段后，就立即给客户端发送确认，服务器就进入CLOSE_WAIT状态，此时TCP服务器进程就通知高层应用进程，因而从客户端到服务器的连接就释放了。此时是“半关闭状态”，即客户端不可以发送给服务器，服务器可以发送给客户端。 此时，如果服务器没有数据报发送给客户端，其应用程序就通知TCP释放连接，然后发送给客户端连接释放数据报，并等待确认。客户端发送确认后，进入TIME_WAIT状态，但是此时TCP连接还没有释放，然后经过等待计时器设置的2MSL后，才进入到CLOSE状态。</li>
+</ul>
+<blockquote>
+<p>如果有大量的连接，每次连接、关闭时都要经历三次握手、四次挥手，这显然很浪费资源造成性能下降。因此Http有一种keepalive-connections的机制，它可以在传输数据后仍然保持连接，当客户端需要再次获取数据时，直接使用刚刚空闲下来的连接而无需再次建立连接了。</p>
+</blockquote>
+<h4 id="TCP协议常见问题："><a href="#TCP协议常见问题：" class="headerlink" title="TCP协议常见问题："></a>TCP协议常见问题：</h4><ul>
+<li>为什么需要三次握手，两次不可以吗？或者四次、五次可以吗？<br>我们来分析一种特殊情况，假设客户端请求建立连接，发给服务器SYN包等待服务器确认，服务器收到确认后，如果是两次握手，假设服务器给客户端在第二次握手时发送数据，数据从服务器发出，服务器认为连接已经建立，但在发送数据的过程中数据丢失，客户端认为连接没有建立，会进行重传。假设每次发送的数据一直在丢失，客户端一直SYN，服务器就会产生多个无效连接，占用资源，这个时候服务器可能会挂掉。这个现象就是我们听过的“SYN的洪水攻击”。总结：第三次握手是为了防止：如果客户端迟迟没有收到服务器返回确认报文，这时会放弃连接，重新启动一条连接请求，但问题是：服务器不知道客户端没有收到，所以他会收到两个连接，浪费连接开销。如果每次都是这样，就会浪费多个连接开销。</li>
+<li>为什么需要2MSL时间？<br>首先，MSL即Maximum Segment Lifetime，就是最大报文生存时间，是任何报文在网络上的存在的最长时间，超过这个时间报文将被丢弃。《TCP/IP详解》中是这样描述的：MSL是任何报文段被丢弃前在网络内的最长时间。RFC 793中规定MSL为2分钟，实际应用中常用的是30秒、1分钟、2分钟等。</li>
+<li>为什么是四次挥手，而不是三次或是五次、六次？<br>双方关闭连接要经过双方都同意。所以，首先是客服端给服务器发送FIN，要求关闭连接，服务器收到后会发送一个ACK进行确认。服务器然后再发送一个FIN，客户端发送ACK确认，并进入TIME_WAIT状态。等待2MSL后自动关闭。</li>
+</ul>
+<p>总结：<br>（1）为了保证客户端发送的最后一个ACK报文段能够到达服务器。即最后一个确认报文可能丢失，服务器会超时重传，然后服务器发送FIN请求关闭连接，客户端发送ACK确认。一个来回是两个报文生命周期。</p>
+<p>如果没有等待时间，发送完确认报文段就立即释放连接的话，服务器就无法重传，因此也就收不到确认，就无法按步骤进入CLOSE状态，即必须收到确认才能close。<br>（2）防止已经失效的连接请求报文出现在连接中。经过2MSL，在这个连续持续的时间内，产生的所有报文段就可以都从网络消失。</p>
+<h2 id="二、Http协议原理"><a href="#二、Http协议原理" class="headerlink" title="二、Http协议原理"></a>二、Http协议原理</h2><h4 id="1-Http简介"><a href="#1-Http简介" class="headerlink" title="1,Http简介"></a>1,Http简介</h4><p>Http是位于应用层协议，由于简介、快速的特性，广泛用于分布式超媒体信息系统。于1990年被提出，经过几年的发展，得到不断的完善。</p>
+<h5 id="HTTP的历史版本"><a href="#HTTP的历史版本" class="headerlink" title="HTTP的历史版本"></a>HTTP的历史版本</h5><ul>
+<li>HTTP0.9:1991年，只有一个GET命令，服务器只能回应HTML格式的字符串</li>
+<li>HTTP1.0:1996年发布，内容增加很多，除了GET命令外，还增加了POST命令和HEAD命令。HTTP请求和响应的格式除了部分数据，每次通信都必须包括头信息，用来描述一些元数据</li>
+<li>HTTP1.1:1997年发布，进一步完善了，现在还是最流行的版本。</li>
+<li>SPDY:2009年谷歌为了解决Http1.1效率不高的问题而自行研究的协议</li>
+<li>HTTP2:2015年新发布的协议，SPDY协议的主要特性也包含在里面</li>
+</ul>
+<h5 id="HTTP协议的主要特点"><a href="#HTTP协议的主要特点" class="headerlink" title="HTTP协议的主要特点"></a>HTTP协议的主要特点</h5><ul>
+<li>支持C/S(客户端/服务端)模式</li>
+<li>简单快速：Client想Server请求服务时，只需要传输请求方法和路径。请求方法常用的有GET、HEAD、POST，每种方法都规定了客户端与服务端联系的类型的不同。由于HTTP协议简单，使得HTTP协议服务器的程序规模，因而通信速度快</li>
+<li>灵活：HTTP允许传输任意类型的对象，正在传输的类型由Content-Type加以标记，</li>
+<li>无连接：每次连接只处理一个请求，服务器处理完客户的请求，并收到客户的应答后，即断开连接，采用这种方式可以节省传输时间</li>
+<li>无状态：HTTP协议是无状态的，无状态是指协议对于事物处理没有记忆能力，缺少状态意味着如果后续处理需要前面的信息，则它必须重传，这样可能导致每次连接传送的数据量增大；而另一方面，在服务器不需要先前信息时它的应答速度就很快</li>
+</ul>
+<p>HTTP URL协议格式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://host[&quot;:&quot;port][abs_path]</span><br></pre></td></tr></table></figure>
+
+<p>协议各部分代表的意义</p>
+<ul>
+<li>http:代表使用HTTP协议来访问服务器</li>
+<li>host：表示合法的Internet主机域名或者ip地址</li>
+<li>oort：表示指定一个端口号，为空则默认为80</li>
+<li>abs_path:指请求资源的URI(web上任意的可用资源)</li>
+</ul>
+<h5 id="HTTP状态码"><a href="#HTTP状态码" class="headerlink" title="HTTP状态码"></a>HTTP状态码</h5><ul>
+<li>200 请求成功</li>
+<li>301 资源被永久转移到其他URL</li>
+<li>404 请求的资源不存在</li>
+<li>500 内部服务器错误</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/Http/" rel="tag"># Http</a>
+            
+              <a href="/tags/网络协议/" rel="tag"># 网络协议</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2018/12/25/跨程序共享数据-Android之内容提供器-ContentProvider-学习/" rel="next" title="跨程序共享数据--Android之内容提供器(ContentProvider)学习">
+                  <i class="fa fa-chevron-left"></i> 跨程序共享数据--Android之内容提供器(ContentProvider)学习
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2018/12/27/设计模式之建造者模式-Builder模式/" rel="prev" title="设计模式之建造者模式(Builder模式)">
+                  设计模式之建造者模式(Builder模式) <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、基本网络相关概念"><span class="nav-number">1.</span> <span class="nav-text">一、基本网络相关概念</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#三次握手和的过程详细如下："><span class="nav-number">1.0.1.</span> <span class="nav-text">三次握手和的过程详细如下：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#三次握手过程"><span class="nav-number">1.0.2.</span> <span class="nav-text">三次握手过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#四次挥手过程"><span class="nav-number">1.0.3.</span> <span class="nav-text">四次挥手过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TCP协议常见问题："><span class="nav-number">1.0.4.</span> <span class="nav-text">TCP协议常见问题：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、Http协议原理"><span class="nav-number">2.</span> <span class="nav-text">二、Http协议原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Http简介"><span class="nav-number">2.0.1.</span> <span class="nav-text">1,Http简介</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#HTTP的历史版本"><span class="nav-number">2.0.1.1.</span> <span class="nav-text">HTTP的历史版本</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#HTTP协议的主要特点"><span class="nav-number">2.0.1.2.</span> <span class="nav-text">HTTP协议的主要特点</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#HTTP状态码"><span class="nav-number">2.0.1.3.</span> <span class="nav-text">HTTP状态码</span></a></li></ol></li></ol></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/timg.jpg"
+      alt="Lu Tian">
+  <p class="site-author-name" itemprop="name">Lu Tian</p>
+  <div class="site-description" itemprop="description">每天进步一点点</div>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/ltt19921124" title="GitHub &rarr; https://github.com/ltt19921124" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="/ltt19921124@163.com" title="E-Mail &rarr; ltt19921124@163.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="/302851414" title="QQ &rarr; 302851414"><i class="fa fa-fw fa-QQ"></i>QQ</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://liuwangshu.cn/" title="http://liuwangshu.cn/" rel="noopener" target="_blank">刘望舒</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/singwhatiwanna/" title="https://blog.csdn.net/singwhatiwanna/" rel="noopener" target="_blank">任玉刚</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://me.csdn.net/sinyu890807" title="https://me.csdn.net/sinyu890807" rel="noopener" target="_blank">郭霖</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lu Tian</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数"></span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长"></span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
