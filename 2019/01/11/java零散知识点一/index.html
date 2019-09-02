@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/TiddlyWiki.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-.min.css?v=1.0.2">
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet"><style>
+    .pace .pace-progress {
+        background: #1E92FB; /*进度条颜色*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*上边框颜色*/
+        border-left-color: #1E92FB;    /*左边框颜色*/
+    }
+</style>
+
+<script>
+    (function () {
+        if ('ly669966') {
+            if (prompt('请输入文章密码') !== 'ly669966') {
+                alert('密码错误！');
+                if (history.length === 1) {
+                    location.replace("ly669966"); // 这里替换成你的首页
+                } else {
+                    history.back();
+                }
+            }
+        }
+    })();
+</script>
+
+  <meta name="description" content="1,什么是java的接口回调？有什么作用？回调是一种向的调用模式，也就是说，被调用的接口被调用时也会调用对方的接口。学习自回调先看代码：">
+<meta name="keywords" content="java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java零散知识点一">
+<meta property="og:url" content="http://yoursite.com/2019/01/11/java零散知识点一/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="1,什么是java的接口回调？有什么作用？回调是一种向的调用模式，也就是说，被调用的接口被调用时也会调用对方的接口。学习自回调先看代码：">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/picture/reCall.png">
+<meta property="og:image" content="http://yoursite.com/picture/lingxing.png">
+<meta property="og:updated_time" content="2019-01-12T05:32:29.150Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="java零散知识点一">
+<meta name="twitter:description" content="1,什么是java的接口回调？有什么作用？回调是一种向的调用模式，也就是说，被调用的接口被调用时也会调用对方的接口。学习自回调先看代码：">
+<meta name="twitter:image" content="http://yoursite.com/picture/reCall.png">
+  <link rel="canonical" href="http://yoursite.com/2019/01/11/java零散知识点一/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>java零散知识点一 | Hexo</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <a href="https://github.com/ltt19921124" class="github-corner" aria-label="View source on GitHub">
+    <svg width="80" height="80" viewBox="0 0 250 250" style="fill:#64CEAA; color:#fff; position: absolute; 
+    top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z">
+    </path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7
+     120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6
+      130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm">
+      </path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6
+       C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1
+        176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9
+         216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5
+          157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8
+           Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover
+            .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes
+             octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/11/java零散知识点一/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lu Tian">
+      <meta itemprop="description" content="每天进步一点点">
+      <meta itemprop="image" content="/images/timg.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">java零散知识点一
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-11 14:22:50" itemprop="dateCreated datePublished" datetime="2019-01-11T14:22:50+08:00">2019-01-11</time>
+            </span>
+          
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-01-12 13:32:29" itemprop="dateModified" datetime="2019-01-12T13:32:29+08:00">2019-01-12</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span></span>
+            </span>
+          
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong>1,什么是java的接口回调？有什么作用？</strong><br>回调是一种向的调用模式，也就是说，被调用的接口被调用时也会调用对方的接口。<br>学习自<a href="https://blog.csdn.net/bjyfb/article/details/10462555" target="_blank" rel="noopener">回调</a><br>先看代码：</p>
+<a id="more"></a>
+<p><img src="/picture/reCall.png" alt="回调"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">package test2;</span><br><span class="line"></span><br><span class="line">//定义回调接口</span><br><span class="line">interface CallBackInterface &#123;</span><br><span class="line">	void execute();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//创建回调对象</span><br><span class="line">class Boss implements CallBackInterface &#123;</span><br><span class="line">	@Override</span><br><span class="line">	public void execute() &#123;</span><br><span class="line">		System.out.println(&quot;收到了!!&quot; + System.currentTimeMillis());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//创建控制类</span><br><span class="line">class Employee &#123;</span><br><span class="line">	private CallBackInterface callBackInterface = null;</span><br><span class="line">	</span><br><span class="line">	//告诉老板的联系方式，也就是注册</span><br><span class="line">	public void setCallBack (CallBackInterface callBackInterface) &#123;</span><br><span class="line">		this.callBackInterface = callBackInterface;</span><br><span class="line">	&#125;</span><br><span class="line">	//工人干活</span><br><span class="line">	public void doWork () &#123;</span><br><span class="line">		//1,开始干活</span><br><span class="line">		for (int i = 0; i &lt; 10; i++) &#123;</span><br><span class="line">			System.out.println(&quot;第[&quot; + i + &quot;]件事干完了!&quot; );</span><br><span class="line">		&#125;</span><br><span class="line">		//2，告诉老板干完了</span><br><span class="line">		callBackInterface.execute();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class CallBack &#123;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		//测试代码</span><br><span class="line">		Employee employee = new Employee();</span><br><span class="line">		</span><br><span class="line">		//将回调对象(上层对象)传入，注册</span><br><span class="line">		employee.setCallBack(new Boss());		</span><br><span class="line">		//开启控制器对象运行</span><br><span class="line">		employee.doWork();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">第[0]件事干完了!</span><br><span class="line">第[1]件事干完了!</span><br><span class="line">第[2]件事干完了!</span><br><span class="line">第[3]件事干完了!</span><br><span class="line">第[4]件事干完了!</span><br><span class="line">第[5]件事干完了!</span><br><span class="line">第[6]件事干完了!</span><br><span class="line">第[7]件事干完了!</span><br><span class="line">第[8]件事干完了!</span><br><span class="line">第[9]件事干完了!</span><br><span class="line">收到了!!1547188964051</span><br></pre></td></tr></table></figure>
+
+<p>为什么会出现回调机制呢？在 现实生活中，比如有如下场景：工厂的老板(Boss，也是上层模块)很忙，他没有时间盯着员工(下层模块)干活，然后他告诉自己的雇员，干完这些事后，告诉他干活的结果。这个例子就是回调+异步的例子。再比如，A程序员写了一个程序a，其中预留了回调函数接口，并封装好了该程序，程序员B让a调用自己的程序b中的一个方法，于是它通过a中的接口回调自己b中的方法。<strong>注意：回调和异步不同，回调不是解决时间过长的问题，异步才是。</strong><br><strong>2,s什么是菱形继承问题？</strong><br>答：这个问题反映了为什么在java中不允许多继承，如果两个类共同继承一个类，那么该类的方法会被两个子类重写，如果同时继承这两个子类，那么调用该重写方法时，编译器是不能识别你要调用哪个方法的，这个问题被称为菱形继承问题。<br><img src="/picture/lingxing.png" alt><br><strong>3,final,finally和finalize三者之间有什么区别？</strong><br>答： </p>
+<ul>
+<li>1，final关键字是用来在多个语境下定义只能分配一次的实体，final可以声明成员变量、方法、类以及本地变量，一旦将引用声明作final，就不能改变这个引用了，编译器会检查代码，如果试图将变量再次初始化的话，编译器会报编译错误。</li>
+<li>2，finally代码块是用于执行重要代码(如关闭连接、流、数据库等)的代码块，无论是否处理异常，finally代码块都会被执行。finally代码块紧跟try或catch代码块。</li>
+<li>3，finalize是在删除或销毁对象之前垃圾回收器总会调用的方法，该方法使得垃圾回收机制能够执行清理活动。</li>
+</ul>
+<p><strong>4,父类的静态方法能否被重写？为什么？</strong><br>答：静态方法只与类有关，不与具体实现相关。而且static方法不是后期绑定的，它在编译时期就绑定了。所有引用到该方法的对象(父类也好子类也好)所指向的都是同一块内存中的数据，也就是该静态方法，父类的静态不能被子类继承，就更谈不上重写了。<br><strong>5,接口回调过程</strong><br>答：定义一个回调函数，给事件发送方传入接口，在需要的地方调用未实现方法；在事件接收方实例化并处理结果。当事件发生时，会通知回调函数进行处理、<br><strong>6,泛型原理</strong><br>答：java的泛型是伪泛型，使用泛型的时候加上的类型参数，会在编译的时候去掉，这个过程叫泛型檫除。泛型只在编译时有效。<br><strong>7，创建对象的方式</strong><br>答：</p>
+<ul>
+<li>1，new 关键字</li>
+<li>2，通过反射创建</li>
+<li>3，采用clone方法</li>
+<li>4，通过序列化机制</li>
+</ul>
+<p><strong>8，object中的公共方法有哪些？</strong><br>答：equals(),clone(),getClass(),wait(),notify(),notifyAll(),toString(),finalize()。<br><strong>9，反射中，class.forName()和classLoader的区别？</strong><br>答：</p>
+<ul>
+<li>1，class.forName()除了将类的.class文件加载到JVM中之外，还会对类进行解释，执行类中的static代码块</li>
+<li>2，classLoader只做一件事，就是将.class文件加载到JVM中，不会执行static代码块</li>
+</ul>
+<p><strong>10，throw与throws的区别</strong><br>答：</p>
+<ul>
+<li>1，throws出现在函数头(声明异常)；而throw出现在函数体(指抛出具体的异常)</li>
+<li>2，throws表示出现异常的一种吗可能性，并不一定会发生该异常；throw则是抛出了异常，执行throw则一定抛出了某种异常。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">throw new NumberFormatException();</span><br><span class="line"></span><br><span class="line">voiud funtion() throws NumberformatException&#123;&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p><strong>11,java什么被称为与平台无关的语言</strong><br>答：”一次编译，到处运行”，这是java的口号，java有自己完善的硬件架构，如处理器、堆栈、寄存器等，还具有相应的指令系统。JVM屏蔽了与具体操作系统平台相关的信息，使得java程序员只需要生成在java虚拟机上运行的目标代码(也就是字节码)，就可以在多种平台上运行(当然在不同的平台用不同的虚拟机，比如在window是和mac系统中java的虚拟机就不一样，但是正是虚拟机自己和操作系统底层打交道，而不要程序员编码的时候去考虑这个问题，我们只要生成字节码就可以了，字节码在不同的虚拟机中都可以运行，这样才可以实现”一次编译，到处运行”)。<br><strong>12，JDK和JRE区别</strong><br>答：</p>
+<ul>
+<li>1，jdk是java Development Kit(java开发工具包),它包含一整套java开发工具，包括JRE和编译器，可以开发、编译执行java程序。</li>
+<li>2，JRE是java运行环境，包括java虚拟机和applet</li>
+<li>3，JDK包含JRE</li>
+</ul>
+<p><strong>13，static修饰的方法能否被覆盖？</strong><br>答：不能，覆盖试是运行时动态绑定的，而static是编译时静态绑定的，static变量在java中是属于类的，它在所有的实例中值是一样的。<br><strong>14，finalize()方法</strong><br>答：finalize()方法是Object()类的一个方法，GC回收对象前会调用finalize()方法<br><strong>15，为什么内部类调用的外部变量必须final修饰？</strong><br>答：方法中的局部变量，方法结束后这个变量就要释放掉，然而内部类的某个方法还没有执行完，这个时候它所引用的外部变量已经找不到了。如果定义成final的，java会将这个变量复制一份作为成员变量内置于内部类中。为了解决：局部变量的生命周期与局部内部类的对象的生命周期不一致性的问题。<br><strong>16，迭代器可以在迭代的过程中删除底层集合的元素，但是不可以直接调用集合的remove(Object Obj)删除，可以通过迭代器的remove()方法删除</strong><br><strong>17，array可以包含基本类型和引用类型，ArrayList只能包含引用类型，如果要存基本数据类型，也要用它们的包装类才可以</strong><br><strong>18，compareable和comparetor接口</strong><br>答：comparetor：需要实现compare(o1,o2)和equals()方法返回int值，负数，小于；正数，大于；0，等于。<br><strong>19，异常处理完成后，Exception会发生什么变化?</strong><br>答：exception对象会在下一个垃圾回收过程中被回收掉<br><strong>20，浅拷贝和深拷贝以及引用的拷贝</strong><br>答：先看代码：<br>引用的拷贝：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">//其它的代码省略了</span><br><span class="line">Person p = new Person(&quot;zhangsan&quot;, 25);</span><br><span class="line">Person p1 = p;</span><br><span class="line">		</span><br><span class="line">System.out.println(p);</span><br><span class="line">System.out.println(p1);	</span><br><span class="line">//运行结果</span><br><span class="line">Test.Person@2c13da15</span><br><span class="line">Test.Person@2c13da15</span><br></pre></td></tr></table></figure>
+
+<p>打印结果是一样的，也就是说两者引用的是同一个对象，并没有创建一个新的对象，</p>
+<p><strong>浅拷贝</strong><br>浅拷贝是按位拷贝对象，它会创建一个新对象，这个对象有着与原始对象属性值的一份精确拷贝。如果属性是基本类型，拷贝的就是基本类型的值；如果属性是内存地址(引用类型)，拷贝的就是内存地址<br><strong>深拷贝</strong><br>会拷贝所有的属性，并拷贝属性所指向的动态分配的内存，当对象和它所引用的对象一起拷贝时发生深拷贝<br><strong>21，Session和Cookie区别</strong><br>答：</p>
+
+    </div>
+
+    
+    
+    
+      
+
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/java/" rel="tag"># java</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/01/08/python进阶学习四-面向对象/" rel="next" title="python进阶学习四(面向对象)">
+                  <i class="fa fa-chevron-left"></i> python进阶学习四(面向对象)
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/01/12/java反射机制学习/" rel="prev" title="java反射机制学习">
+                  java反射机制学习 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/timg.jpg"
+      alt="Lu Tian">
+  <p class="site-author-name" itemprop="name">Lu Tian</p>
+  <div class="site-description" itemprop="description">每天进步一点点</div>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/ltt19921124" title="GitHub &rarr; https://github.com/ltt19921124" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://liuwangshu.cn/" title="http://liuwangshu.cn/" rel="noopener" target="_blank">刘望舒</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/singwhatiwanna/" title="https://blog.csdn.net/singwhatiwanna/" rel="noopener" target="_blank">任玉刚</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://me.csdn.net/sinyu890807" title="https://me.csdn.net/sinyu890807" rel="noopener" target="_blank">郭霖</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lu Tian</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数"></span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长"></span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共168.3k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/love.js"></script>

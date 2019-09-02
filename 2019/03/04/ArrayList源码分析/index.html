@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/TiddlyWiki.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-.min.css?v=1.0.2">
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet"><style>
+    .pace .pace-progress {
+        background: #1E92FB; /*进度条颜色*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*上边框颜色*/
+        border-left-color: #1E92FB;    /*左边框颜色*/
+    }
+</style>
+
+<script>
+    (function () {
+        if ('ly669966') {
+            if (prompt('请输入文章密码') !== 'ly669966') {
+                alert('密码错误！');
+                if (history.length === 1) {
+                    location.replace("ly669966"); // 这里替换成你的首页
+                } else {
+                    history.back();
+                }
+            }
+        }
+    })();
+</script>
+
+  <meta name="description" content="java源码分析之ArrayList源码分析，ArrayList是常用的集合框架类之一。现在来先简单分析它的源码，占坑先。">
+<meta name="keywords" content="算法，java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ArrayList源码分析">
+<meta property="og:url" content="http://yoursite.com/2019/03/04/ArrayList源码分析/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="java源码分析之ArrayList源码分析，ArrayList是常用的集合框架类之一。现在来先简单分析它的源码，占坑先。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-03-04T13:10:55.672Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ArrayList源码分析">
+<meta name="twitter:description" content="java源码分析之ArrayList源码分析，ArrayList是常用的集合框架类之一。现在来先简单分析它的源码，占坑先。">
+  <link rel="canonical" href="http://yoursite.com/2019/03/04/ArrayList源码分析/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>ArrayList源码分析 | Hexo</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <a href="https://github.com/ltt19921124" class="github-corner" aria-label="View source on GitHub">
+    <svg width="80" height="80" viewBox="0 0 250 250" style="fill:#64CEAA; color:#fff; position: absolute; 
+    top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z">
+    </path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7
+     120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6
+      130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm">
+      </path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6
+       C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1
+        176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9
+         216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5
+          157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8
+           Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover
+            .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes
+             octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/04/ArrayList源码分析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lu Tian">
+      <meta itemprop="description" content="每天进步一点点">
+      <meta itemprop="image" content="/images/timg.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">ArrayList源码分析
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-04 09:47:09 / 修改时间：21:10:55" itemprop="dateCreated datePublished" datetime="2019-03-04T09:47:09+08:00">2019-03-04</time>
+            </span>
+          
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/算法/" itemprop="url" rel="index"><span itemprop="name">算法</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span></span>
+            </span>
+          
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>java源码分析之ArrayList源码分析，ArrayList是常用的集合框架类之一。现在来先简单分析它的源码，占坑先。</p>
+<a id="more"></a>
+<h2 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> /**</span><br><span class="line">  * Constructs an empty list with an initial capacity of ten.</span><br><span class="line">  */</span><br><span class="line">  表示构建一个数组，长度为10</span><br><span class="line">public ArrayList() &#123;</span><br><span class="line">    //DEFAULTCAPACITY_EMPTY_ELEMENTDATA是一个Object类型数组的引用</span><br><span class="line">    this.elementData = DEFAULTCAPACITY_EMPTY_ELEMENTDATA;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="常用的方法"><a href="#常用的方法" class="headerlink" title="常用的方法"></a>常用的方法</h2><p><strong>1，添加元素</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public boolean add(E e) &#123;</span><br><span class="line">        //modCount加1</span><br><span class="line">        modCount++;</span><br><span class="line">        //</span><br><span class="line">        add(e, elementData, size);</span><br><span class="line">        return true;</span><br><span class="line">&#125;</span><br><span class="line">``</span><br></pre></td></tr></table></figure>
+
+<p>private void add(E e, Object[] elementData, int s) {<br>        //<br>        if (s == elementData.length)<br>            elementData = grow();<br>        elementData[s] = e;<br>        size = s + 1;<br>}</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grow()</span><br></pre></td></tr></table></figure>
+
+<p>private Object[] grow() {<br>    return grow(size + 1);<br>}</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grow(int minCapacity )</span><br></pre></td></tr></table></figure>
+
+<p>private Object[] grow(int minCapacity) {<br>    return elementData = Arrays.copyOf(elementData,<br>                                        newCapacity(minCapacity));<br>}</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">关键代码：newCapacity()</span><br></pre></td></tr></table></figure>
+
+<p> private int newCapacity(int minCapacity) {<br>        // overflow-conscious code<br>        int oldCapacity = elementData.length;<br>        int newCapacity = oldCapacity + (oldCapacity &gt;&gt; 1);<br>        if (newCapacity - minCapacity &lt;= 0) {<br>            if (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA)<br>                return Math.max(DEFAULT_CAPACITY, minCapacity);<br>            if (minCapacity &lt; 0) // overflow<br>                throw new OutOfMemoryError();<br>            return minCapacity;<br>        }<br>        return (newCapacity - MAX_ARRAY_SIZE &lt;= 0)<br>            ? newCapacity<br>            : hugeCapacity(minCapacity);<br>}</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">copyOf</span><br></pre></td></tr></table></figure>
+
+<p>public static <t> T[] copyOf(T[] original, int newLength) {<br>    return (T[]) copyOf(original, newLength, original.getClass());<br>}</t></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">copyOf(U[] original, int newLength, Class&lt;? extends T[]&gt; newType)</span><br></pre></td></tr></table></figure>
+
+<p>public static &lt;T,U&gt; T[] copyOf(U[] original, int newLength, Class&lt;? extends T[]&gt; newType) {<br>        @SuppressWarnings(“unchecked”)<br>        T[] copy = ((Object)newType == (Object)Object[].class)<br>            ? (T[]) new Object[newLength]<br>            : (T[]) Array.newInstance(newType.getComponentType(), newLength);<br>        System.arraycopy(original, 0, copy, 0,<br>                         Math.min(original.length, newLength));<br>        return copy;<br>}</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">分析：</span><br><span class="line">以上就是add()方法走的流程，这是基于JDK 11.0.2的。</span><br><span class="line">简而言之就是调用无参的构造函数会创建一个大小为0的Object型数组，</span><br></pre></td></tr></table></figure>
+
+<p>this.elementData = DEFAULTCAPACITY_EMPTY_ELEMENTDATA;</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">而DEFAULTCAPACITY_EMPTY_ELEMENTDATA就是一个大小为0的Object数组</span><br></pre></td></tr></table></figure>
+
+<p>private static final Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = {};</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">在新增了一个元素的时候，逐步调用会调用到grow()函数，grow()又继续调用grow(int minCapacity)函数，grow(int minCapacity)返回一个Object类型的数组，这个数组又是怎么生成以及大小是什么呢？这时候到copyOf(T[] original, int newLength)方法：Arrays.copyOf(elementData，newCapacity(minCapacity));第一个参数先不看，第二个参数是newCapacity(minCapacity)，返回一个int型的值，这个值是多少呢？这就到了newCapacity(int minCapacity)方法，minCapacity是grow(int minCapacity)中minCapacity传入的，而grow(int minCapacity)是被grow()调用的，传入的参数是size + 1，size正是数组中元素的个数，添加第一个元素的时候size还是为0，所以这里grow(size + 1)的size为0，size + 1为1，也就是minCapacity的值为1，newCapacity(minCapacity)中的minCapacity为1，而初始化数组就是在调用newCapacity(int minCapacity)函数的时候，看代码：</span><br></pre></td></tr></table></figure>
+
+<p> private int newCapacity(int minCapacity) {<br>        // overflow-conscious code<br>        //oldCapacity = 0<br>        int oldCapacity = elementData.length;<br>        //newCapacity = 0<br>        int newCapacity = oldCapacity + (oldCapacity &gt;&gt; 1);<br>        //满足这个条件<br>        if (newCapacity - minCapacity &lt;= 0) {<br>            //满足这个条件<br>            if (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA)<br>                //minCapacity值为1，所以这里显然返回DEFAULT_CAPACITY的值<br>                return Math.max(DEFAULT_CAPACITY, minCapacity);<br>            if (minCapacity &lt; 0) // overflow<br>                throw new OutOfMemoryError();<br>            return minCapacity;<br>        }<br>        return (newCapacity - MAX_ARRAY_SIZE &lt;= 0)<br>            ? newCapacity<br>            : hugeCapacity(minCapacity);<br>    }</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">return Math.max(DEFAULT_CAPACITY, minCapacity);DEFAULT_CAPACITY的值是10，是一个常量。所以这样就生成了一个初始容量大小为10的数组。紧接着把第一个元素赋值给数组的第一个位置。</span><br></pre></td></tr></table></figure>
+
+<p>elementData[s] = e;</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">这样就完成初始化了，jdk这样改进后能或多或少节约一点资源，这和HashMap初始化一样，在添加了元素才会在内存开辟空间生成默认大小的数组，一开始是生成了一个引用。比如HashMap的默认构造函数：</span><br></pre></td></tr></table></figure>
+
+<p>public HashMap() {<br>        this.loadFactor = DEFAULT_LOAD_FACTOR; // all other fields defaulted<br>}</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">并没有数组实例，只是确认了加载因子。调用了put方法添加元素进去的时候再初始化创建数组。put方法代码：</span><br></pre></td></tr></table></figure>
+
+<p>public V put(K key, V value) {<br>        return putVal(hash(key), key, value, false, true);<br>}</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">```</span><br><span class="line">final V putVal(int hash, K key, V value, boolean onlyIfAbsent,</span><br><span class="line">                   boolean evict) &#123;</span><br><span class="line">        Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; p; int n, i;</span><br><span class="line">        //(tab = table) == null 为true，所以执行1处的代码</span><br><span class="line">        if ((tab = table) == null || (n = tab.length) == 0)</span><br><span class="line">            // resize()，</span><br><span class="line">            n = (tab = resize()).length;//1</span><br><span class="line">        if ((p = tab[i = (n - 1) &amp; hash]) == null)</span><br><span class="line">            tab[i] = newNode(hash, key, value, null);</span><br><span class="line">        else &#123;</span><br><span class="line">            Node&lt;K,V&gt; e; K k;</span><br><span class="line">            if (p.hash == hash &amp;&amp;</span><br><span class="line">                ((k = p.key) == key || (key != null &amp;&amp; key.equals(k))))</span><br><span class="line">                e = p;</span><br><span class="line">            else if (p instanceof TreeNode)</span><br><span class="line">                e = ((TreeNode&lt;K,V&gt;)p).putTreeVal(this, tab, hash, key, value);</span><br><span class="line">            else &#123;</span><br><span class="line">                for (int binCount = 0; ; ++binCount) &#123;</span><br><span class="line">                    if ((e = p.next) == null) &#123;</span><br><span class="line">                        p.next = newNode(hash, key, value, null);</span><br><span class="line">                        if (binCount &gt;= TREEIFY_THRESHOLD - 1) // -1 for 1st</span><br><span class="line">                            treeifyBin(tab, hash);</span><br><span class="line">                        break;</span><br><span class="line">                    &#125;</span><br><span class="line">                    if (e.hash == hash &amp;&amp;</span><br><span class="line">                        ((k = e.key) == key || (key != null &amp;&amp; key.equals(k))))</span><br><span class="line">                        break;</span><br><span class="line">                    p = e;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            if (e != null) &#123; // existing mapping for key</span><br><span class="line">                V oldValue = e.value;</span><br><span class="line">                if (!onlyIfAbsent || oldValue == null)</span><br><span class="line">                    e.value = value;</span><br><span class="line">                afterNodeAccess(e);</span><br><span class="line">                return oldValue;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        ++modCount;</span><br><span class="line">        if (++size &gt; threshold)</span><br><span class="line">            resize();</span><br><span class="line">        afterNodeInsertion(evict);</span><br><span class="line">        return null;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行resize()方法，生成一个大小为16，加载因子为0.75的Node数组。</p>
+<h2 id="2，删除元素"><a href="#2，删除元素" class="headerlink" title="2，删除元素"></a>2，删除元素</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public E remove(int index) &#123;</span><br><span class="line">    Objects.checkIndex(index, size);</span><br><span class="line">    final Object[] es = elementData;</span><br><span class="line"></span><br><span class="line">    @SuppressWarnings(&quot;unchecked&quot;) E oldValue = (E) es[index];</span><br><span class="line">    fastRemove(es, index);</span><br><span class="line"></span><br><span class="line">    return oldValue;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="3，修改元素"><a href="#3，修改元素" class="headerlink" title="3，修改元素"></a>3，修改元素</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public E set(int index, E element) &#123;</span><br><span class="line">    //检查是否越界</span><br><span class="line">    Objects.checkIndex(index, size);</span><br><span class="line">    //找到要覆盖的元素</span><br><span class="line">    E oldValue = elementData(index);</span><br><span class="line">    //覆盖这个值</span><br><span class="line">    elementData[index] = element;</span><br><span class="line">    //返回旧值</span><br><span class="line">    return oldValue;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="查询"><a href="#查询" class="headerlink" title="查询"></a>查询</h2><p>不同修改modCount，相对于增删效率要高一些</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public E get(int index) &#123;</span><br><span class="line">    //检查是否越界</span><br><span class="line">    Objects.checkIndex(index, size);</span><br><span class="line">    //</span><br><span class="line">    return elementData(index);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="清空元素"><a href="#清空元素" class="headerlink" title="清空元素"></a>清空元素</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public void clear() &#123;</span><br><span class="line">    modCount++;</span><br><span class="line">    final Object[] es = elementData;</span><br><span class="line">    for (int to = size, i = size = 0; i &lt; to; i++)</span><br><span class="line">        es[i] = null;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="包含某个元素"><a href="#包含某个元素" class="headerlink" title="包含某个元素"></a>包含某个元素</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//返回一个boolean值，可知indexOf(o)的值大于等于0方法返回的值就为true，就说明包含该元素</span><br><span class="line">public boolean contains(Object o) &#123;</span><br><span class="line">        return indexOf(o) &gt;= 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>indexOf方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public int indexOf(Object o) &#123;</span><br><span class="line">    //</span><br><span class="line">    return indexOfRange(o, 0, size);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>indexOfRange方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">//返回一个int值，从start到end范围内，对应到上面的代码就是从0到list列表的大小(size)。</span><br><span class="line"> int indexOfRange(Object o, int start, int end) &#123;</span><br><span class="line">        Object[] es = elementData;</span><br><span class="line">        //如果o为null，</span><br><span class="line">        if (o == null) &#123;</span><br><span class="line">            for (int i = start; i &lt; end; i++) &#123;</span><br><span class="line">                //注意，ArrayList是可以添加null元素的，且可以添加多个，如果列表中有null</span><br><span class="line">                //元素，找到一个就返回，返回该元素的下标，它当然大于等于0，所以此时</span><br><span class="line">                //indexOfRange(o, 0, size)返回值大于等于0，走到最后indexOf(o)也是大于等</span><br><span class="line">                //于0，所以返回true。</span><br><span class="line">                if (es[i] == null) &#123;</span><br><span class="line">                    return i;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        //否则，也就是o不为null，</span><br><span class="line">         else &#123;</span><br><span class="line">            for (int i = start; i &lt; end; i++) &#123;</span><br><span class="line">                //如果o和数组中某个元素相等，返回该元素下标，最终contains也是返回true</span><br><span class="line">                if (o.equals(es[i])) &#123;</span><br><span class="line">                    return i;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        //都不满足以上条件，返回-1，小于0，所以contains方法返回false</span><br><span class="line">        return -1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="判空"><a href="#判空" class="headerlink" title="判空"></a>判空</h2><p>这里很简单，就是看size是否为0，是就返回true，否则返回false</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public boolean isEmpty() &#123;</span><br><span class="line">    return size == 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="迭代器-Iterator"><a href="#迭代器-Iterator" class="headerlink" title="迭代器 Iterator"></a>迭代器 Iterator</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public Iterator&lt;E&gt; iterator() &#123;</span><br><span class="line">    return new Itr();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+      
+
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/算法，java/" rel="tag"># 算法，java</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/03/03/排序算法--JAVA/" rel="next" title="排序算法">
+                  <i class="fa fa-chevron-left"></i> 排序算法
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/03/04/算法课三/" rel="prev" title="算法课三">
+                  算法课三 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#构造函数"><span class="nav-number">1.</span> <span class="nav-text">构造函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用的方法"><span class="nav-number">2.</span> <span class="nav-text">常用的方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2，删除元素"><span class="nav-number">3.</span> <span class="nav-text">2，删除元素</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3，修改元素"><span class="nav-number">4.</span> <span class="nav-text">3，修改元素</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查询"><span class="nav-number">5.</span> <span class="nav-text">查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#清空元素"><span class="nav-number">6.</span> <span class="nav-text">清空元素</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#包含某个元素"><span class="nav-number">7.</span> <span class="nav-text">包含某个元素</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#判空"><span class="nav-number">8.</span> <span class="nav-text">判空</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#迭代器-Iterator"><span class="nav-number">9.</span> <span class="nav-text">迭代器 Iterator</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/timg.jpg"
+      alt="Lu Tian">
+  <p class="site-author-name" itemprop="name">Lu Tian</p>
+  <div class="site-description" itemprop="description">每天进步一点点</div>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/ltt19921124" title="GitHub &rarr; https://github.com/ltt19921124" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://liuwangshu.cn/" title="http://liuwangshu.cn/" rel="noopener" target="_blank">刘望舒</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/singwhatiwanna/" title="https://blog.csdn.net/singwhatiwanna/" rel="noopener" target="_blank">任玉刚</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://me.csdn.net/sinyu890807" title="https://me.csdn.net/sinyu890807" rel="noopener" target="_blank">郭霖</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lu Tian</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数"></span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长"></span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共168.3k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/love.js"></script>

@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/TiddlyWiki.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-.min.css?v=1.0.2">
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet"><style>
+    .pace .pace-progress {
+        background: #1E92FB; /*进度条颜色*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*上边框颜色*/
+        border-left-color: #1E92FB;    /*左边框颜色*/
+    }
+</style>
+
+<script>
+    (function () {
+        if ('ly669966') {
+            if (prompt('请输入文章密码') !== 'ly669966') {
+                alert('密码错误！');
+                if (history.length === 1) {
+                    location.replace("ly669966"); // 这里替换成你的首页
+                } else {
+                    history.back();
+                }
+            }
+        }
+    })();
+</script>
+
+  <meta name="description" content="一、卷积神经网络卷积神经网络CNN是一种人工神经网络，它对感知问题特别有效，CNN接受多维输入包括定义大多数传感器数据的二维和三维形状。如果使用标准神经网络对图像进行分类，则需要通过一种方法将图像连接到网络的第一层，这属于一维。标准做法是通过将图像矩阵重塑为一个矢量，并在一个大行中连接所有列，将图像“展开”为一维像素阵列。。。">
+<meta name="keywords" content="无人驾驶,Apllo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Apollo基础课程之感知(下)">
+<meta property="og:url" content="http://yoursite.com/2019/03/18/Apollo基础课程第五课之感知-下/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="一、卷积神经网络卷积神经网络CNN是一种人工神经网络，它对感知问题特别有效，CNN接受多维输入包括定义大多数传感器数据的二维和三维形状。如果使用标准神经网络对图像进行分类，则需要通过一种方法将图像连接到网络的第一层，这属于一维。标准做法是通过将图像矩阵重塑为一个矢量，并在一个大行中连接所有列，将图像“展开”为一维像素阵列。。。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/picture/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190321211843.jpg">
+<meta property="og:image" content="http://yoursite.com/picture/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190321211911.jpg">
+<meta property="og:image" content="http://yoursite.com/picture/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190321211934.jpg">
+<meta property="og:image" content="http://yoursite.com/picture/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190321212024.png">
+<meta property="og:image" content="http://yoursite.com/picture/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190321212115.jpg">
+<meta property="og:image" content="http://yoursite.com/picture/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190321212136.jpg">
+<meta property="og:image" content="http://yoursite.com/picture/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190321212152.jpg">
+<meta property="og:image" content="http://yoursite.com/picture/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190321212226.jpg">
+<meta property="og:image" content="http://yoursite.com/picture/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190321212305.jpg">
+<meta property="og:image" content="http://yoursite.com/picture/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190321212323.jpg">
+<meta property="og:image" content="http://yoursite.com/picture/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190321212343.jpg">
+<meta property="og:image" content="http://yoursite.com/picture/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190321212405.jpg">
+<meta property="og:image" content="http://yoursite.com/picture/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190321212425.jpg">
+<meta property="og:image" content="http://yoursite.com/picture/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190322001744.jpg">
+<meta property="og:image" content="http://yoursite.com/picture/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190322001826.jpg">
+<meta property="og:image" content="http://yoursite.com/picture/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190321212539.jpg">
+<meta property="og:image" content="http://yoursite.com/picture/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190321212644.jpg">
+<meta property="og:updated_time" content="2019-03-27T22:38:24.317Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Apollo基础课程之感知(下)">
+<meta name="twitter:description" content="一、卷积神经网络卷积神经网络CNN是一种人工神经网络，它对感知问题特别有效，CNN接受多维输入包括定义大多数传感器数据的二维和三维形状。如果使用标准神经网络对图像进行分类，则需要通过一种方法将图像连接到网络的第一层，这属于一维。标准做法是通过将图像矩阵重塑为一个矢量，并在一个大行中连接所有列，将图像“展开”为一维像素阵列。。。">
+<meta name="twitter:image" content="http://yoursite.com/picture/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190321211843.jpg">
+  <link rel="canonical" href="http://yoursite.com/2019/03/18/Apollo基础课程第五课之感知-下/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Apollo基础课程之感知(下) | Hexo</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <a href="https://github.com/ltt19921124" class="github-corner" aria-label="View source on GitHub">
+    <svg width="80" height="80" viewBox="0 0 250 250" style="fill:#64CEAA; color:#fff; position: absolute; 
+    top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z">
+    </path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7
+     120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6
+      130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm">
+      </path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6
+       C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1
+        176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9
+         216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5
+          157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8
+           Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover
+            .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes
+             octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/18/Apollo基础课程第五课之感知-下/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lu Tian">
+      <meta itemprop="description" content="每天进步一点点">
+      <meta itemprop="image" content="/images/timg.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">Apollo基础课程之感知(下)
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-18 18:34:38" itemprop="dateCreated datePublished" datetime="2019-03-18T18:34:38+08:00">2019-03-18</time>
+            </span>
+          
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-03-28 06:38:24" itemprop="dateModified" datetime="2019-03-28T06:38:24+08:00">2019-03-28</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/无人驾驶/" itemprop="url" rel="index"><span itemprop="name">无人驾驶</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span></span>
+            </span>
+          
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="一、卷积神经网络"><a href="#一、卷积神经网络" class="headerlink" title="一、卷积神经网络"></a>一、卷积神经网络</h2><p><strong>卷积神经网络CNN</strong>是一种人工神经网络，它对感知问题特别有效，CNN接受多维输入包括定义大多数传感器数据的二维和三维形状。如果使用标准神经网络对图像进行分类，则需要通过一种方法将图像连接到网络的第一层，这属于一维。标准做法是通过将图像矩阵重塑为一个矢量，并在一个大行中连接所有列，将图像“展开”为一维像素阵列。。。</p>
+<a id="more"></a>
+<p><img src="/picture/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190321211843.jpg" alt><br>然而这种方法打破了图像中所嵌入的空间信息，如果图像中有车轮，则车轮中的所有像素将散布在整个像素阵列中。如果将其散布在一个维度上，神经网络很难从图像中提取车轮。CNN通过维持输入像素之间的空间关系来解决这个问题，CNN通过将过滤器连续滑过图像来收集信息，每次收集信息时，只对整个图像的一小部分区域进行分析，称为<strong>卷积</strong>。<br><img src="/picture/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190321211911.jpg" alt><br>当在整个输入图像上对一个过滤器进行卷积时，将该信息与下一个卷积层相关联。例如CNN识别第一个卷积层中的基本边缘和颜色信息，然后通过在第一层上卷积新过滤器，CNN使用边缘和颜色信息来归纳更复杂的结构如车轮、车门、挡风玻璃；而另一个卷积可使用车轮、车门、挡风玻璃识别整个车辆；最后神经网络可使用这一高阶信息对车辆进行分类。<br><img src="/picture/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190321211934.jpg" alt><br>CNN根据其任务查找真正需要的特征，任务可能是图像检测、分类、分割、其他类型的目标。</p>
+<h2 id="二、检测与分类"><a href="#二、检测与分类" class="headerlink" title="二、检测与分类"></a>二、检测与分类</h2><p>感知任务中，首先是<strong>障碍物检测和分类</strong>，在驾驶过程中会遇到许多障碍物，静态障碍物包括墙壁、树木、杆子、建筑物；动态障碍物包括行人、自行车、汽车。计算机首先需要知道障碍物的位置，然后进行分类。在路中行驶的无人驾驶车可能会探测到许多不同的物体，汽车根据所感知的物体类型来确定路径和速度。如果感知到前方有一辆自行车，汽车可能会决定减速和变道，以便安全驶过自行车。但是如果感知到前方有另一辆车，并预测到前方车辆也将以接近限速的速度行驶，可能会保持其速度和车道。<br><img src="/picture/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190321212024.png" alt><br>将另一个示例为交通信号灯检测分类，首先将使用计算机视觉对图像中的交通信号灯进行定位，然后根据灯光显示颜色对交通信号灯进行分类。<br><img src="/picture/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190321212115.jpg" alt><br>无人驾驶中，使用什么算法来对障碍物进行检测和分类？可以先使用检测CNN来查找图像中的对象的位置，在对图像中的对象进行定位后，可以将图像发送给另一个CNN进行分类。也可以使用单一CNN体系结构对对象进行检测和分类，一种通常的做法为在单个网络体系结构的末端附加几个不同的“头”，一个头可能执行检测，另一个则可能执行分类。经典体系结构为 R-CNN、Fast R-CNN、Faster R-CNN、YOLO、SSD等。</p>
+<h2 id="三，跟踪"><a href="#三，跟踪" class="headerlink" title="三，跟踪"></a>三，跟踪</h2><p>检测完对象后，需要追踪它们追踪的意义是什么？如果我们对每个帧中的每个对象进行检测并用边界框对每个对象进行标识，那么跨帧追踪对象会带来哪些好处？</p>
+<p>首先追踪在检测失败时是至关重要的，如果你在运行检测算法时，对象被其他对象遮挡一部分，则检测算法可能会失败，但追踪可以解决遮挡问题。另一个原因在于追踪可以保留身份，障碍物检测的输出为包含对象的边界框，但是对象没有与任何身份关联，单独使用对象检测时，计算机不知道一个帧中的哪些对象与下一帧中的哪些对象相对应，该任务对人类来说很简单，但对汽车来说很困难。<br><img src="/picture/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190321212136.jpg" alt><br>追踪的第一步为确认身份，通过查找特征相似度最高的对象，将在之前的帧中检测到的所有对象与在当前的帧中检测到的对象进行匹配。对象具有各种特征，可能基于颜色、基于形状，计算机视觉算法可以计算出复杂的图像特征，如局部二值模式和方向梯度直方图。当然也需要考虑连续视频帧中，两个障碍物之间的位置和速度，由于两帧之间的对象位置和速度没有太大变化，该信息也可以帮助快速找到匹配的对象。<br><img src="/picture/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190321212152.jpg" alt><br>在确定身份后，可以使用对象的位置并结合预测算法以估计在下一个时间步的速度和位置，该预测可帮助识别下一帧中的相应对象。</p>
+<h2 id="四、分割"><a href="#四、分割" class="headerlink" title="四、分割"></a>四、分割</h2><p>语义分割涉及对图像的每个像素进行分类，用于尽可能详细地了解环境并确定车辆可驾驶区域。<br><img src="/picture/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190321212226.jpg" alt><br>语义分割依赖于一种特殊类型的CNN，被称为<strong>全卷积网络FCN</strong>。FCN用卷积层来替代传统CNN体系结构末端的平坦层，现在网络中的每一层都是卷积层，因此名称为“<strong>全卷积网络</strong>”。<br><img src="/picture/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190321212305.jpg" alt><br>FCN提供了可在原始输入图像之上叠加的逐像素输出，必须考虑的一个复杂因素是大小。在典型的CNN中经过多次卷积之后所产生的输出比原始输入图像小得多。然而为了分割像素，输出尺寸必须与原始图像的尺寸相匹配。为了完成，可以对中间输出进行上采样处理，直到最终输出的大小与原始输出图像的大小相匹配。网络的前半部分通常被称为编码器，因为这部分网络对输入图像的特征进行了提取和编码。网络的后半部分通常被称为解码器，因为它对这些特征进行了解码并将其应用于输出。<br><img src="/picture/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190321212323.jpg" alt><br>激光雷达数据提供了用于构建世界视觉表征的足够空间信息，计算机视觉技术不仅可以使用摄像头图像进行对象分类，还可以使用点云和其他类型的空间相关数据进行对象分类。</p>
+<h2 id="五、Apollo-感知"><a href="#五、Apollo-感知" class="headerlink" title="五、Apollo 感知"></a>五、Apollo 感知</h2><p>Apollo 开放式软件栈可感知障碍物、交通信号灯、车道。对于三维对象检测，Apollo 在高精度地图上使用感兴趣区域ROI来重点关注相关对象。Apollo将ROI过滤器应用于点云和图像数据，以缩小搜索范围并加快感知。<br><img src="/picture/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190321212343.jpg" alt><br>然后通过检测网络馈送已过滤的点云，输出用于构建围绕对象的三维边界框。<br><img src="/picture/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190321212405.jpg" alt><br>最后使用被称为检测跟踪关联的算法来跨时间步识别单个对象，该算法先保留在每个时间步要跟踪的对象列表，然后在下一个时间步中找到每个对象的最佳匹配。<br><img src="/picture/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190321212425.jpg" alt><br>对于交通信号灯的分类，Apollo先使用高精度地图来确定前方是否存在交通信号灯。如果前方有交通信号灯，则高精度地图会返回灯的位置。后续根据位置，摄像头搜索范围，在摄像头捕获到交通信号灯图像后。Apollo使用检测网络对图像中的灯进行定位，然后从较大的图像中提取交通信号灯。将裁剪的交通灯图像提供给分类网络以确定灯颜色，如果有许多灯则系统需要选择哪些灯与其车道相关。<br><img src="/picture/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190322001744.jpg" alt><br>Apollo使用 YOLO 网络来检测车道线、动态物体其中包括车辆、卡车、骑自行车的人、行人。在经过YOLO网络检测后，在线检测模块会并入来自其他传感器的数据对车道线预测进行调整，车道线最终被并入名为“虚拟车道”的单一数据结构中。同样也通过其他传感器的数据对YOLO网络所检测到的动态对象进行调整，以获得每个对象的类型、位置、速度、前进方向。虚拟通道和动态对象均被传递到规划与控制模块。<br><img src="/picture/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190322001826.jpg" alt></p>
+<h2 id="六、传感器数据比较"><a href="#六、传感器数据比较" class="headerlink" title="六、传感器数据比较"></a>六、传感器数据比较</h2><p>感知通常依赖于摄像头、激光雷达、雷达，如图显示了这三种传感器的优缺点。摄像头非常适用于分类，在Apollo中摄像头主要用于交通信号灯分类、车道检测。激光雷达的优势在于障碍物检测，即使在夜间仍能准确地检测障碍物。雷达在探测范围和应对恶劣天气方面占优势，通过融合这三种传感器的数据可实现最佳聚合性能，被称为“<strong>传感器融合</strong>”。<br><img src="/picture/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190321212539.jpg" alt><br><strong>雷达</strong>已经在汽车上使用很多年，在各种系统中都需要雷达，如自适应巡航控制、盲点警告、碰撞警告和碰撞预防系统等。尽管雷达技术已经成熟，它仍在不断进步，作用不断提升。其他传感器测量速度的方法是计算两次读数之间的差距，而雷达则通过多普勒效应来直接测量速度。多普勒效应根据对象在远离还是接近你，测量出雷达的频率变化。就像消防车警报器一样，当车辆正在远离你和驶向你时，听起来声是不一样的。多普勒效应对传感器融合至关重要。因为它可以把速度作为独立的测量参数，从而提升了融合算法的收敛速度。雷达还可以生成环境的雷达地图，进而实现定位。因为雷达波在坚硬表面会回弹。因此，它可以直接测量对象距离，无需在视线范围内也可以。雷达可以看到其他车辆底部。并发现可能会被阻挡的建筑物和对象。在车上的所有传感器中，雷达是不容易受雨雾影响的。而且视野宽阔，可达 150 度，距离可达 200 多米。与激光雷达和摄像头相比，雷达分辨率较低，尤其是在垂直方向，分辨率非常有限。分辨率低意味着来自静态物体的反射可能产生问题。例如，街道上检修孔盖或汽水罐，可能产生很高的雷达反射率，但他们并不大。我们将其称为雷达杂波。因此，当前的车载雷达通常会忽视静态物体。</p>
+<p><strong>激光雷达</strong>是激光探测与测量的简称，而雷达则是无线电探测与测量的简称。雷达使用无线电波，而激光雷达则使用红激光束来确定传感器和附近对象的距离。目前的激光雷达大多使用 900 纳米光波长度的光源。但部分激光雷达使用的光波长度更长，在雨雾中性能更好。当前的激光雷达使用旋转座架发射激光，扫描周边环境。激光室脉冲式的，脉冲被对象反射，然后返回一个点云，来代表这些物体。激光雷达的空间分辨率远远高于雷达。因为激光束越聚焦，垂直方向的扫描层数量就越多，因此每层的激光雷达的密度也越高。目前，激光雷达还不能直接测量对象的速度，必须使用两次或多次扫描之间的位置差来确定。激光雷达受天气和传感器清洁程度影响也很大，因此需要保持清洁。它们块头也比其他传感器更大，因此也很难安装，除非你只想在车顶安装一个大的激光扫描器。</p>
+<h2 id="七、感知融合策略"><a href="#七、感知融合策略" class="headerlink" title="七、感知融合策略"></a>七、感知融合策略</h2><p>Apollo使用激光雷达和雷达来检测障碍物，用于融合输出的主要算法为<strong>卡尔曼滤波</strong>。卡尔曼滤波有两个步骤：第一步为预测状态，第二步是更新测量结果。设想正在跟踪一名行人，这里的状态表示行人的位置和速度，从已经掌握的行人状态开始，使用这些信息来执行卡尔曼滤波的第一步，即预测行人在将来的状态；下一步为误差结果更新，使用新的传感器来更新所认为的行人状态，卡尔曼滤波算法是预测和更新步骤的无限循环。<br><img src="/picture/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190321212644.jpg" alt><br>实际上有两种测量结果更新步骤：同步和异步。同步融合同时更新来自不同传感器的测量结果，而异步融合则逐个更新所收到的传感器测量结果。传感器融合可提高感知性能，因为各传感器相辅相成，融合也可以减少跟踪误差。</p>
+
+    </div>
+
+    
+    
+    
+      
+
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/无人驾驶/" rel="tag"># 无人驾驶</a>
+            
+              <a href="/tags/Apllo/" rel="tag"># Apllo</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/03/18/Apollo基础课程第一课之无人驾驶概览/" rel="next" title="Apollo基础课程之无人驾驶概览">
+                  <i class="fa fa-chevron-left"></i> Apollo基础课程之无人驾驶概览
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/04/01/Glide使用及分析/" rel="prev" title="Glide使用及分析">
+                  Glide使用及分析 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、卷积神经网络"><span class="nav-number">1.</span> <span class="nav-text">一、卷积神经网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、检测与分类"><span class="nav-number">2.</span> <span class="nav-text">二、检测与分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三，跟踪"><span class="nav-number">3.</span> <span class="nav-text">三，跟踪</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、分割"><span class="nav-number">4.</span> <span class="nav-text">四、分割</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五、Apollo-感知"><span class="nav-number">5.</span> <span class="nav-text">五、Apollo 感知</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#六、传感器数据比较"><span class="nav-number">6.</span> <span class="nav-text">六、传感器数据比较</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#七、感知融合策略"><span class="nav-number">7.</span> <span class="nav-text">七、感知融合策略</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/timg.jpg"
+      alt="Lu Tian">
+  <p class="site-author-name" itemprop="name">Lu Tian</p>
+  <div class="site-description" itemprop="description">每天进步一点点</div>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/ltt19921124" title="GitHub &rarr; https://github.com/ltt19921124" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://liuwangshu.cn/" title="http://liuwangshu.cn/" rel="noopener" target="_blank">刘望舒</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/singwhatiwanna/" title="https://blog.csdn.net/singwhatiwanna/" rel="noopener" target="_blank">任玉刚</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://me.csdn.net/sinyu890807" title="https://me.csdn.net/sinyu890807" rel="noopener" target="_blank">郭霖</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lu Tian</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数"></span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长"></span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共168.3k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/love.js"></script>

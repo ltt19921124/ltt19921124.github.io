@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/TiddlyWiki.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-.min.css?v=1.0.2">
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet"><style>
+    .pace .pace-progress {
+        background: #1E92FB; /*进度条颜色*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*上边框颜色*/
+        border-left-color: #1E92FB;    /*左边框颜色*/
+    }
+</style>
+
+<script>
+    (function () {
+        if ('ly669966') {
+            if (prompt('请输入文章密码') !== 'ly669966') {
+                alert('密码错误！');
+                if (history.length === 1) {
+                    location.replace("ly669966"); // 这里替换成你的首页
+                } else {
+                    history.back();
+                }
+            }
+        }
+    })();
+</script>
+
+  <meta name="description" content="前言在Ubuntu系统下编译Android系统。哎呀不知道是不是换了新电脑的缘故，这次编译居然从安装JDK和配置环境下载源码他喵的一次成功了，想之前真的是那台破电脑一堆问题最后好不容易才成功，不知道是不是跟我这台电脑配置的关系以及内存还有安装ubuntu的时候那几个分区的大小有没有关系。几乎每个分区的大小都是推荐大小的好几倍，尤其是那个交换空间分区不知道是不是。记录一下编译的过程。">
+<meta name="keywords" content="Android,编译">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ubuntu系统下编译Android 9.0系统">
+<meta property="og:url" content="http://yoursite.com/2019/04/03/Ubuntu系统下编译Android-9.0系统/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="前言在Ubuntu系统下编译Android系统。哎呀不知道是不是换了新电脑的缘故，这次编译居然从安装JDK和配置环境下载源码他喵的一次成功了，想之前真的是那台破电脑一堆问题最后好不容易才成功，不知道是不是跟我这台电脑配置的关系以及内存还有安装ubuntu的时候那几个分区的大小有没有关系。几乎每个分区的大小都是推荐大小的好几倍，尤其是那个交换空间分区不知道是不是。记录一下编译的过程。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-04-02T17:57:29.631Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Ubuntu系统下编译Android 9.0系统">
+<meta name="twitter:description" content="前言在Ubuntu系统下编译Android系统。哎呀不知道是不是换了新电脑的缘故，这次编译居然从安装JDK和配置环境下载源码他喵的一次成功了，想之前真的是那台破电脑一堆问题最后好不容易才成功，不知道是不是跟我这台电脑配置的关系以及内存还有安装ubuntu的时候那几个分区的大小有没有关系。几乎每个分区的大小都是推荐大小的好几倍，尤其是那个交换空间分区不知道是不是。记录一下编译的过程。">
+  <link rel="canonical" href="http://yoursite.com/2019/04/03/Ubuntu系统下编译Android-9.0系统/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Ubuntu系统下编译Android 9.0系统 | Hexo</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <a href="https://github.com/ltt19921124" class="github-corner" aria-label="View source on GitHub">
+    <svg width="80" height="80" viewBox="0 0 250 250" style="fill:#64CEAA; color:#fff; position: absolute; 
+    top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z">
+    </path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7
+     120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6
+      130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm">
+      </path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6
+       C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1
+        176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9
+         216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5
+          157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8
+           Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover
+            .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes
+             octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/03/Ubuntu系统下编译Android-9.0系统/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lu Tian">
+      <meta itemprop="description" content="每天进步一点点">
+      <meta itemprop="image" content="/images/timg.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">Ubuntu系统下编译Android 9.0系统
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-04-03 01:22:24 / 修改时间：01:57:29" itemprop="dateCreated datePublished" datetime="2019-04-03T01:22:24+08:00">2019-04-03</time>
+            </span>
+          
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/安卓/" itemprop="url" rel="index"><span itemprop="name">安卓</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span></span>
+            </span>
+          
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在Ubuntu系统下编译Android系统。哎呀不知道是不是换了新电脑的缘故，这次编译居然从安装JDK和配置环境下载源码他喵的一次成功了，想之前真的是那台破电脑一堆问题最后好不容易才成功，不知道是不是跟我这台电脑配置的关系以及内存还有安装ubuntu的时候那几个分区的大小有没有关系。几乎每个分区的大小都是推荐大小的好几倍，尤其是那个交换空间分区不知道是不是。记录一下编译的过程。</p>
+<a id="more"></a>
+<h3 id="安装JDK"><a href="#安装JDK" class="headerlink" title="安装JDK"></a>安装JDK</h3><p>编译Android系统需要JDK，可以在命令行安装：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install openjdk-8-jdk</span><br></pre></td></tr></table></figure>
+
+<p>没有换源，一次成功，有的时候因为墙的原因可能会安装不了可以换阿里的源。</p>
+<h3 id="下载源码"><a href="#下载源码" class="headerlink" title="下载源码"></a>下载源码</h3><p>下载源码是用的<a href="https://mirrors.tuna.tsinghua.edu.cn/help/AOSP/" target="_blank" rel="noopener">清华的镜像</a>，以下几个步骤：</p>
+<p><strong>下载 repo 工具:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mkdir ~/bin</span><br><span class="line">PATH=~/bin:$PATH</span><br><span class="line">curl https://mirrors.tuna.tsinghua.edu.cn/git/git-repo &gt; ~/bin/repo</span><br><span class="line">chmod a+x ~/bin/repo</span><br></pre></td></tr></table></figure>
+
+<p><strong>建立工作目录:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir android_9.0_r3</span><br><span class="line">cd android_9.0_r3</span><br></pre></td></tr></table></figure>
+
+<p><strong>安装python</strong>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install python</span><br></pre></td></tr></table></figure>
+
+<p><strong>初始化仓库</strong>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">repo init -u https://aosp.tuna.tsinghua.edu.cn/platform/manifest</span><br></pre></td></tr></table></figure>
+
+<p><strong>如果需要某个特定的 Android 版本(列表)：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">repo init -u https://aosp.tuna.tsinghua.edu.cn/platform/manifest -b android_9.0_r3</span><br></pre></td></tr></table></figure>
+
+<p><strong>同步源码树（以后只需执行这条命令来同步）：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">repo sync</span><br></pre></td></tr></table></figure>
+
+<h3 id="编译源码"><a href="#编译源码" class="headerlink" title="编译源码"></a>编译源码</h3><p>在AOSP的根目录，输入如下的命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source build/envsetup.sh</span><br></pre></td></tr></table></figure>
+
+<p>选择编译目标:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lunch</span><br></pre></td></tr></table></figure>
+
+<p>lunch命令是envsetup.sh里定义的一个命令，用来让用户选择编译目标。<br>会有以下信息输出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">You&apos;re building on Linux</span><br><span class="line"></span><br><span class="line">Lunch menu... pick a combo:</span><br><span class="line">     1. aosp_arm-eng</span><br><span class="line">     2. aosp_arm64-eng</span><br><span class="line">     3. aosp_mips-eng</span><br><span class="line">     4. aosp_mips64-eng</span><br><span class="line">     5. aosp_x86-eng</span><br><span class="line">     6. aosp_x86_64-eng</span><br><span class="line">     7. aosp_car_arm-userdebug</span><br><span class="line">     8. aosp_car_arm64-userdebug</span><br><span class="line">     9. aosp_car_x86-userdebug</span><br><span class="line">     10. aosp_car_x86_64-userdebug</span><br><span class="line">     11. mini_emulator_arm64-userdebug</span><br><span class="line">     12. m_e_arm-userdebug</span><br><span class="line">     13. m_e_mips64-eng</span><br><span class="line">     14. m_e_mips-userdebug</span><br><span class="line">     15. mini_emulator_x86_64-userdebug</span><br><span class="line">     16. mini_emulator_x86-userdebug</span><br><span class="line">     17. uml-userdebug</span><br><span class="line">     18. aosp_cf_x86_auto-userdebug</span><br><span class="line">     19. aosp_cf_x86_phone-userdebug</span><br><span class="line">     20. aosp_cf_x86_tablet-userdebug</span><br><span class="line">     21. aosp_cf_x86_tablet_3g-userdebug</span><br><span class="line">     22. aosp_cf_x86_tv-userdebug</span><br><span class="line">     23. aosp_cf_x86_wear-userdebug</span><br><span class="line">     24. aosp_cf_x86_64_auto-userdebug</span><br><span class="line">     25. aosp_cf_x86_64_phone-userdebug</span><br><span class="line">     26. aosp_cf_x86_64_tablet-userdebug</span><br><span class="line">     27. aosp_cf_x86_64_tablet_3g-userdebug</span><br><span class="line">     28. aosp_cf_x86_64_tv-userdebug</span><br><span class="line">     29. aosp_cf_x86_64_wear-userdebug</span><br><span class="line">     30. cf_x86_auto-userdebug</span><br><span class="line">     31. cf_x86_phone-userdebug</span><br><span class="line">     32. cf_x86_tablet-userdebug</span><br><span class="line">     33. cf_x86_tablet_3g-userdebug</span><br><span class="line">     34. cf_x86_tv-userdebug</span><br><span class="line">     35. cf_x86_wear-userdebug</span><br><span class="line">     36. cf_x86_64_auto-userdebug</span><br><span class="line">     37. cf_x86_64_phone-userdebug</span><br><span class="line">     38. cf_x86_64_tablet-userdebug</span><br><span class="line">     39. cf_x86_64_tablet_3g-userdebug</span><br><span class="line">     40. cf_x86_64_tv-userdebug</span><br><span class="line">     41. cf_x86_64_wear-userdebug</span><br><span class="line">     42. aosp_marlin-userdebug</span><br><span class="line">     43. aosp_marlin_svelte-userdebug</span><br><span class="line">     44. aosp_sailfish-userdebug</span><br><span class="line">     45. aosp_walleye-userdebug</span><br><span class="line">     46. aosp_walleye_test-userdebug</span><br><span class="line">     47. aosp_taimen-userdebug</span><br><span class="line">     48. hikey-userdebug</span><br><span class="line">     49. hikey64_only-userdebug</span><br><span class="line">     50. hikey960-userdebug</span><br><span class="line"></span><br><span class="line">Which would you like? [aosp_arm-eng]</span><br></pre></td></tr></table></figure>
+
+<p>选择42，按回车。这可以安装到pixel设备(之前的nexus也是)<br>编译的几种不同的类型：</p>
+<ul>
+<li>user：用来正式发布到市场的版本，权限受限，如没有 root 权限，不能 dedug，adb默认处于停用状态。</li>
+<li>userdebug：在user版本的基础上开放了 root 权限和 debug 权限，adb默认处于启用状态。一般用于调试真机。</li>
+<li>eng：开发工程师的版本，拥有最大的权限(root等)，具有额外调试工具的开发配置。一般用于模拟器。</li>
+</ul>
+<p><strong>开始编译:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make -j16</span><br></pre></td></tr></table></figure>
+
+<p>编译好后的状态，会有一个out文件夹，因为只有nexus 6p没有pixel手机了，所以没有刷进手机，想来跟nexus刷这些镜像文件没什么大的区别吧。<br>![](/picture/2019-03-15 23-52-10.png)</p>
+<p>一个小时两分钟编译好，想之前用笔记本用了半天还不止。。。<br>编译后产生的文件：</p>
+<ul>
+<li>system.img：系统镜像，里面包含了Android系统主要的目录和文件，通过init.c进行解析并mount挂载到/system目录下。</li>
+<li>userdata.img：用户镜像，是Android系统中存放用户数据的，通过init.c进行解析并mount挂载到/data目录下。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/Android/" rel="tag"># Android</a>
+            
+              <a href="/tags/编译/" rel="tag"># 编译</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/04/01/Glide使用及分析/" rel="next" title="Glide使用及分析">
+                  <i class="fa fa-chevron-left"></i> Glide使用及分析
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/04/14/判断二叉树是否是平衡二叉树/" rel="prev" title="判断二叉树是否是平衡二叉树">
+                  判断二叉树是否是平衡二叉树 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装JDK"><span class="nav-number">1.1.</span> <span class="nav-text">安装JDK</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#下载源码"><span class="nav-number">1.2.</span> <span class="nav-text">下载源码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译源码"><span class="nav-number">1.3.</span> <span class="nav-text">编译源码</span></a></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/timg.jpg"
+      alt="Lu Tian">
+  <p class="site-author-name" itemprop="name">Lu Tian</p>
+  <div class="site-description" itemprop="description">每天进步一点点</div>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/ltt19921124" title="GitHub &rarr; https://github.com/ltt19921124" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://liuwangshu.cn/" title="http://liuwangshu.cn/" rel="noopener" target="_blank">刘望舒</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/singwhatiwanna/" title="https://blog.csdn.net/singwhatiwanna/" rel="noopener" target="_blank">任玉刚</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://me.csdn.net/sinyu890807" title="https://me.csdn.net/sinyu890807" rel="noopener" target="_blank">郭霖</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lu Tian</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数"></span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长"></span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共168.3k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/love.js"></script>

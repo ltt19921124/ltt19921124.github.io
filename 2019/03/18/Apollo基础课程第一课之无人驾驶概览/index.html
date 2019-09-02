@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.4.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/TiddlyWiki.png?v=7.4.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.4.0" color="#222">
+  <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-.min.css?v=1.0.2">
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet"><style>
+    .pace .pace-progress {
+        background: #1E92FB; /*进度条颜色*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*上边框颜色*/
+        border-left-color: #1E92FB;    /*左边框颜色*/
+    }
+</style>
+
+<script>
+    (function () {
+        if ('ly669966') {
+            if (prompt('请输入文章密码') !== 'ly669966') {
+                alert('密码错误！');
+                if (history.length === 1) {
+                    location.replace("ly669966"); // 这里替换成你的首页
+                } else {
+                    history.back();
+                }
+            }
+        }
+    })();
+</script>
+
+  <meta name="description" content="这是学习Apollo基础课程的第一课，课程从自动驾驶核心技术模块出发，讲解高精地图、定位、感知、预测、规划、控制等模块知识，帮助零基础开发人员了解无人驾驶的基本原理与整体框架，初步掌握并运用 Apollo 自动驾驶开放平台所使用的自动驾驶算法。">
+<meta name="keywords" content="无人驾驶,Apllo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Apollo基础课程之无人驾驶概览">
+<meta property="og:url" content="http://yoursite.com/2019/03/18/Apollo基础课程第一课之无人驾驶概览/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="这是学习Apollo基础课程的第一课，课程从自动驾驶核心技术模块出发，讲解高精地图、定位、感知、预测、规划、控制等模块知识，帮助零基础开发人员了解无人驾驶的基本原理与整体框架，初步掌握并运用 Apollo 自动驾驶开放平台所使用的自动驾驶算法。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/picture/">
+<meta property="og:image" content="http://yoursite.com/picture/">
+<meta property="og:updated_time" content="2019-03-18T01:02:46.365Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Apollo基础课程之无人驾驶概览">
+<meta name="twitter:description" content="这是学习Apollo基础课程的第一课，课程从自动驾驶核心技术模块出发，讲解高精地图、定位、感知、预测、规划、控制等模块知识，帮助零基础开发人员了解无人驾驶的基本原理与整体框架，初步掌握并运用 Apollo 自动驾驶开放平台所使用的自动驾驶算法。">
+<meta name="twitter:image" content="http://yoursite.com/picture/">
+  <link rel="canonical" href="http://yoursite.com/2019/03/18/Apollo基础课程第一课之无人驾驶概览/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Apollo基础课程之无人驾驶概览 | Hexo</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+    <a href="https://github.com/ltt19921124" class="github-corner" aria-label="View source on GitHub">
+    <svg width="80" height="80" viewBox="0 0 250 250" style="fill:#64CEAA; color:#fff; position: absolute; 
+    top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z">
+    </path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7
+     120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6
+      130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm">
+      </path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6
+       C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1
+        176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9
+         216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5
+          157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8
+           Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover
+            .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes
+             octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/18/Apollo基础课程第一课之无人驾驶概览/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lu Tian">
+      <meta itemprop="description" content="每天进步一点点">
+      <meta itemprop="image" content="/images/timg.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">Apollo基础课程之无人驾驶概览
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-18 14:58:16 / 修改时间：09:02:46" itemprop="dateCreated datePublished" datetime="2019-03-18T14:58:16+08:00">2019-03-18</time>
+            </span>
+          
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/无人驾驶/" itemprop="url" rel="index"><span itemprop="name">无人驾驶</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span></span>
+            </span>
+          
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>这是学习Apollo基础课程的第一课，课程从自动驾驶核心技术模块出发，讲解高精地图、定位、感知、预测、规划、控制等模块知识，帮助零基础开发人员了解无人驾驶的基本原理与整体框架，初步掌握并运用 Apollo 自动驾驶开放平台所使用的自动驾驶算法。</p>
+<a id="more"></a>
+<h2 id="一、全面了解自动驾驶主要模块"><a href="#一、全面了解自动驾驶主要模块" class="headerlink" title="一、全面了解自动驾驶主要模块"></a>一、全面了解自动驾驶主要模块</h2><p>Apollo 技术框架由四个层面组成，参考车辆平台、参考硬件平台、开源软件平台、云服务平台。其中主要模块包括高精度地图、定位、感知、预测、规划、控制等模块。要学习的课程也将围绕这些模块展开。<br><img src="/picture/" alt><br>在高精地图课程中我们将为大家介绍无人车的核心模块，高精地图几乎支持着软件栈的所有其他模块，尤其是定位、感知、规划和决策。<br>在定位课程中，我们将讨论车辆如何确认所在位置。车辆利用激光和雷达数据将这些传感器感知内容与高分辨率地图进行对比，这种对比使车辆能够以个位数厘米级精度进行定位。<br><img src="/picture/" alt><br>感知课程将带大家了解无人驾驶车如何感知这个世界，深度学习是一个重要且强有力的感知工具，卷积神经网络构成深度学习分支，对感知任务至关重要，如分类、检测和分割。<br>预测课程将概述几种不同的方式，用于预测其他车辆或行人可能如何移动一种方法称为递归神经网络，可对其他物体随时间的运动进行跟踪，并使用该时间序列数据预测未来。</p>
+<h2 id="二、无人车的运作方式"><a href="#二、无人车的运作方式" class="headerlink" title="二、无人车的运作方式"></a>二、无人车的运作方式</h2><p>首先了解无人驾驶车包括五个核心部件，<strong>计算机视觉、传感器融合、定位、路径规划、控制</strong>。<br><strong>无人驾驶车的工作原理</strong><br>计算机视觉和传感器融合,获取一幅关于我们在世界上的位置的丰富画面并确定我们在这个世界的精确位置。然后使用路径规划来绘制一条通过这个世界到达目的地的路径，通过控制转动方向盘、打开油门、然后踩制动器，沿着该轨迹行驶并最终移动车辆。从本质上讲，其他一切无人车都是这些核心功能更复杂的实现。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">简言之,就是先通过摄像头或其与其它传感器融合，得到无人车的具体位置，一般是与高精地图相比较以得出地址，相当于看路的过程。</span><br></pre></td></tr></table></figure>
+
+<h2 id="三、开放式软件栈"><a href="#三、开放式软件栈" class="headerlink" title="三、开放式软件栈"></a>三、开放式软件栈</h2><p>Apollo开放式软件层分为三个子层，实时操作系统、运行时框架、应用程序模块层。<br><strong>实时操作系统（RTOS）</strong>，可确保在给定时间内完成特定任务，“实时”是指无人车的操作系统，能够及时进行计算，分析并执行相应的操作，是在车辆传感器收集到外界数据后的短时间内完成的。实时性能是确保系统稳定性和驾驶安全性的重要要求。<br><strong>注：Apollo最新的3.5版本已经取代了RTOS，用了自研的Cycer平台作为底层的通讯与调度平台。</strong><br><strong>运行时框架</strong>，是Apollo的操作环境，是ROS的定制版即机器人操作系统。为了使ROS适应无人车，Apollo团队改进了共享内存的功能和性能、去中心化和数据兼容性。<br><strong>核心内容–应用程序模块层</strong>，Apollo软件平台具有各种模块，这些模块包括 MAP引擎、定位、感知、规划、控制、端到端驾驶以及人机接口（HMI）。每个模块都有自己的算法库，之间的关系也非常复杂，我们将在整个课程中对这些模块及其关联方式进行研究。</p>
+<h2 id="四，本节其他重点"><a href="#四，本节其他重点" class="headerlink" title="四，本节其他重点"></a>四，本节其他重点</h2><p>参考车辆与硬件平台、云服务<br>进阶拓展阅读学习：<br>《自动驾驶汽车硬件系统概述》<br>《Apollo“云+端”研发迭代新模式实战》</p>
+<p><strong>自动驾驶汽车硬件系统概述：</strong><br>与人做比较的话，如果说<strong>人工智能技术</strong>将是自动驾驶汽车的<strong>大脑</strong>，那么硬件系统就是它的<strong>神经与四肢</strong>。从自动驾驶汽车周边环境信息的采集、传导、处理、反应再到各种复杂情景的解析，硬件系统的构造与升级对于自动驾驶汽车至关重要。<br>来自百度自动驾驶技术部高级产品经理—王石峰的分享。有关自动驾驶汽车硬件系统的内容。分为五个方面，学习的总结如下：</p>
+<h3 id="1，自动驾驶系统的硬件架构"><a href="#1，自动驾驶系统的硬件架构" class="headerlink" title="1，自动驾驶系统的硬件架构"></a>1，自动驾驶系统的硬件架构</h3><p>去年Uber无人车测试撞死人案相信大家都知道，毕竟是无人车测试撞死人第一案，先抛开谁的责任不说先说说这个无人驾驶为什么识别到行人没有？识别到了的话有没有做刹车的决策？做了的话有没有做相应的控制，或者有什么其它的问题导致汽车没有刹车。题外话这是用的沃尔沃的XC90改装的，哎，号称最安全的车如今出事了，感觉沃尔沃被Uber坑了一把啊。<br>最后的事故调查显示：事故的主要原因是<strong>车辆不在环和司机不在环造成的</strong>。Uber在改造原车加装自动驾驶系统时，将原车自带的AEB功能执行部分截断造成原车ADAS功能失效。自动驾驶系统感知到受害者确定要执行应急制动时，并没有声音或图像警报，此时司机正低头看手机也没有及时接管刹车。据说测试员之前还做过牢，居然还让他在晚上来测试无人车，Uber真的是。<br>目前绝大多数自动驾驶研发车都是改装车辆，相关传感器加装到车顶，改变车辆的动力学模型；改装车辆的刹车和转向系统，也缺乏不同的工况和两冬一夏的测试。图中Uber研发用车是SUV车型自身重心就较高，车顶加装的设备进一步造成重心上移，在避让转向的过程中转向过急过度，发生碰撞时都会比原车更容易侧翻。</p>
+<p><strong>在自动驾驶中，安全是自动驾驶技术开发的第一天条</strong>，我记得陆奇博士在首个pollo开发者大会时候说过，<strong>一辆无人车如果失去控制，可以变成一个武器</strong>。当时没有明白，现在想他说的是这个意思，的确是。安全真的很重要，特别重要。</p>
+<h3 id="2，自动驾驶的传感器"><a href="#2，自动驾驶的传感器" class="headerlink" title="2，自动驾驶的传感器"></a>2，自动驾驶的传感器</h3><h3 id="3，自动驾驶传感器的产品定义"><a href="#3，自动驾驶传感器的产品定义" class="headerlink" title="3，自动驾驶传感器的产品定义"></a>3，自动驾驶传感器的产品定义</h3><h3 id="4，自动驾驶的大脑"><a href="#4，自动驾驶的大脑" class="headerlink" title="4，自动驾驶的大脑"></a>4，自动驾驶的大脑</h3><h3 id="5，自动驾驶汽车的线控系统"><a href="#5，自动驾驶汽车的线控系统" class="headerlink" title="5，自动驾驶汽车的线控系统"></a>5，自动驾驶汽车的线控系统</h3>
+    </div>
+
+    
+    
+    
+      
+
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/无人驾驶/" rel="tag"># 无人驾驶</a>
+            
+              <a href="/tags/Apllo/" rel="tag"># Apllo</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/03/18/Apollo基础课程第二课之高精地图/" rel="next" title="Apollo基础课程之高精地图">
+                  <i class="fa fa-chevron-left"></i> Apollo基础课程之高精地图
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/03/18/Apollo基础课程第五课之感知-下/" rel="prev" title="Apollo基础课程之感知(下)">
+                  Apollo基础课程之感知(下) <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、全面了解自动驾驶主要模块"><span class="nav-number">1.</span> <span class="nav-text">一、全面了解自动驾驶主要模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、无人车的运作方式"><span class="nav-number">2.</span> <span class="nav-text">二、无人车的运作方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、开放式软件栈"><span class="nav-number">3.</span> <span class="nav-text">三、开放式软件栈</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四，本节其他重点"><span class="nav-number">4.</span> <span class="nav-text">四，本节其他重点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1，自动驾驶系统的硬件架构"><span class="nav-number">4.1.</span> <span class="nav-text">1，自动驾驶系统的硬件架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2，自动驾驶的传感器"><span class="nav-number">4.2.</span> <span class="nav-text">2，自动驾驶的传感器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3，自动驾驶传感器的产品定义"><span class="nav-number">4.3.</span> <span class="nav-text">3，自动驾驶传感器的产品定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4，自动驾驶的大脑"><span class="nav-number">4.4.</span> <span class="nav-text">4，自动驾驶的大脑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5，自动驾驶汽车的线控系统"><span class="nav-number">4.5.</span> <span class="nav-text">5，自动驾驶汽车的线控系统</span></a></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/timg.jpg"
+      alt="Lu Tian">
+  <p class="site-author-name" itemprop="name">Lu Tian</p>
+  <div class="site-description" itemprop="description">每天进步一点点</div>
+</div>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/ltt19921124" title="GitHub &rarr; https://github.com/ltt19921124" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://liuwangshu.cn/" title="http://liuwangshu.cn/" rel="noopener" target="_blank">刘望舒</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://blog.csdn.net/singwhatiwanna/" title="https://blog.csdn.net/singwhatiwanna/" rel="noopener" target="_blank">任玉刚</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://me.csdn.net/sinyu890807" title="https://me.csdn.net/sinyu890807" rel="noopener" target="_blank">郭霖</a>
+        </li>
+      
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lu Tian</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数"></span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长"></span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共168.3k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.0"></script><script src="/js/motion.js?v=7.4.0"></script>
+<script src="/js/schemes/pisces.js?v=7.4.0"></script>
+<script src="/js/next-boot.js?v=7.4.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.4.0"></script>
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('div.pdf').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js', () => {
+    document.querySelectorAll('div.pdf').forEach(element => {
+      PDFObject.embed(element.getAttribute('target'), element, {
+        pdfOpenParams: {
+          navpanes: 0,
+          toolbar: 0,
+          statusbar: 0,
+          pagemode: 'thumbs',
+          view: 'FitH'
+        },
+        PDFJS_URL: '/lib/pdf/web/viewer.html',
+        height: element.getAttribute('height') || '500px'
+      });
+    });
+  }, window.PDFObject);
+}
+</script>
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/love.js"></script>
