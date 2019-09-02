@@ -71,21 +71,6 @@
     }
 </style>
 
-<script>
-    (function () {
-        if ('ly669966') {
-            if (prompt('请输入文章密码') !== 'ly669966') {
-                alert('密码错误！');
-                if (history.length === 1) {
-                    location.replace("ly669966"); // 这里替换成你的首页
-                } else {
-                    history.back();
-                }
-            }
-        }
-    })();
-</script>
-
   <meta name="description" content="一、ViewRoot和DecorViewViewRoot对应ViewRootImpl类，它是连接WindowManager和DecorView的纽带。View的三大流程均是通过ViewRoot来完成的。在ActivityThread中，当activity对象创建完毕后，会将DecorView添加到Window中，同时创建ViewRootImpl对象，并将ViewRootImpl对象和DecorVi">
 <meta name="keywords" content="安卓,View,自定义View">
 <meta property="og:type" content="article">

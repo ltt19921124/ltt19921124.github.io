@@ -71,21 +71,6 @@
     }
 </style>
 
-<script>
-    (function () {
-        if ('ly669966') {
-            if (prompt('请输入文章密码') !== 'ly669966') {
-                alert('密码错误！');
-                if (history.length === 1) {
-                    location.replace("ly669966"); // 这里替换成你的首页
-                } else {
-                    history.back();
-                }
-            }
-        }
-    })();
-</script>
-
   <meta name="description" content="先附上Activity的生命周期官方经典图：   针对此图：再具体说明一下，分如下几种情况：  1，针对一个特定的activity，第一次启动，回调方法如下：onCreate()–&amp;gt;onStart()–&amp;gt;onResume()。 2，当用户打开新的activity时或者切换到桌面的时候，回调方法如下：onPause()–&amp;gt;onStop()。还有一种特殊情况，如果新Activity采">
 <meta name="keywords" content="安卓">
 <meta property="og:type" content="article">

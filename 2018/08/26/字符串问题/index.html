@@ -71,21 +71,6 @@
     }
 </style>
 
-<script>
-    (function () {
-        if ('ly669966') {
-            if (prompt('请输入文章密码') !== 'ly669966') {
-                alert('密码错误！');
-                if (history.length === 1) {
-                    location.replace("ly669966"); // 这里替换成你的首页
-                } else {
-                    history.back();
-                }
-            }
-        }
-    })();
-</script>
-
   <meta name="description" content="1,判断两个字符串是否互为变形词    题目：给定两个字符串str1和str2，如果str1和str2中出现的字符种类一样且每种字符出现的次数也一样，那么str1和str2互为变形词。请实现判断两个字符串是否为变形词的函数。    举例：str1=”123”，str2=”231”，返回true；str1=”123”，str2=”2331”，返回false。    思路：如果str1和str2长度不">
 <meta name="keywords" content="字符串算法">
 <meta property="og:type" content="article">

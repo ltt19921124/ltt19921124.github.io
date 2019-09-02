@@ -71,21 +71,6 @@
     }
 </style>
 
-<script>
-    (function () {
-        if ('ly669966') {
-            if (prompt('请输入文章密码') !== 'ly669966') {
-                alert('密码错误！');
-                if (history.length === 1) {
-                    location.replace("ly669966"); // 这里替换成你的首页
-                } else {
-                    history.back();
-                }
-            }
-        }
-    })();
-</script>
-
   <meta name="description" content="为什么需要线程池java中为了提高并发度，可以使用多线程共同执行，但是与此同时如果有大量的线程在短时间内被创建和销毁，会占用大量的系统时间，影响系统效率。">
 <meta name="keywords" content="java">
 <meta property="og:type" content="article">

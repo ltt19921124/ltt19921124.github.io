@@ -71,21 +71,6 @@
     }
 </style>
 
-<script>
-    (function () {
-        if ('ly669966') {
-            if (prompt('请输入文章密码') !== 'ly669966') {
-                alert('密码错误！');
-                if (history.length === 1) {
-                    location.replace("ly669966"); // 这里替换成你的首页
-                } else {
-                    history.back();
-                }
-            }
-        }
-    })();
-</script>
-
   <meta name="description" content="1，打印两个有序链表中的公共部分    题目：给定两个有序链表的头指针head1和head2，打印两个链表的公共部分。    解答思路：        1，如果head1的值小于head2，则head1往下移动        2，如果head2的值小于head1，则head2往下移动        3，如果head1的值与head2的值相等，则打印这个值，然后head1与head2都往下移">
 <meta name="keywords" content="zhan">
 <meta property="og:type" content="article">

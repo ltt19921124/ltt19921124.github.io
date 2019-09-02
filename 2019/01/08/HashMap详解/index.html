@@ -71,21 +71,6 @@
     }
 </style>
 
-<script>
-    (function () {
-        if ('ly669966') {
-            if (prompt('请输入文章密码') !== 'ly669966') {
-                alert('密码错误！');
-                if (history.length === 1) {
-                    location.replace("ly669966"); // 这里替换成你的首页
-                } else {
-                    history.back();
-                }
-            }
-        }
-    })();
-</script>
-
   <meta name="description" content="一、HashMaphashmap在元素size超过负载因子对应数的时候就会扩容，但是其实还有一种情况也会扩容，那就是链表上Node数量大于等于8且tab数组长度小于64的时候的时候。HashMap的结构是哈希表，底层维护了一个Node数组(Jdk 8之后，之前是HashMap.Entry数组)，它是集合框架里非常常用的集合类，和ArrayList一样，使用非常频繁，HashMap的初始容量是16，">
 <meta name="keywords" content="java,数据结构">
 <meta property="og:type" content="article">

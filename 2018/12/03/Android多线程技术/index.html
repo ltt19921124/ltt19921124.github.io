@@ -71,21 +71,6 @@
     }
 </style>
 
-<script>
-    (function () {
-        if ('ly669966') {
-            if (prompt('请输入文章密码') !== 'ly669966') {
-                alert('密码错误！');
-                if (history.length === 1) {
-                    location.replace("ly669966"); // 这里替换成你的首页
-                } else {
-                    history.back();
-                }
-            }
-        }
-    })();
-</script>
-
   <meta name="description" content="本章学习Android多线程技术，多线程更新UI，用Handler方式解决两个线程之间的通信，同时理解学习Handler的实现原理(Handler、Lopper、MesageQueue三者的关系)，以及AsyncTask异步任务处理类，最后学习线程池的，多个异步任务时，合理利用线程池可以减少系统资源的使用，增加程序的流畅性。">
 <meta name="keywords" content="安卓，多线程">
 <meta property="og:type" content="article">

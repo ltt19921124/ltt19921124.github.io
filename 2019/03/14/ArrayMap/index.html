@@ -71,21 +71,6 @@
     }
 </style>
 
-<script>
-    (function () {
-        if ('ly669966') {
-            if (prompt('请输入文章密码') !== 'ly669966') {
-                alert('密码错误！');
-                if (history.length === 1) {
-                    location.replace("ly669966"); // 这里替换成你的首页
-                } else {
-                    history.back();
-                }
-            }
-        }
-    })();
-</script>
-
   <meta name="description" content="ArrayMap源码的分析，ArrayMap实现了Map接口，所以它也是一个数组加链表(或红黑树)，结构也是哈希表。它是线程不安全的，它允许key为null,value为null。相比于HashMap，ArrayMap空间效率更高。ArrayMap内部维护了两个数组，  1，一个int[]数组，用户保存每个item的hashCode值 2，一个Object[]数组，用于保存key–value对。容">
 <meta name="keywords" content="Stay Hungry,Stay Foolish">
 <meta property="og:type" content="article">

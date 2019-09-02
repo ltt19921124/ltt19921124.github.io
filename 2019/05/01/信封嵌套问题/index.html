@@ -71,21 +71,6 @@
     }
 </style>
 
-<script>
-    (function () {
-        if ('ly669966') {
-            if (prompt('请输入文章密码') !== 'ly669966') {
-                alert('密码错误！');
-                if (history.length === 1) {
-                    location.replace("ly669966"); // 这里替换成你的首页
-                } else {
-                    history.back();
-                }
-            }
-        }
-    })();
-</script>
-
   <meta name="description" content="给定一个N行2列的二维数组arr，每一个小数组的两个值分别代表一个信封的长和宽，如果信封A的长和宽小于信封B，那么信封A可以放在信封B里，返回信封最多可以嵌套多少层。">
 <meta name="keywords" content="算法">
 <meta property="og:type" content="article">

@@ -71,21 +71,6 @@
     }
 </style>
 
-<script>
-    (function () {
-        if ('ly669966') {
-            if (prompt('请输入文章密码') !== 'ly669966') {
-                alert('密码错误！');
-                if (history.length === 1) {
-                    location.replace("ly669966"); // 这里替换成你的首页
-                } else {
-                    history.back();
-                }
-            }
-        }
-    })();
-</script>
-
   <meta name="description" content="1，分别用递归和非递归方式实现二叉树的遍历    题目：要求用非递归和递归方式分别按照先序、中序、后序遍历二叉树；约定先序遍历顺序为：根、左、右，中序：左、中、右，后序：左、右、中。    递归方式较为简单，代码如下：">
 <meta name="keywords" content="二叉树">
 <meta property="og:type" content="article">

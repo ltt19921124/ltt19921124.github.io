@@ -71,21 +71,6 @@
     }
 </style>
 
-<script>
-    (function () {
-        if ('ly669966') {
-            if (prompt('请输入文章密码') !== 'ly669966') {
-                alert('密码错误！');
-                if (history.length === 1) {
-                    location.replace("ly669966"); // 这里替换成你的首页
-                } else {
-                    history.back();
-                }
-            }
-        }
-    })();
-</script>
-
   <meta name="description" content="一致性哈希原理产生的原因及应用在工程中，我们常用服务器集群来实现数据缓存，有以下常见的策略：  添加、删除、查询数据，都将数据的id通过哈希算法转换成一个哈希值，机尾key 若有N台机器，则计算key % N的值，这个值就是该条数据所属的机器编号，无论是添加、查询、删除操作，都只在这台机器上进行">
 <meta name="keywords" content="算法">
 <meta property="og:type" content="article">

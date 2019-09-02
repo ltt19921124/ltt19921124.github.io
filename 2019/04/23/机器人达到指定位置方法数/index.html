@@ -71,21 +71,6 @@
     }
 </style>
 
-<script>
-    (function () {
-        if ('ly669966') {
-            if (prompt('请输入文章密码') !== 'ly669966') {
-                alert('密码错误！');
-                if (history.length === 1) {
-                    location.replace("ly669966"); // 这里替换成你的首页
-                } else {
-                    history.back();
-                }
-            }
-        }
-    })();
-</script>
-
   <meta name="description" content="机器人达到指定位置方法数问题概述：动态规划的题目，假设有N个位置，N大于等于2。开始机器人在其中的某个位置(M位置,M一定是1到N的某一个),机器人可以往左走或往右走，在位置1则只能往右走到位置2，同理在位置N只能往左走到N-1位置。在除了这两个位置的其它位置则可以往左或往右；规定机器人走K步，最终能来到P位置(P也是1到N位置中的一个)的方法有多少种，给定四个参数N、M、K、P，返回方法数。">
 <meta name="keywords" content="算法">
 <meta property="og:type" content="article">

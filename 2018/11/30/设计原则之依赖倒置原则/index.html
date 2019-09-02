@@ -71,21 +71,6 @@
     }
 </style>
 
-<script>
-    (function () {
-        if ('ly669966') {
-            if (prompt('请输入文章密码') !== 'ly669966') {
-                alert('密码错误！');
-                if (history.length === 1) {
-                    location.replace("ly669966"); // 这里替换成你的首页
-                } else {
-                    history.back();
-                }
-            }
-        }
-    })();
-</script>
-
   <meta name="description" content="依赖倒置原则，英文Dependence Inversion Principle,缩写–DIP。它具体指代了一种特定的解耦形式，使得高层次的模块不依赖于低层次模块的实现细节，依赖模块被颠倒了。总结它的概念有如下几点：  1，高层次模块不依赖于低层次模块，两者都应该依赖其抽象 2，抽象不应该依赖细节 3，细节应该依赖抽象">
 <meta name="keywords" content="设计原则">
 <meta property="og:type" content="article">

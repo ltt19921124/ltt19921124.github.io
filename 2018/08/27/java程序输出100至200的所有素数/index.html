@@ -71,21 +71,6 @@
     }
 </style>
 
-<script>
-    (function () {
-        if ('ly669966') {
-            if (prompt('请输入文章密码') !== 'ly669966') {
-                alert('密码错误！');
-                if (history.length === 1) {
-                    location.replace("ly669966"); // 这里替换成你的首页
-                } else {
-                    history.back();
-                }
-            }
-        }
-    })();
-</script>
-
   <meta name="description" content="解决思路：1，定义一个类，名字为TestPrimeNumber。2，在类中定义主函数。3，用for循环打印出所有在100至200之间的质数。4，在for循环中，判断每当循环执行一次，就判断循环变量的值是否为素数，如果是，就把循环变量的当前值大于出来。5，比如一个数为n，就用2至n-1来除n，以此来判断是否是素数。如果从2至n-1都无法整除n，就是素数。">
 <meta name="keywords" content="java,算法">
 <meta property="og:type" content="article">

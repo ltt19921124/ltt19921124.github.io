@@ -71,21 +71,6 @@
     }
 </style>
 
-<script>
-    (function () {
-        if ('ly669966') {
-            if (prompt('请输入文章密码') !== 'ly669966') {
-                alert('密码错误！');
-                if (history.length === 1) {
-                    location.replace("ly669966"); // 这里替换成你的首页
-                } else {
-                    history.back();
-                }
-            }
-        }
-    })();
-</script>
-
   <meta name="description" content="一、UI设计的灵活性要求开发一个由两个Activity组成的列表明细类应用就可以了，一个activity负责管理记录列表，另一个负责管理记录明细界面，点击列表中某条记录会启动其明细activity实例，按后退键会销毁明细activity并返回到记录列表activity界面，想看记录，同样操作。理论上这样可行，但是如果应用需要更复杂的用户界面呈现及跳转，怎么办？">
 <meta name="keywords" content="fragment,UI">
 <meta property="og:type" content="article">

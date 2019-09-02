@@ -71,21 +71,6 @@
     }
 </style>
 
-<script>
-    (function () {
-        if ('ly669966') {
-            if (prompt('请输入文章密码') !== 'ly669966') {
-                alert('密码错误！');
-                if (history.length === 1) {
-                    location.replace("ly669966"); // 这里替换成你的首页
-                } else {
-                    history.back();
-                }
-            }
-        }
-    })();
-</script>
-
   <meta name="description" content="题目：给定一个数组(不含重复值)，找到每一个位置i的左边和右边离i最近且值比arr[i]小的位置，返回所有值。举例：有数组 arr = {3,4,1,5,6,2,7};那么返回的信息就是[{-1,2}，{0,2}，{-1，-1}，{2,5}，{3,5}，{2,-1}，{5，-1}]。这里返回的是二维数组。-1表示不存在。 进阶问题：若arr可能有重复值，找到每个位置i左边和右边的离i最近的且比ar">
 <meta name="keywords" content="算法，队列">
 <meta property="og:type" content="article">

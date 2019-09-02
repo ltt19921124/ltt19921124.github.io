@@ -71,21 +71,6 @@
     }
 </style>
 
-<script>
-    (function () {
-        if ('ly669966') {
-            if (prompt('请输入文章密码') !== 'ly669966') {
-                alert('密码错误！');
-                if (history.length === 1) {
-                    location.replace("ly669966"); // 这里替换成你的首页
-                } else {
-                    history.back();
-                }
-            }
-        }
-    })();
-</script>
-
   <meta name="description" content="参考Android达摩院的ArrayMap文章。ArrayMap是Android中存储的一个数据结构。是Android专门针对内存优化而设计的，用于取代Java API中的HashMap。为了进一步优化key是int类型的Map，Android再次提供了效率更高的数据结构SparseArray，可避免自动装箱过程。对于key为其他类型则使用ArrayMap。HashMap的get和put方法的时间">
 <meta name="keywords" content="安卓">
 <meta property="og:type" content="article">

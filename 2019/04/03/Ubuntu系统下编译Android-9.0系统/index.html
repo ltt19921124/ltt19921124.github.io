@@ -71,21 +71,6 @@
     }
 </style>
 
-<script>
-    (function () {
-        if ('ly669966') {
-            if (prompt('请输入文章密码') !== 'ly669966') {
-                alert('密码错误！');
-                if (history.length === 1) {
-                    location.replace("ly669966"); // 这里替换成你的首页
-                } else {
-                    history.back();
-                }
-            }
-        }
-    })();
-</script>
-
   <meta name="description" content="前言在Ubuntu系统下编译Android系统。哎呀不知道是不是换了新电脑的缘故，这次编译居然从安装JDK和配置环境下载源码他喵的一次成功了，想之前真的是那台破电脑一堆问题最后好不容易才成功，不知道是不是跟我这台电脑配置的关系以及内存还有安装ubuntu的时候那几个分区的大小有没有关系。几乎每个分区的大小都是推荐大小的好几倍，尤其是那个交换空间分区不知道是不是。记录一下编译的过程。">
 <meta name="keywords" content="Android,编译">
 <meta property="og:type" content="article">

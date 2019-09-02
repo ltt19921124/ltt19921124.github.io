@@ -71,21 +71,6 @@
     }
 </style>
 
-<script>
-    (function () {
-        if ('ly669966') {
-            if (prompt('请输入文章密码') !== 'ly669966') {
-                alert('密码错误！');
-                if (history.length === 1) {
-                    location.replace("ly669966"); // 这里替换成你的首页
-                } else {
-                    history.back();
-                }
-            }
-        }
-    })();
-</script>
-
   <meta name="description" content="LeetCode算法1，TwoSum问题给定数组arr = {2,3,5,7,12};一个target(int型，例如target=9)，求数组中两个元素之后等于target的两个元素的下表，并把它们的下标以一个二元数组的形式返回，在这题中，2 + 7等于9，也就是0下标和3下标的元素之和为9。所以返回 target_arr = {0,3};我们用打印数组元素的方式输出更直观。代码如下：">
 <meta name="keywords" content="java">
 <meta property="og:type" content="article">

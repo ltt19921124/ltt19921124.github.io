@@ -71,21 +71,6 @@
     }
 </style>
 
-<script>
-    (function () {
-        if ('ly669966') {
-            if (prompt('请输入文章密码') !== 'ly669966') {
-                alert('密码错误！');
-                if (history.length === 1) {
-                    location.replace("ly669966"); // 这里替换成你的首页
-                } else {
-                    history.back();
-                }
-            }
-        }
-    })();
-</script>
-
   <meta name="description" content="一、volatile的使用我们先理解可见性、有序性以及原子性三个概念，通常我们用synchronized关键字来解决这些问题，不过synchronized是重量级锁，对系统的性能有比较大的影响，所以如果有其他解决方案，我们都会优先考虑其他方案，避免使用synchronized关键字。而volatile关键字是就是java提供的解决可见性和有序性问题的关键字。注意：对于原子性，volatile变量的">
 <meta name="keywords" content="java,并发,volatile">
 <meta property="og:type" content="article">

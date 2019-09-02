@@ -71,21 +71,6 @@
     }
 </style>
 
-<script>
-    (function () {
-        if ('ly669966') {
-            if (prompt('请输入文章密码') !== 'ly669966') {
-                alert('密码错误！');
-                if (history.length === 1) {
-                    location.replace("ly669966"); // 这里替换成你的首页
-                } else {
-                    history.back();
-                }
-            }
-        }
-    })();
-</script>
-
   <meta name="description" content="3.2 activity相关    一、activity生命周期    avtivity就是负责与用户交互的组件。    1),activity的四种状态，running(运行状态,处于栈顶)/paused()(被透明的activity覆盖或非全屏的activity覆盖，)/stopped()(被另外一个activity完全覆盖)/killed()(activity被回收了，保存的信息不存在了)。">
 <meta name="keywords" content="安卓,面试">
 <meta property="og:type" content="article">

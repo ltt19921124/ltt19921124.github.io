@@ -71,21 +71,6 @@
     }
 </style>
 
-<script>
-    (function () {
-        if ('ly669966') {
-            if (prompt('请输入文章密码') !== 'ly669966') {
-                alert('密码错误！');
-                if (history.length === 1) {
-                    location.replace("ly669966"); // 这里替换成你的首页
-                } else {
-                    history.back();
-                }
-            }
-        }
-    })();
-</script>
-
   <meta name="description" content="本章主要学习IPC机制，首先介绍Android中多进程以及多进程开发中的常见注意事项，接着介绍Android中的序列化和Binder，然后详细介绍Bundle、文件共享、AIDL、Messenger、ContentProvider和Socket等进程通信模式。2.1 Android IPC简介IPC(Inter-Process Communication)，即为跨进程通信，先理解线程和进程；线程：">
 <meta name="keywords" content="安卓，IPC机制">
 <meta property="og:type" content="article">

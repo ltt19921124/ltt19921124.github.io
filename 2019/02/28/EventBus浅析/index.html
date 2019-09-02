@@ -71,21 +71,6 @@
     }
 </style>
 
-<script>
-    (function () {
-        if ('ly669966') {
-            if (prompt('请输入文章密码') !== 'ly669966') {
-                alert('密码错误！');
-                if (history.length === 1) {
-                    location.replace("ly669966"); // 这里替换成你的首页
-                } else {
-                    history.back();
-                }
-            }
-        }
-    })();
-</script>
-
   <meta name="description" content="事件总线EventBus为了简化并提高在activity、Fragment、Thread和Service之间的通信，同时解决组件之间的高耦合的同时仍然能继续高效地通信，事件总线设计出现了。著名的开源框架有EventBus和otto，我们先来解析EventBus。">
 <meta name="keywords" content="开源框架，安卓">
 <meta property="og:type" content="article">

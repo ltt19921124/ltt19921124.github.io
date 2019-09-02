@@ -71,21 +71,6 @@
     }
 </style>
 
-<script>
-    (function () {
-        if ('ly669966') {
-            if (prompt('请输入文章密码') !== 'ly669966') {
-                alert('密码错误！');
-                if (history.length === 1) {
-                    location.replace("ly669966"); // 这里替换成你的首页
-                } else {
-                    history.back();
-                }
-            }
-        }
-    })();
-</script>
-
   <meta name="description" content="一、先看ViewGroup类中的dispatchTouchEvent方法，其中关于拦截事件的代码：123456789101112131415// Check for interception.    final boolean intercepted;    if (actionMasked == MotionEvent.ACTION_DOWN            || mFirstTouchT">
 <meta name="keywords" content="安卓,事件分发机制">
 <meta property="og:type" content="article">

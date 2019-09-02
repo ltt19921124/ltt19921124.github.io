@@ -71,21 +71,6 @@
     }
 </style>
 
-<script>
-    (function () {
-        if ('ly669966') {
-            if (prompt('请输入文章密码') !== 'ly669966') {
-                alert('密码错误！');
-                if (history.length === 1) {
-                    location.replace("ly669966"); // 这里替换成你的首页
-                } else {
-                    history.back();
-                }
-            }
-        }
-    })();
-</script>
-
   <meta name="description" content="一、观察者模式简介观察者模式的定义本文章学习自刘望舒的博客。观察者模式也叫发布–订阅模式，属于行为模式的一种，它定义了一种一对多的依赖关系，让多个观察者对象同时监听某一个主题对象。这个主题对象在状态变化时，会通知所有的观察者对象，使他们能够自动更新自己。同时观察者模式还是效率很高的模式，常用语GUI系统，订阅—发布系统，这个模式的一个重要作用就是解耦，将被观察者和观察者解耦，使得他们之间的依赖性更">
 <meta name="keywords" content="设计模式">
 <meta property="og:type" content="article">

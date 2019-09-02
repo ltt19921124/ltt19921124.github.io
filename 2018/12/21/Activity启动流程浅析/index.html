@@ -71,21 +71,6 @@
     }
 </style>
 
-<script>
-    (function () {
-        if ('ly669966') {
-            if (prompt('请输入文章密码') !== 'ly669966') {
-                alert('密码错误！');
-                if (history.length === 1) {
-                    location.replace("ly669966"); // 这里替换成你的首页
-                } else {
-                    history.back();
-                }
-            }
-        }
-    })();
-</script>
-
   <meta name="description" content="在api26中，ActivityManagerNative类已经被弃用，同时代理类ActivityManagerProxy也被删除了。Instrumentation类的execStartActivity方法如下,注意注释1处。">
 <meta name="keywords" content="安卓,activity启动">
 <meta property="og:type" content="article">
