@@ -56,6 +56,35 @@
     sidebarPadding: 40
   };
 </script>
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet"><style>
+    .pace .pace-progress {
+        background: #1E92FB; /*进度条颜色*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*上边框颜色*/
+        border-left-color: #1E92FB;    /*左边框颜色*/
+    }
+</style>
+
+<script>
+    (function () {
+        if ('') {
+            if (prompt('请输入文章密码') !== '') {
+                alert('密码错误！');
+                if (history.length === 1) {
+                    location.replace("ly669966"); // 这里替换成你的首页
+                } else {
+                    history.back();
+                }
+            }
+        }
+    })();
+</script>
 
   <meta name="description" content="一、基本网络相关概念1，网络分层分层为了将网络节点所要完成的数据的发送或转发、打包或拆包，以及控制信息的加载或拆出工作，分别由不同的硬件和模块来完成，这样分层的好处是可以可以将通信和网络互联这一原本复杂的问题简单化，网络分层有经典的七层网络和五层，一般来说五层协议更加常用，应用更广泛，因为它更好理解。网络分层的每一层都是为了完成某一种功能而设计的。为了实现这些功能就要遵守共同的规则，就是协议规则。">
 <meta name="keywords" content="Http,网络协议">
@@ -538,28 +567,6 @@
         <a href="https://github.com/ltt19921124" title="GitHub &rarr; https://github.com/ltt19921124" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
       </span>
     
-      <span class="links-of-author-item">
-      
-      
-        
-      
-      
-        
-      
-        <a href="/ltt19921124@163.com" title="E-Mail &rarr; ltt19921124@163.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
-      </span>
-    
-      <span class="links-of-author-item">
-      
-      
-        
-      
-      
-        
-      
-        <a href="/302851414" title="QQ &rarr; 302851414"><i class="fa fa-fw fa-QQ"></i>QQ</a>
-      </span>
-    
   </div>
 
 
@@ -615,6 +622,10 @@
   <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
   <span class="post-meta-divider">|</span>
   <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.0</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共168.3k字</span>
+</div>
 
         
 
